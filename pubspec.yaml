@@ -95,6 +95,10 @@ flutter:
       fonts:
         - asset: assets/fonts/Bebas_Neue/BebasNeue-Regular.ttf
 
+    - family: Borel
+      fonts:
+        - asset: assets/fonts/Borel/Borel-Regular.ttf
+
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
