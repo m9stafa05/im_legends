@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:im_legends/core/router/routes.dart';
-
-
+import 'package:im_legends/features/onboarding/ui/on_boarding_screen.dart';
 
 class AppRouter {
   Route<dynamic> generateRoute(RouteSettings settings) {
@@ -9,8 +8,8 @@ class AppRouter {
     final arguments = settings.arguments;
 
     switch (settings.name) {
-      case  Routes.onBoardingScreen:
-        // return MaterialPageRoute(builder: (_) => const OnBoardingScreen());
+      case Routes.onBoardingScreen:
+        return MaterialPageRoute(builder: (_) => const OnBoardingScreen());
 
       default:
         return MaterialPageRoute(
