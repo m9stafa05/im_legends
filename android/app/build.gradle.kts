@@ -18,7 +18,20 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11.toString()
     }
+flavorDimensions += "default"
+productFlavors {
+    create("development") {
+        dimension = "default"
+        resValue("string", "app_name", "IM Legends development")
+        applicationIdSuffix = ".development"
+    }
 
+    create("production") {
+        dimension = "default"
+        resValue("string", "app_name", "IM Legends production")
+        applicationIdSuffix = ".production"
+    }
+} 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.example.im_legends"
