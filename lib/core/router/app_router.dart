@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:im_legends/core/router/routes.dart';
+import 'package:im_legends/features/auth/ui/login_screen.dart';
+import 'package:im_legends/features/auth/ui/sign_up_screen.dart';
 import 'package:im_legends/features/onboarding/ui/on_boarding_screen.dart';
 
 class AppRouter {
@@ -10,7 +12,10 @@ class AppRouter {
     switch (settings.name) {
       case Routes.onBoardingScreen:
         return MaterialPageRoute(builder: (_) => const OnBoardingScreen());
-
+      case Routes.loginScreen:
+        return MaterialPageRoute(builder: (_) => const LoginScreen());
+      case Routes.signUpScreen:
+        return MaterialPageRoute(builder: (_) => const SignUpScreen());
       default:
         return MaterialPageRoute(
           builder: (_) =>
