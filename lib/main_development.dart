@@ -7,9 +7,10 @@ import 'package:im_legends/firebase_options.dart';
 import 'package:im_legends/im_legends_app.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   setupGetIt();
-  WidgetsFlutterBinding.ensureInitialized();
+
   await ScreenUtil.ensureScreenSize();
   runApp(IMLegendsApp(appRouter: AppRouter()));
 }
