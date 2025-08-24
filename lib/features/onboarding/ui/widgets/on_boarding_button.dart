@@ -9,13 +9,15 @@ class OnBoardingButton extends StatelessWidget {
     super.key,
     required this.title,
     this.backgroundColor = AppColors.darkColor,
+    this.onTap,
   });
   final String title;
   final Color backgroundColor;
-
+  final void Function()? onTap;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: onTap,
       child: Container(
         alignment: Alignment.center,
         width: 250.w,
