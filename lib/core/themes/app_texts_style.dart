@@ -25,7 +25,12 @@ class AppTextsStyle {
     fontFamily: AppAssets.fontBorelRegular,
     color: AppColors.darkRedColor,
   );
-
+  static const font18WhiteBold = TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeightHelper.bold,
+    fontFamily: AppAssets.fontBorelRegular,
+    color: Colors.white,
+  );
   static const font12WhiteBold = TextStyle(
     fontSize: 12,
     fontWeight: FontWeightHelper.bold,
