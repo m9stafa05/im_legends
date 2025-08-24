@@ -17,7 +17,7 @@ class IMLegendsApp extends StatelessWidget {
         initialRoute: Routes.onBoardingScreen,
         onGenerateRoute: AppRouter().generateRoute,
         title: 'IM Legends App',
-        theme: ThemeData(scaffoldBackgroundColor: const Color(0xFFDD3232)),
+        theme: ThemeData(scaffoldBackgroundColor: const Color(0xFF191919)),
       ),
     );
   }

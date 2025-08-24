@@ -4,8 +4,6 @@ import 'package:im_legends/core/di/dependency_injection.dart';
 import 'package:im_legends/core/router/app_router.dart';
 import 'package:im_legends/im_legends_app.dart';
 
-
-
 void main() async {
   setupGetIt();
   await ScreenUtil.ensureScreenSize();
