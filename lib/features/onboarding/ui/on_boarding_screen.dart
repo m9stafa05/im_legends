@@ -3,9 +3,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:im_legends/core/themes/app_colors.dart';
 import 'package:im_legends/core/themes/app_texts_style.dart';
+import 'package:im_legends/core/utils/extensions.dart';
 import 'package:im_legends/core/utils/spacing.dart';
 import 'package:im_legends/features/onboarding/ui/widgets/on_boarding_button.dart';
 import 'package:im_legends/features/onboarding/ui/widgets/on_boarding_custom_card.dart';
+import '../../../core/router/routes.dart';
 import '../../../core/utils/app_assets.dart';
 
 class OnBoardingScreen extends StatelessWidget {
@@ -65,18 +67,22 @@ class OnBoardingScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              // OnBoardingCustomCard(
-              //   title: 'Track Your Rankings',
-              //   subTitle:
-              //       'See how you stack up against friends in real-time leaderboards.',
-              // ),
+
               verticalSpacing(50),
               OnBoardingButton(
-                title: 'Sign In',
+                title: 'Log In',
+                onTap: () {
+                  context.pushNamed(Routes.loginScreen);
+                },
                 backgroundColor: AppColors.darkRedColor,
               ),
               verticalSpacing(20),
-              OnBoardingButton(title: 'Create Account'),
+              OnBoardingButton(
+                title: 'Create Account',
+                onTap: () {
+                  context.pushReplacementNamed(Routes.signUpScreen);
+                },
+              ),
             ],
           ),
         ),
