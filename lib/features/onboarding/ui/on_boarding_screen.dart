@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:im_legends/core/themes/app_colors.dart';
-import 'package:im_legends/core/themes/app_texts_style.dart';
-import 'package:im_legends/core/utils/extensions.dart';
-import 'package:im_legends/core/utils/spacing.dart';
-import 'package:im_legends/features/onboarding/ui/widgets/on_boarding_button.dart';
-import 'package:im_legends/features/onboarding/ui/widgets/on_boarding_custom_card.dart';
+import '../../../core/widgets/logo_top_bar.dart';
+import 'widgets/on_boarding_grid_cards.dart';
+import '../../../core/themes/app_colors.dart';
+import '../../../core/themes/app_texts_style.dart';
+import '../../../core/utils/extensions.dart';
+import '../../../core/utils/spacing.dart';
+import 'widgets/on_boarding_button.dart';
 import '../../../core/router/routes.dart';
-import '../../../core/utils/app_assets.dart';
 
 class OnBoardingScreen extends StatelessWidget {
   const OnBoardingScreen({super.key});
@@ -22,66 +20,25 @@ class OnBoardingScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SvgPicture.asset(
-                    AppAssets.appLogo,
-                    height: 100.h,
-                    width: 100.w,
-                  ),
-                  Text('IM Legends', style: AppTextsStyle.font18RedBold),
-                ],
-              ),
+              LogoTopBar(),
               Text(
                 'Unleash Your Inner Football Legend!',
-                style: AppTextsStyle.font14GreyBold,
+                style: AppTextStyles.text14GreyBold,
               ),
               verticalSpacing(50),
-              GridView.count(
-                crossAxisCount: 2,
-                crossAxisSpacing: 40.w,
-                mainAxisSpacing: 20.h,
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                children: [
-                  OnBoardingCustomCard(
-                    title: 'Track Your Rankings',
-                    subTitle:
-                        'See how you stack up against friends in real-time leaderboards.',
-                  ),
-                  OnBoardingCustomCard(
-                    title: 'Log New Matches',
-                    subTitle:
-                        'Record scores & stats with ease after every thrilling game.',
-                  ),
-                  OnBoardingCustomCard(
-                    title: 'Earn Badges & Rewards',
-                    subTitle:
-                        'Unlock milestones and show off your football achievements.',
-                  ),
-                  OnBoardingCustomCard(
-                    title: 'Play Anywhere, Anytime',
-                    subTitle:
-                        'No internet? No problem. Enjoy offline mode features.',
-                  ),
-                ],
-              ),
-
-              verticalSpacing(50),
+              OnBoardingGridCards(),
+              verticalSpacing(100),
               OnBoardingButton(
                 title: 'Log In',
-                onTap: () {
-                  context.pushNamed(Routes.loginScreen);
-                },
+                icon: Icons.login,
                 backgroundColor: AppColors.darkRedColor,
+                onTap: () => context.pushNamed(Routes.loginScreen),
               ),
               verticalSpacing(20),
               OnBoardingButton(
                 title: 'Create Account',
-                onTap: () {
-                  context.pushReplacementNamed(Routes.signUpScreen);
-                },
+                icon: Icons.person_add,
+                onTap: () => context.pushNamed(Routes.signUpScreen),
               ),
             ],
           ),

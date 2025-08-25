@@ -52,7 +52,7 @@ class CustomTextButton extends StatelessWidget {
       onPressed: onPressed,
       child: Text(
         buttonText,
-        style: textStyle ?? AppTextsStyle.font14WhiteBold,
+        style: textStyle ?? AppTextStyles.text16WhiteBold,
       ),
     );
   }
