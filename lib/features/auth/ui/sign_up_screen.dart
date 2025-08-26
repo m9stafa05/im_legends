@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:im_legends/features/auth/data/models/user_data.dart';
 import 'widgets/sign_up_form.dart';
 import '../../../core/widgets/logo_top_bar.dart';
 import '../logic/cubit/auth_cubit.dart';
@@ -41,9 +42,9 @@ class SignUpScreen extends StatelessWidget {
                   },
                   builder: (context, state) {
                     return SignUpForm(
-                      onSignUp: (name, email, password) {
+                      onSignUp: (UserData userData, String password) async {
                         context.read<AuthCubit>().emitSignUp(
-                          email: email,
+                          userData: userData,
                           password: password,
                         );
                       },
