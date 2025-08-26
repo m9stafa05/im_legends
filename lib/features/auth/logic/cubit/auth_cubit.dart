@@ -2,6 +2,8 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:im_legends/features/auth/data/repo/auth_repo.dart';
 
+import '../../data/models/user_data.dart';
+
 part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
@@ -23,12 +25,12 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> emitSignUp({
-    required String email,
-    required String password,
+    required UserData userData,
+    required password,
   }) async {
     emit(AuthLoading());
     try {
-      await authRepo.signUp(email: email, password: password);
+      await authRepo.signUp(userData: userData, password: password);
       emit(AuthSuccess());
     } catch (e) {
       emit(AuthFailure(errorMessage: e.toString()));
