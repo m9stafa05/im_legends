@@ -3,8 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:im_legends/core/router/app_router.dart';
 import 'package:im_legends/core/router/routes.dart';
 
-
-
 class IMLegendsApp extends StatelessWidget {
   const IMLegendsApp({super.key, required this.appRouter});
   final AppRouter appRouter;
@@ -19,9 +17,7 @@ class IMLegendsApp extends StatelessWidget {
         initialRoute: Routes.onBoardingScreen,
         onGenerateRoute: AppRouter().generateRoute,
         title: 'IM Legends App',
-        theme: ThemeData(
-          scaffoldBackgroundColor: const Color(0xFFDD3232),
-        ),
+        theme: ThemeData(scaffoldBackgroundColor: const Color(0xFF191919)),
       ),
     );
   }
