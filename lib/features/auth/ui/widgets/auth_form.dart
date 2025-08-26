@@ -37,11 +37,10 @@ class _AuthFormState extends State<AuthForm> {
 
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
-      final values = {
+      widget.onSubmit({
         'email': _controllers['email']!.text.trim(),
         'password': _controllers['password']!.text.trim(),
-      };
-      widget.onSubmit(values);
+      });
     }
   }
 
@@ -54,20 +53,14 @@ class _AuthFormState extends State<AuthForm> {
           AppTextFormField(
             controller: _controllers['email'],
             hintText: 'Email',
-            validator: (value) {
-              if (value == null || value.isEmpty) return 'Email is required';
-              if (!value.contains('@')) return 'Enter a valid email';
-              return null;
-            },
+            validator: _validateEmail,
           ),
           verticalSpacing(20),
           AppTextFormField(
             controller: _controllers['password'],
             hintText: 'Password',
             isObscureText: true,
-            validator: (value) => (value == null || value.length < 6)
-                ? 'Password must be at least 6 characters'
-                : null,
+            validator: _validatePassword,
           ),
           ...widget.extraFields,
           verticalSpacing(30),
@@ -82,5 +75,18 @@ class _AuthFormState extends State<AuthForm> {
         ],
       ),
     );
+  }
+
+  String? _validateEmail(String? value) {
+    if (value == null || value.isEmpty) return 'Email is required';
+    if (!value.contains('@')) return 'Enter a valid email';
+    return null;
+  }
+
+  String? _validatePassword(String? value) {
+    if (value == null || value.length < 6) {
+      return 'Password must be at least 6 characters';
+    }
+    return null;
   }
 }
