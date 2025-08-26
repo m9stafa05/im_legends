@@ -1,0 +1,19 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "IM Legends Development",
+      "type": "dart",
+      "request": "launch",
+      "program": "lib/main_development.dart",
+      "args": ["--flavor", "development", "--target", "lib/main_development.dart"]
+    },
+    {
+      "name": "IM Legends Production",
+      "type": "dart",
+      "request": "launch",
+      "program": "lib/main_production.dart",
+      "args": ["--flavor", "production", "--target", "lib/main_production.dart"]
+    }
+  ]
+}
