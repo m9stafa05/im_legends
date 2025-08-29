@@ -1,24 +1,43 @@
-import 'package:im_legends/features/auth/data/models/user_data.dart';
-import 'package:im_legends/features/auth/data/service/auth_service.dart';
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../models/user_data.dart';
+import '../service/auth_service.dart';
 
 class AuthRepo {
-  final AuthService _authService = AuthService();
+  final AuthService _authService;
 
-  Future<void> login({required String email, required String password}) async {
+  AuthRepo({AuthService? authService})
+    : _authService = authService ?? AuthService();
+
+  /// Sign up user and return their data
+  Future<AuthResponse> signUp({
+    required UserData userData,
+    required String password,
+    File? profileImage,
+  }) async {
     try {
-      await _authService.login(email: email, password: password);
-    } catch (e) {
-      // Rethrow so Cubit can handle the error
-      throw Exception(e.toString());
+      return await _authService.signUp(
+        userData: userData,
+        password: password,
+        profileImage: profileImage,
+      );
+    } catch (e, stackTrace) {
+      debugPrint('Sign-up error: $e\n$stackTrace');
+      rethrow; // Keeps original error trace
     }
   }
 
-  Future<void> signUp({required UserData userData, required password}) async {
+  /// Login and return user data or auth response
+  Future<AuthResponse> login({
+    required String email,
+    required String password,
+  }) async {
     try {
-      await _authService.signUp(userData: userData, password: password);
-    } catch (e) {
-      // Rethrow so Cubit can handle the error
-      throw Exception(e.toString());
+      return await _authService.login(email: email, password: password);
+    } catch (e, stackTrace) {
+      debugPrint('Login error: $e\n$stackTrace');
+      rethrow;
     }
   }
 }
