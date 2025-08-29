@@ -1,11 +1,15 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'upload_image_field.dart';
 import '../../../../core/utils/spacing.dart';
 import '../../../../core/widgets/app_text_form_field.dart';
+
 import '../../data/models/user_data.dart';
 import 'auth_form.dart';
 
 class SignUpForm extends StatefulWidget {
-  final void Function(UserData userData, String password) onSignUp;
+  final void Function(UserData userData, String password, File? profileImage)
+  onSignUp;
 
   const SignUpForm({super.key, required this.onSignUp});
 
@@ -18,7 +22,7 @@ class _SignUpFormState extends State<SignUpForm> {
   final _phoneController = TextEditingController();
   final _ageController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-
+  File? _profileImage;
   @override
   void dispose() {
     _nameController.dispose();
@@ -48,9 +52,10 @@ class _SignUpFormState extends State<SignUpForm> {
           email: values['email']!,
           phoneNumber: _phoneController.text.trim(),
           age: int.tryParse(_ageController.text.trim()) ?? 0,
+          profileImageUrl: null,
         );
 
-        widget.onSignUp(userData, password);
+        widget.onSignUp(userData, password, _profileImage);
       },
       extraFields: [
         verticalSpacing(20),
@@ -86,28 +91,7 @@ class _SignUpFormState extends State<SignUpForm> {
               : null,
         ),
         verticalSpacing(20),
-        // Column(
-        //   children: [
-        //     CircleAvatar(
-        //       radius: 40.r,
-        //       backgroundColor: Colors.grey.shade300,
-        //       backgroundImage: _profileImage != null
-        //           ? FileImage(_profileImage!)
-        //           : null,
-        //       child: _profileImage == null
-        //           ? Icon(Icons.person, size: 40.r, color: Colors.grey)
-        //           : null,
-        //     ),
-        //     verticalSpacing(10),
-        //     CustomTextButton(
-        //       buttonWidth: 150.w,
-        //       backgroundColor: AppColors.greyColor,
-        //       borderRadius: 20.r,
-        //       buttonText: 'Upload Profile Image',
-        //       onPressed: _pickImage,
-        //     ),
-        //   ],
-        // ),
+        UploadImageField(),
       ],
     );
   }
