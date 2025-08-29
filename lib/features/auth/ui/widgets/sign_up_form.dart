@@ -1,12 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:image_picker/image_picker.dart';
-import '../../../../core/themes/app_colors.dart';
 import '../../../../core/utils/spacing.dart';
 import '../../../../core/widgets/app_text_form_field.dart';
-import '../../../../core/widgets/custom_text_button.dart';
 import '../../data/models/user_data.dart';
 import 'auth_form.dart';
 
@@ -24,21 +18,6 @@ class _SignUpFormState extends State<SignUpForm> {
   final _phoneController = TextEditingController();
   final _ageController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-
-  File? _profileImage;
-
-  /// Pick image using ImagePicker
-  Future<void> _pickImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(
-      source: ImageSource.gallery,
-      imageQuality: 75,
-    );
-
-    if (pickedFile != null) {
-      setState(() => _profileImage = File(pickedFile.path));
-    }
-  }
 
   @override
   void dispose() {
@@ -69,7 +48,6 @@ class _SignUpFormState extends State<SignUpForm> {
           email: values['email']!,
           phoneNumber: _phoneController.text.trim(),
           age: int.tryParse(_ageController.text.trim()) ?? 0,
-          
         );
 
         widget.onSignUp(userData, password);
@@ -108,28 +86,28 @@ class _SignUpFormState extends State<SignUpForm> {
               : null,
         ),
         verticalSpacing(20),
-        Column(
-          children: [
-            CircleAvatar(
-              radius: 40.r,
-              backgroundColor: Colors.grey.shade300,
-              backgroundImage: _profileImage != null
-                  ? FileImage(_profileImage!)
-                  : null,
-              child: _profileImage == null
-                  ? Icon(Icons.person, size: 40.r, color: Colors.grey)
-                  : null,
-            ),
-            verticalSpacing(10),
-            CustomTextButton(
-              buttonWidth: 150.w,
-              backgroundColor: AppColors.greyColor,
-              borderRadius: 20.r,
-              buttonText: 'Upload Profile Image',
-              onPressed: _pickImage,
-            ),
-          ],
-        ),
+        // Column(
+        //   children: [
+        //     CircleAvatar(
+        //       radius: 40.r,
+        //       backgroundColor: Colors.grey.shade300,
+        //       backgroundImage: _profileImage != null
+        //           ? FileImage(_profileImage!)
+        //           : null,
+        //       child: _profileImage == null
+        //           ? Icon(Icons.person, size: 40.r, color: Colors.grey)
+        //           : null,
+        //     ),
+        //     verticalSpacing(10),
+        //     CustomTextButton(
+        //       buttonWidth: 150.w,
+        //       backgroundColor: AppColors.greyColor,
+        //       borderRadius: 20.r,
+        //       buttonText: 'Upload Profile Image',
+        //       onPressed: _pickImage,
+        //     ),
+        //   ],
+        // ),
       ],
     );
   }
