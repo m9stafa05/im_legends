@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:im_legends/features/auth/data/models/user_data.dart';
@@ -51,12 +53,18 @@ class SignUpScreen extends StatelessWidget {
                   },
                   builder: (context, state) {
                     return SignUpForm(
-                      onSignUp: (UserData userData, String password) async {
-                        context.read<AuthCubit>().emitSignUp(
-                          userData: userData,
-                          password: password,
-                        );
-                      },
+                      onSignUp:
+                          (
+                            UserData userData,
+                            String password,
+                            File? profileImage,
+                          ) async {
+                            context.read<AuthCubit>().emitSignUp(
+                              userData: userData,
+                              password: password,
+                              profileImage: profileImage,
+                            );
+                          },
                     );
                   },
                 ),
