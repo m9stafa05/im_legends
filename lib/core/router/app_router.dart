@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:im_legends/core/di/dependency_injection.dart';
 import 'package:im_legends/core/router/routes.dart';
+import 'package:im_legends/features/auth/data/repo/auth_repo.dart';
 import 'package:im_legends/features/auth/logic/cubit/auth_cubit.dart';
 import 'package:im_legends/features/auth/ui/login_screen.dart';
 import 'package:im_legends/features/auth/ui/sign_up_screen.dart';
@@ -18,14 +20,14 @@ class AppRouter {
       case Routes.loginScreen:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
-            create: (context) => AuthCubit(),
+            create: (context) => AuthCubit(authRepo: getIt<AuthRepo>()),
             child: const LoginScreen(),
           ),
         );
       case Routes.signUpScreen:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
-            create: (context) => AuthCubit(),
+            create: (context) => AuthCubit(authRepo: getIt<AuthRepo>()),
             child: const SignUpScreen(),
           ),
         );
