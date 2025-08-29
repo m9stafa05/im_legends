@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:im_legends/features/auth/data/models/user_data.dart';
@@ -30,24 +32,39 @@ class SignUpScreen extends StatelessWidget {
                 verticalSpacing(50),
                 BlocConsumer<AuthCubit, AuthState>(
                   listener: (context, state) {
+                    if (state is AuthLoading) {
+                      _showLoadingDialog(context);
+                    } else {
+                      Navigator.pop(context); // Close loading dialog if open
+                    }
+
                     if (state is AuthSuccess) {
-                      Navigator.pop(context);
+                      final user = state.authResponse.user;
+                      final token = state.authResponse.session?.accessToken;
+
+                      // Optionally store token/user for later use
+                      debugPrint('Logged in user: ${user?.id}');
+                      debugPrint('Access Token: $token');
+
                       context.pushReplacementNamed(Routes.homeScreen);
                     } else if (state is AuthFailure) {
-                      Navigator.pop(context);
                       _showErrorDialog(context, state.errorMessage);
-                    } else if (state is AuthLoading) {
-                      _showLoadingDialog(context);
                     }
                   },
                   builder: (context, state) {
                     return SignUpForm(
-                      onSignUp: (UserData userData, String password) async {
-                        context.read<AuthCubit>().emitSignUp(
-                          userData: userData,
-                          password: password,
-                        );
-                      },
+                      onSignUp:
+                          (
+                            UserData userData,
+                            String password,
+                            File? profileImage,
+                          ) async {
+                            context.read<AuthCubit>().emitSignUp(
+                              userData: userData,
+                              password: password,
+                              profileImage: profileImage,
+                            );
+                          },
                     );
                   },
                 ),
@@ -66,11 +83,13 @@ class SignUpScreen extends StatelessWidget {
   }
 
   void _showErrorDialog(BuildContext context, String message) {
+    debugPrint('Message: $message');
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
         title: const Text('Sign Up Failed'),
         content: Text(message),
+
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),

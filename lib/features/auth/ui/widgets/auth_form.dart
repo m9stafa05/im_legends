@@ -76,10 +76,17 @@ class _AuthFormState extends State<AuthForm> {
       ),
     );
   }
-
-  String? _validateEmail(String? value) {
-    if (value == null || value.isEmpty) return 'Email is required';
-    if (!value.contains('@')) return 'Enter a valid email';
+String? _validateEmail(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Email is required';
+    }
+    final trimmedValue = value.trim();
+    final emailRegex = RegExp(
+      r'^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$',
+    );
+    if (!emailRegex.hasMatch(trimmedValue)) {
+      return 'Enter a valid email';
+    }
     return null;
   }
 
