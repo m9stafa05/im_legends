@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../../core/themes/app_texts_style.dart';
+import '../../../core/utils/extensions.dart';
+import '../../../core/utils/spacing.dart';
+import 'widgets/home_header_container.dart';
+import 'widgets/leader_board_list_view.dart';
+import '../../../core/router/routes.dart';
+import '../../../core/widgets/custom_app_bar.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -7,8 +12,25 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Text('Home Screen', style: AppTextStyles.text18WhiteBold),
+      body: Column(
+        children: [
+          const CustomAppBar(title: 'Leaderboard'),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  HomeHeaderContainer(
+                    userName: 'Mustafa',
+                    onCreateMatch: () =>
+                        context.pushNamed(Routes.addMatchScreen),
+                  ),
+                  verticalSpacing(20),
+                  LeadBoardListView(), 
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

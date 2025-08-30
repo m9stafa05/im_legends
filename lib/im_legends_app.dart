@@ -14,10 +14,10 @@ class IMLegendsApp extends StatelessWidget {
       minTextAdapt: true,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        initialRoute: Routes.onBoardingScreen,
+        initialRoute: Routes.homeScreen,
         onGenerateRoute: AppRouter().generateRoute,
         title: 'IM Legends App',
-        theme: ThemeData(scaffoldBackgroundColor: const Color(0xFF191919)),
+        theme: ThemeData(scaffoldBackgroundColor: const Color(0xFF000000)),
       ),
     );
   }
