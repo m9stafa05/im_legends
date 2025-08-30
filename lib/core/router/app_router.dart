@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:im_legends/core/widgets/not_screen_found.dart';
 import '../../features/add_match/ui/add_match_screen.dart';
 import '../di/dependency_injection.dart';
 import 'routes.dart';
@@ -47,14 +48,7 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const ProfileScreen());
       default:
         return MaterialPageRoute(
-          builder: (_) => const Scaffold(
-            body: Center(
-              child: Text(
-                'Page not found',
-                style: TextStyle(fontSize: 24, color: Colors.white),
-              ),
-            ),
-          ),
+          builder: (_) => NotFoundScreen(),
         );
     }
   }
