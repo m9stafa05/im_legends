@@ -19,8 +19,8 @@ class _MainScaffoldState extends State<MainScaffold> {
   final List<Widget> _pages = const [
     HomeScreen(),
     AddMatchScreen(),
-    HistoryScreen(),
     ChampionScreen(),
+    HistoryScreen(),
     ProfileScreen(),
   ];
 
