@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../core/themes/app_colors.dart';
 import 'player_info.dart';
 import 'rank_and_avatar.dart';
 import 'states_section.dart';
@@ -37,7 +38,7 @@ class LeaderBoardCard extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.r),
           color: isCurrentUser
-              ? const Color(0xFF2A2D3A)
+              ? AppColors.lightDarkColor
               : const Color(0xFF1E2128),
           border: isCurrentUser
               ? Border.all(color: const Color(0xFF4A90E2), width: 1.5)
