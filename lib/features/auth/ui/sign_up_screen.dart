@@ -1,12 +1,11 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:im_legends/features/auth/data/models/user_data.dart';
+import 'package:go_router/go_router.dart';
+import '../data/models/user_data.dart';
 import 'widgets/sign_up_form.dart';
 import '../../../core/widgets/logo_top_bar.dart';
 import '../logic/cubit/auth_cubit.dart';
-import '../../../core/utils/extensions.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/themes/app_texts_style.dart';
 import '../../../core/utils/spacing.dart';
@@ -46,7 +45,7 @@ class SignUpScreen extends StatelessWidget {
                       debugPrint('Logged in user: ${user?.id}');
                       debugPrint('Access Token: $token');
 
-                      context.pushReplacementNamed(Routes.homeScreen);
+                      context.go(Routes.homeScreen);
                     } else if (state is AuthFailure) {
                       _showErrorDialog(context, state.errorMessage);
                     }
@@ -71,7 +70,7 @@ class SignUpScreen extends StatelessWidget {
                 verticalSpacing(20),
                 TextButton(
                   onPressed: () =>
-                      context.pushReplacementNamed(Routes.loginScreen),
+                      context.go(Routes.loginScreen),
                   child: const Text('Already have an account? Login'),
                 ),
               ],

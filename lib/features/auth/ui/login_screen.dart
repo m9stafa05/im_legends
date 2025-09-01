@@ -1,10 +1,9 @@
 // ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../logic/cubit/auth_cubit.dart';
 import 'widgets/login_form.dart';
-import '../../../core/utils/extensions.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/themes/app_texts_style.dart';
 import '../../../core/utils/spacing.dart';
@@ -33,7 +32,7 @@ class LoginScreen extends StatelessWidget {
                   listener: (context, state) {
                     if (state is AuthSuccess) {
                       Navigator.pop(context); // Close loading
-                      context.pushReplacementNamed(Routes.homeScreen);
+                      context.go(Routes.homeScreen);
                     } else if (state is AuthFailure) {
                       Navigator.pop(context);
                       _showErrorDialog(context, state.errorMessage);
@@ -55,7 +54,7 @@ class LoginScreen extends StatelessWidget {
                 verticalSpacing(20),
                 TextButton(
                   onPressed: () =>
-                      context.pushReplacementNamed(Routes.signUpScreen),
+                      context.go(Routes.signUpScreen),
                   child: const Text('Create Account'),
                 ),
               ],

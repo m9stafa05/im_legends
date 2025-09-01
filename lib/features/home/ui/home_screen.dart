@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../core/utils/extensions.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/utils/spacing.dart';
 import 'widgets/home_header_container.dart';
 import 'widgets/leader_board_list_view.dart';
@@ -22,7 +22,7 @@ class HomeScreen extends StatelessWidget {
                   HomeHeaderContainer(
                     userName: 'Mustafa',
                     onCreateMatch: () =>
-                        context.pushNamed(Routes.addMatchScreen),
+                        context.go(Routes.addMatchScreen),
                   ),
                   verticalSpacing(20),
                   const LeadBoardListView(), 

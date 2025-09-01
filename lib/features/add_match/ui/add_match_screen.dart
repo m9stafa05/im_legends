@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:im_legends/core/router/routes.dart';
-import 'package:im_legends/core/utils/extensions.dart';
-import 'package:im_legends/core/widgets/custom_app_bar.dart';
-import 'package:im_legends/features/add_match/ui/widgets/add_match_button.dart';
-import 'package:im_legends/features/add_match/ui/widgets/player_select_field/player_select_field.dart';
-import 'package:im_legends/features/add_match/ui/widgets/score_input_field/score_count_field.dart';
-
+import 'package:go_router/go_router.dart';
+import '../../../core/router/routes.dart';
+import '../../../core/widgets/custom_app_bar.dart';
+import 'widgets/add_match_button.dart';
+import 'widgets/player_select_field/player_select_field.dart';
+import 'widgets/score_input_field/score_count_field.dart';
 import '../../../core/utils/spacing.dart';
 
 class AddMatchScreen extends StatelessWidget {
@@ -38,7 +37,7 @@ class AddMatchScreen extends StatelessWidget {
                   verticalSpacing(50),
                   AddMatchButton(
                     onPressed: () {
-                      context.pushReplacementNamed(Routes.homeScreen);
+                      context.go(Routes.homeScreen);
                     },
                     isEnabled: true,
                   ),
