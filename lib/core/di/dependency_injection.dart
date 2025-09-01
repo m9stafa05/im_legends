@@ -1,5 +1,5 @@
 import 'package:get_it/get_it.dart';
-import '../../features/auth/data/service/auth_service.dart';
+import 'package:im_legends/features/auth/data/service/auth_service.dart';
 import '../../features/auth/data/repo/auth_repo.dart';
 import '../../features/auth/logic/cubit/auth_cubit.dart';
 

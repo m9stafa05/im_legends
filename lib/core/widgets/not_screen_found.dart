@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:im_legends/core/router/routes.dart';
-import 'package:im_legends/core/themes/app_colors.dart';
-import 'package:im_legends/core/themes/app_texts_style.dart';
+import '../themes/app_colors.dart';
+import '../themes/app_texts_style.dart';
 
 class NotFoundScreen extends StatelessWidget {
   const NotFoundScreen({super.key});
@@ -56,7 +57,7 @@ class NotFoundScreen extends StatelessWidget {
                     elevation: 5,
                   ),
                   onPressed: () {
-                    Navigator.of(context).pushNamed(Routes.homeScreen);
+                    context.go(Routes.homeScreen);
                   },
                   child: const Text(
                     'Go to Home',

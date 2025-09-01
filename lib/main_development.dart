@@ -16,7 +16,7 @@ void main() async {
   );
   setupGetIt();
   await ScreenUtil.ensureScreenSize();
-  runApp(IMLegendsApp(appRouter: AppRouter()));
+  runApp(IMLegendsApp(router: router));
 }
 
 // flutter run --release --flavor development --target lib/main_development.dart

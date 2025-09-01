@@ -7,12 +7,12 @@ import 'package:im_legends/firebase_options.dart';
 import 'package:im_legends/im_legends_app.dart';
 
 void main() async {
-    WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   setupGetIt();
 
   await ScreenUtil.ensureScreenSize();
-  runApp(IMLegendsApp(appRouter: AppRouter()));
+  runApp(IMLegendsApp(router: router));
 }
 
 // flutter run --release --flavor production --target lib/main_production.dart

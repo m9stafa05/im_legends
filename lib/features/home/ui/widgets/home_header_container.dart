@@ -124,7 +124,7 @@ class HomeHeaderContainer extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('Add Match', style: AppTextStyles.text16WhiteBold),
+                        const Text('Add Match', style: AppTextStyles.text16WhiteBold),
                         horizontalSpacing(4),
                         Icon(Icons.add, color: Colors.white, size: 16.sp),
                       ],
