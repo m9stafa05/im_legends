@@ -1,10 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ImagePickerHelper {
-  /// Opens a bottom sheet to let the user pick from gallery or camera
   static Future<File?> showImageSourceActionSheet(BuildContext context) async {
     return showModalBottomSheet<File?>(
       context: context,

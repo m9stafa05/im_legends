@@ -25,7 +25,7 @@ class HomeScreen extends StatelessWidget {
                         context.pushNamed(Routes.addMatchScreen),
                   ),
                   verticalSpacing(20),
-                  LeadBoardListView(), 
+                  const LeadBoardListView(), 
                 ],
               ),
             ),

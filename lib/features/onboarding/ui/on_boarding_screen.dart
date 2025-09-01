@@ -20,13 +20,13 @@ class OnBoardingScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              LogoTopBar(),
-              Text(
+              const LogoTopBar(),
+              const Text(
                 'Unleash Your Inner Football Legend!',
                 style: AppTextStyles.text14GreyBold,
               ),
               verticalSpacing(50),
-              OnBoardingGridCards(),
+              const OnBoardingGridCards(),
               verticalSpacing(100),
               OnBoardingButton(
                 title: 'Log In',

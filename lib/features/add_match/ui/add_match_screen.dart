@@ -16,25 +16,25 @@ class AddMatchScreen extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          CustomAppBar(title: 'Add Match'),
+          const CustomAppBar(title: 'Add Match'),
           verticalSpacing(20),
           Expanded(
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  PlayerSelectField(
+                  const PlayerSelectField(
                     hint: 'Select Winner',
                     players: ['Mustafa', 'Sayed', 'Ahmed', 'Hassan', 'Ali'],
                   ),
                   verticalSpacing(5),
-                  ScoreCountField(accentColor: Colors.green),
+                  const ScoreCountField(accentColor: Colors.green),
                   verticalSpacing(50),
-                  PlayerSelectField(
+                  const PlayerSelectField(
                     hint: 'Select Loser',
                     players: ['Mustafa', 'Sayed', 'Ahmed', 'Hassan', 'Ali'],
                   ),
                   verticalSpacing(5),
-                  ScoreCountField(accentColor: Colors.red),
+                  const ScoreCountField(accentColor: Colors.red),
                   verticalSpacing(50),
                   AddMatchButton(
                     onPressed: () {

@@ -14,7 +14,7 @@ class LogoTopBar extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         SvgPicture.asset(AppAssets.appLogo, height: 100.h, width: 100.w),
-        Text('IM Legends', style: AppTextStyles.text18RedBold),
+        const Text('IM Legends', style: AppTextStyles.text18RedBold),
       ],
     );
   }

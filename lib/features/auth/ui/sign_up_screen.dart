@@ -23,9 +23,9 @@ class SignUpScreen extends StatelessWidget {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                LogoTopBar(),
+                const LogoTopBar(),
                 verticalSpacing(50),
-                Text(
+                const Text(
                   'Sign Up to IM Legends',
                   style: AppTextStyles.text20WhiteBold,
                 ),

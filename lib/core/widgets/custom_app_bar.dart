@@ -10,15 +10,15 @@ class CustomAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(top: 40, left: 20, right: 20, bottom: 10),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Color(0xFF191919),
-        borderRadius: const BorderRadius.vertical(
+        borderRadius: BorderRadius.vertical(
           bottom: Radius.circular(16), // Rounded bottom
         ),
         boxShadow: [
           BoxShadow(
             color: Color(0xFF323743), // subtle shadow
-            offset: const Offset(0, 4),
+            offset: Offset(0, 4),
             blurRadius: 8,
           ),
         ],

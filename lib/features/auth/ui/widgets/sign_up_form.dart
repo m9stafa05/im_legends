@@ -91,7 +91,7 @@ class _SignUpFormState extends State<SignUpForm> {
               : null,
         ),
         verticalSpacing(20),
-        UploadImageField(),
+        const UploadImageField(),
       ],
     );
   }
