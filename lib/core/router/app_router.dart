@@ -1,5 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:im_legends/features/notification/data/models/notification_model.dart';
+import 'package:im_legends/features/notification/ui/notifications_screen.dart';
+import 'package:im_legends/features/notification/ui/widgets/notification_details_screen.dart';
 import '../di/dependency_injection.dart';
 import 'routes.dart';
 import '../../features/auth/logic/cubit/auth_cubit.dart';
@@ -36,6 +39,17 @@ final GoRouter router = GoRouter(
         create: (_) => AuthCubit(authRepo: getIt<AuthRepo>()),
         child: const SignUpScreen(),
       ),
+    ),
+    GoRoute(
+      path: Routes.notificationScreen,
+      builder: (context, state) => const NotificationsScreen(),
+    ),
+    GoRoute(
+      path: Routes.notificationDetailsScreen,
+      builder: (context, state) {
+        final notification = state.extra as NotificationModel;
+        return NotificationDetailsScreen(notification: notification);
+      },
     ),
     // Main scaffold as root for bottom nav
     ShellRoute(
