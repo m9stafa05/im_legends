@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:im_legends/features/add_match/ui/widgets/score_input_field/score_control_button.dart';
+import 'score_control_button.dart';
+import 'score_count_animations.dart';
 import '../../../../../core/utils/spacing.dart';
 
 class ScoreInputContainer extends StatefulWidget {
@@ -27,25 +28,47 @@ class ScoreInputContainer extends StatefulWidget {
   State<ScoreInputContainer> createState() => _ScoreInputContainerState();
 }
 
-class _ScoreInputContainerState extends State<ScoreInputContainer> {
+class _ScoreInputContainerState extends State<ScoreInputContainer>
+   with TickerProviderStateMixin {
+  late ScoreFieldAnimations animations;
   late int currentScore;
 
   @override
   void initState() {
     super.initState();
     currentScore = widget.initialScore;
+
+    // setup animations
+    animations = ScoreFieldAnimations(vsync: this);
+
+    // optional: auto-start glow if editable
+    if (widget.isEditable) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) animations.startGlow();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    animations.dispose();
+    super.dispose();
   }
 
   void _incrementScore() {
     if (!widget.isEditable || currentScore >= widget.maxScore) return;
     setState(() => currentScore++);
     widget.onScoreChanged?.call(currentScore);
+
+    animations.bumpScore(); // 🎉 trigger pop animation
   }
 
   void _decrementScore() {
     if (!widget.isEditable || currentScore <= widget.minScore) return;
     setState(() => currentScore--);
     widget.onScoreChanged?.call(currentScore);
+
+    animations.bumpScore(); // 🎉 trigger pop animation
   }
 
   @override

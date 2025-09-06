@@ -1,5 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../features/notification/data/models/notification_model.dart';
+import '../../features/notification/ui/notifications_screen.dart';
+import '../../features/notification/ui/widgets/notification_details_screen.dart';
 import '../di/dependency_injection.dart';
 import 'routes.dart';
 import '../../features/auth/logic/cubit/auth_cubit.dart';
@@ -15,7 +19,9 @@ import '../../features/profile/ui/profile_screen.dart';
 import '../widgets/not_screen_found.dart';
 import '../widgets/main_scaffold.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final GoRouter router = GoRouter(
+  navigatorKey: navigatorKey,
   initialLocation: Routes.homeScreen,
   errorBuilder: (context, state) => const NotFoundScreen(),
   routes: [
@@ -36,6 +42,17 @@ final GoRouter router = GoRouter(
         create: (_) => AuthCubit(authRepo: getIt<AuthRepo>()),
         child: const SignUpScreen(),
       ),
+    ),
+    GoRoute(
+      path: Routes.notificationScreen,
+      builder: (context, state) => const NotificationsScreen(),
+    ),
+    GoRoute(
+      path: Routes.notificationDetailsScreen,
+      builder: (context, state) {
+        final notification = state.extra as NotificationModel;
+        return NotificationDetailsScreen(notification: notification);
+      },
     ),
     // Main scaffold as root for bottom nav
     ShellRoute(

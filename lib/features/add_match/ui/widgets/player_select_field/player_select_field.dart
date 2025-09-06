@@ -34,7 +34,17 @@ class _PlayerSelectFieldState extends State<PlayerSelectField>
   @override
   void initState() {
     super.initState();
+
+    // 1. Initialize the animations helper
     animations = PlayerFieldAnimations(vsync: this);
+
+    // 2. Start animations after first frame renders
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        animations
+            .startGlow(); // <-- call a method you define inside PlayerFieldAnimations
+      }
+    });
   }
 
   @override

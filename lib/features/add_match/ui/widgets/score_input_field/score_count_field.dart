@@ -36,10 +36,21 @@ class _ScoreCountFieldState extends State<ScoreCountField>
   Color get accentColor => widget.accentColor ?? AppColors.darkRedColor;
 
   @override
+  @override
   void initState() {
     super.initState();
+
     currentScore = widget.initialScore;
+
+    // 1. Create the animations helper
     animations = ScoreFieldAnimations(vsync: this);
+
+    // 2. Start any animations AFTER the first frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        animations.startGlow(); // or animations.startScaleDown(), etc.
+      }
+    });
   }
 
   @override

@@ -47,6 +47,18 @@ class ScoreFieldAnimations {
     glowController.repeat(reverse: true);
   }
 
+  // 🔹 Exposed control methods
+  void bumpScore() {
+    scaleController.forward(from: 0); // quick "pop" animation
+  }
+
+  void startGlow() {
+    glowController.repeat(reverse: true);
+  }
+
+  void stopGlow() {
+    glowController.stop();
+  }
   void dispose() {
     scaleController.dispose();
     glowController.dispose();

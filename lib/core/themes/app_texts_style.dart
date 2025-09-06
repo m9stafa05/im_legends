@@ -45,7 +45,7 @@ class AppTextStyles {
   static const text16WhiteBold = TextStyle(
     fontSize: 16,
     fontWeight: FontWeightHelper.bold,
-    fontFamily: AppAssets.fontFederant,
+    fontFamily: AppAssets.fontBebasNeue,
     color: Colors.white,
     letterSpacing: .2,
   );
