@@ -2,108 +2,101 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:im_legends/core/router/app_router.dart';
 import 'package:im_legends/core/router/routes.dart';
+import 'package:im_legends/core/service/supa_base_service.dart';
+import 'package:im_legends/core/utils/shared_prefs.dart';
 import 'package:im_legends/features/notification/data/models/notification_model.dart';
-import '../../../../core/service/supa_base_service.dart';
-import 'local_notifications.dart';
-import '../../../../core/utils/shared_prefs.dart';
+import 'package:im_legends/features/notification/data/service/local_notifications.dart';
 
-/// Handles FCM push notifications and token management
 class FirebaseNotifications {
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   final LocalNotificationService _localNotifications =
       LocalNotificationService();
   final SharedPrefStorage _sharedPrefStorage = SharedPrefStorage.instance;
 
-  /// Initialize FCM, request permissions, and setup listeners
-  Future<void> initialize() async {
-    // Request user permission for iOS
+  /// Initialize FCM and local notifications
+  Future<void> initialize(String userId) async {
     await _messaging.requestPermission();
 
-    // Print FCM Token (send to backend if needed)
+    // Save initial token
     final token = await _messaging.getToken();
-    debugPrint('FCM Token: $token');
+    if (token != null) {
+      try {
+        await SupaBaseService().saveOrUpdateToken(userId, token);
+      } catch (e) {
+        debugPrint("❌ Failed to save initial FCM token: $e");
+      }
+    }
 
-    _messaging.onTokenRefresh.listen((newToken) {
-      debugPrint('New FCM Token: $newToken');
-      SupaBaseService().saveTokenToSupabase(token!, newToken);
+    // Listen for token refresh
+    _messaging.onTokenRefresh.listen((newToken) async {
+      try {
+        await SupaBaseService().saveOrUpdateToken(userId, newToken);
+      } catch (e) {
+        debugPrint("❌ Failed to refresh FCM token: $e");
+      }
     });
 
-    // Foreground messages → show + save
-    FirebaseMessaging.onMessage.listen((message) {
-      _handleIncomingMessage(message);
-    });
+    // Foreground messages
+    FirebaseMessaging.onMessage.listen(_handleIncomingMessage);
 
-    // When the app is in background and user taps the notification
-    FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      _handleMessageNavigation(message);
-    });
+    // Background → app opened
+    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessageNavigation);
 
-    // When the app is terminated
+    // Terminated → app opened
     final initialMessage = await _messaging.getInitialMessage();
     if (initialMessage != null) {
       _handleMessageNavigation(initialMessage);
     }
   }
 
-  /// Handle and save incoming push notification
+  /// Handle incoming foreground message
   Future<void> _handleIncomingMessage(RemoteMessage message) async {
-    final notification = message.notification;
-    if (notification != null) {
-      // ✅ Show & save using LocalNotificationService
-      await _localNotifications.showNotification(
-        id: message.hashCode,
-        title: notification.title,
-        body: notification.body,
-        payload: Routes.notificationScreen,
-      );
-
-      // ✅ Also store a record in SharedPrefStorage
-      final model = NotificationModel(
-        id: message.messageId ?? message.hashCode.toString(),
-        title: notification.title ?? '',
-        message: notification.body ?? '',
-        time: DateTime.now(),
-        type: NotificationType.system,
-        isRead: false, // you can adjust type if needed
-      );
-
-      final existing = _sharedPrefStorage.getNotifications();
-      existing.add(model);
-      await _sharedPrefStorage.setNotifications(existing);
-    }
+    await _saveAndShow(message);
   }
 
-  /// Navigate user based on notification payload
+  /// Navigate when user taps notification
   void _handleMessageNavigation(RemoteMessage message) {
     final context = navigatorKey.currentContext;
     if (context == null) return;
 
+    final data = message.data;
+    final route = data['route'] ?? Routes.notificationScreen;
+
     final currentRoute = ModalRoute.of(context)?.settings.name;
-    if (currentRoute != Routes.notificationScreen) {
-      navigatorKey.currentState?.pushNamed(
-        Routes.notificationScreen,
-        arguments: message,
-      );
+    if (currentRoute != route) {
+      navigatorKey.currentState?.pushNamed(route, arguments: message);
     }
   }
-}
 
-/// Must be a top-level function for background FCM messages
-Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  debugPrint("Handling background message: ${message.messageId}");
+  /// Save notification in SharedPrefs & show locally
+  Future<void> _saveAndShow(RemoteMessage message) async {
+    final notification = message.notification;
+    if (notification == null) return;
 
-  final notification = message.notification;
-  if (notification != null) {
-    await LocalNotificationService().showNotification(
-      id: message.hashCode,
+    final messageId =
+        message.messageId ?? DateTime.now().millisecondsSinceEpoch.toString();
+
+    // ✅ CHECK FOR DUPLICATES FIRST
+    final existing = _sharedPrefStorage.getNotifications();
+    final isDuplicate = existing.any((n) => n.id == messageId);
+    if (isDuplicate) {
+      debugPrint("⚠️ Duplicate notification ignored: $messageId");
+      return; // Don't save or show if already exists
+    }
+
+    final timestamp = DateTime.now().millisecondsSinceEpoch % 2147483647;
+
+    // Show local notification
+    await _localNotifications.showNotification(
+      id: timestamp,
       title: notification.title,
       body: notification.body,
       payload: Routes.notificationScreen,
     );
 
-    // ✅ Save into SharedPrefStorage too
+    // Save in SharedPrefs
     final model = NotificationModel(
-      id: message.messageId ?? message.hashCode.toString(),
+      id: messageId, // Use messageId consistently
       title: notification.title ?? '',
       message: notification.body ?? '',
       time: DateTime.now(),
@@ -111,9 +104,52 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
       isRead: false,
     );
 
-    final storage = SharedPrefStorage.instance;
-    final existing = storage.getNotifications();
     existing.add(model);
-    await storage.setNotifications(existing);
+    await _sharedPrefStorage.setNotifications(existing);
+    debugPrint("✅ Notification saved: $messageId");
   }
+
+  Future<void> sendLocalAppNotification({
+    required String title,
+    required String body,
+  }) async {
+    final timestamp = DateTime.now().millisecondsSinceEpoch % 2147483647;
+    final notificationId = timestamp.toString();
+
+    // ✅ CHECK FOR DUPLICATES
+    final existing = _sharedPrefStorage.getNotifications();
+    final isDuplicate = existing.any((n) => n.id == notificationId);
+    if (isDuplicate) {
+      debugPrint("⚠️ Duplicate local notification ignored: $notificationId");
+      return;
+    }
+
+    // Show as push notification
+    await _localNotifications.showNotification(
+      id: timestamp,
+      title: title,
+      body: body,
+      payload: Routes.notificationScreen,
+    );
+
+    // Save in SharedPrefs
+    final model = NotificationModel(
+      id: notificationId,
+      title: title,
+      message: body,
+      time: DateTime.now(),
+      type: NotificationType.system,
+      isRead: false,
+    );
+
+    existing.add(model);
+    await _sharedPrefStorage.setNotifications(existing);
+    debugPrint("✅ Local notification saved: $notificationId");
+  }
+}
+
+/// Top-level background handler
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  debugPrint("Handling background message: ${message.messageId}");
+  await FirebaseNotifications()._saveAndShow(message);
 }
