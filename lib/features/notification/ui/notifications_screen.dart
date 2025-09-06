@@ -1,145 +1,178 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import '../data/models/notification_model.dart';
+import 'package:im_legends/core/router/routes.dart';
+import '../logic/cubit/notifications_cubit.dart';
 import 'widgets/notification_app_bar.dart';
 import 'widgets/notification_card.dart';
 import 'widgets/notification_empty_state.dart';
 
-import '../../../core/router/routes.dart';
-
-class NotificationsScreen extends StatefulWidget {
+class NotificationsScreen extends StatelessWidget {
   const NotificationsScreen({super.key});
 
   @override
-  State<NotificationsScreen> createState() => _NotificationsScreenState();
-}
-
-class _NotificationsScreenState extends State<NotificationsScreen> {
-  final List<NotificationModel> notifications = [
-    // NotificationModel(
-    //   id: '1',
-    //   title: 'Welcome to the App!',
-    //   message:
-    //       'Thanks for joining us. Explore all the amazing features we have to offer.',
-    //   time: DateTime.now().subtract(const Duration(minutes: 5)),
-    //   isRead: false,
-    //   type: NotificationType.welcome,
-    // ),
-    // NotificationModel(
-    //   id: '2',
-    //   title: 'New Update Available',
-    //   message:
-    //       'Version 2.1.0 is now available with exciting new features and bug fixes.',
-    //   time: DateTime.now().subtract(const Duration(hours: 1)),
-    //   isRead: false,
-    //   type: NotificationType.update,
-    // ),
-    // NotificationModel(
-    //   id: '3',
-    //   title: 'Account Security',
-    //   message: 'Your account was successfully logged in from a new device.',
-    //   time: DateTime.now().subtract(const Duration(hours: 5)),
-    //   isRead: true,
-    //   type: NotificationType.security,
-    // ),
-    // NotificationModel(
-    //   id: '4',
-    //   title: 'Promotion Available',
-    //   message:
-    //       'Get 50% off on your next purchase with our exclusive promotion code.',
-    //   time: DateTime.now().subtract(const Duration(days: 1)),
-    //   isRead: true,
-    //   type: NotificationType.promotion,
-    // ),
-    // NotificationModel(
-    //   id: '5',
-    //   title: 'System Update',
-    //   message:
-    //       'We have updated our app with new features and bug fixes. Download now!',
-    //   time: DateTime.now().subtract(const Duration(days: 2)),
-    //   isRead: true,
-    //   type: NotificationType.system,
-    // ),
-  ];
-
-  void _markAllAsRead() {
-    setState(() {
-      for (var n in notifications) {
-        n.isRead = true;
-      }
-    });
-  }
-
-  void _markAsRead(String id) {
-    setState(() {
-      final n = notifications.firstWhere((n) => n.id == id);
-      n.isRead = true;
-    });
-  }
-
-  void _deleteNotification(int index, NotificationModel item) {
-    setState(() {
-      notifications.removeAt(index);
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Notification deleted'),
-        action: SnackBarAction(
-          label: 'Undo',
-          textColor: Colors.white,
-
-          onPressed: () {
-            setState(() {
-              notifications.insert(index, item);
-            });
-          },
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    final unreadCount = notifications.where((n) => !n.isRead).length;
-
     return Scaffold(
       backgroundColor: Colors.black,
       body: Column(
         children: [
-          NotificationAppBar(
-            unreadCount: unreadCount,
-            onBack: () => Navigator.of(context).pop(),
-            onMarkAllAsRead: _markAllAsRead,
+          BlocBuilder<NotificationsCubit, NotificationsState>(
+            builder: (context, state) {
+              int unreadCount = 0;
+              if (state is NotificationsSuccess) {
+                // Call this once in your notifications screen or app startup
+                context.read<NotificationsCubit>().cleanDuplicates();
+                // Count only unread notifications
+                unreadCount = state.notifications
+                    .where((notification) => !notification.isRead)
+                    .length;
+              }
+              return NotificationAppBar(
+                unreadCount: unreadCount,
+                onBack: () => Navigator.of(context).pop(),
+                onMarkAllAsRead: () =>
+                    context.read<NotificationsCubit>().markAllAsRead(),
+              );
+            },
           ),
           Expanded(
-            child: notifications.isEmpty
-                ? const NotificationEmptyState()
-                : ListView.separated(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 16.w,
-                      vertical: 8.h,
+            child: BlocBuilder<NotificationsCubit, NotificationsState>(
+              builder: (context, state) {
+                if (state is NotificationsLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator(color: Colors.white),
+                  );
+                } else if (state is NotificationsFailure) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.error_outline,
+                          color: Colors.red,
+                          size: 48.sp,
+                        ),
+                        SizedBox(height: 16.h),
+                        Text(
+                          'Error loading notifications',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(height: 8.h),
+                        Text(
+                          state.errorMessage,
+                          style: TextStyle(color: Colors.grey, fontSize: 14.sp),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: 16.h),
+                        ElevatedButton(
+                          onPressed: () {
+                            context
+                                .read<NotificationsCubit>()
+                                .fetchNotifications();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            foregroundColor: Colors.white,
+                          ),
+                          child: const Text('Retry'),
+                        ),
+                      ],
                     ),
-                    itemCount: notifications.length,
-                    separatorBuilder: (context, index) => SizedBox(height: 8.h),
-                    itemBuilder: (context, index) {
-                      final notification = notifications[index];
-                      return NotificationCard(
-                        notification: notification,
-                        index: index,
-                        onDelete: () =>
-                            _deleteNotification(index, notification),
-                        onUndo: () {},
-                        onTap: () {
-                          _markAsRead(notification.id);
-                          context.push(
-                            Routes.notificationDetailsScreen,
-                            extra: notification,
-                          );
-                        },
-                      );
+                  );
+                } else if (state is NotificationsSuccess) {
+                  final notifications = state.notifications;
+
+                  // Add these debug prints
+                  print('🔍 Total notifications: ${notifications.length}');
+                  print(
+                    '🔍 Unique notification IDs: ${notifications.map((n) => n.id).toSet().length}',
+                  );
+
+                  // Check for duplicates
+                  final ids = notifications.map((n) => n.id).toList();
+                  final uniqueIds = ids.toSet();
+                  if (ids.length != uniqueIds.length) {
+                    print('❌ DUPLICATES FOUND!');
+                    print('All IDs: $ids');
+                    print('Unique IDs: $uniqueIds');
+                  }
+
+                  if (notifications.isEmpty) {
+                    return const NotificationEmptyState();
+                  }
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      context.read<NotificationsCubit>().fetchNotifications();
                     },
-                  ),
+                    backgroundColor: Colors.grey[800],
+                    color: Colors.white,
+                    child: ListView.separated(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16.w,
+                        vertical: 8.h,
+                      ),
+                      itemCount: notifications.length,
+                      separatorBuilder: (context, index) =>
+                          SizedBox(height: 8.h),
+                      itemBuilder: (context, index) {
+                        final notification = notifications[index];
+                        return NotificationCard(
+                          notification: notification,
+                          index: index,
+                          onDelete: () {
+                            context
+                                .read<NotificationsCubit>()
+                                .deleteNotification(notification.id);
+
+                            // Show snackbar with undo option
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: const Text('Notification deleted'),
+                                action: SnackBarAction(
+                                  label: 'Undo',
+                                  onPressed: () {
+                                    context
+                                        .read<NotificationsCubit>()
+                                        .undoDelete();
+                                  },
+                                ),
+                                duration: const Duration(seconds: 3),
+                                backgroundColor: Colors.grey[800],
+                              ),
+                            );
+                          },
+                          onUndo: () {
+                            context.read<NotificationsCubit>().undoDelete();
+                          },
+                          onTap: () {
+                            // Mark as read first
+                            context.read<NotificationsCubit>().markAsRead(
+                              notification.id,
+                            );
+
+                            // Then navigate to details
+                            context.push(
+                              Routes.notificationDetailsScreen,
+                              extra: notification,
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  );
+                } else {
+                  // Handle initial state or any other state
+                  return const NotificationEmptyState();
+                }
+              },
+            ),
           ),
         ],
       ),

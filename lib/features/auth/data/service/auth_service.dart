@@ -1,11 +1,18 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:im_legends/core/service/supa_base_service.dart';
+import 'package:im_legends/features/notification/app_notifications_message.dart';
+import '../../../../core/utils/shared_prefs.dart';
+import '../../../notification/data/service/firebase_notifications.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/user_data.dart';
 
 class AuthService {
   final supabase = Supabase.instance.client;
-
+static Future<bool> isLoggedIn() async {
+    String? token = await SharedPrefStorage.instance.getString('userToken');
+    return token != null && token.isNotEmpty;
+  }
   /// ---------------------------
   /// UPLOAD PROFILE IMAGE
   /// ---------------------------
@@ -53,6 +60,12 @@ class AuthService {
       final updatedUserData = userData.copyWith(profileImageUrl: imageUrl);
       await supabase.from('users').insert(updatedUserData.toMap(uid));
 
+      // 4. Save FCM token for this user
+      await FirebaseNotifications().initialize(uid);
+
+      // 5. Send welcome notification
+      await AppNotificationsMessage.sendSignUpMessage(userData.name);
+
       debugPrint('Sign-up successful: $uid');
       return response;
     } on AuthException catch (e) {
@@ -80,6 +93,16 @@ class AuthService {
       if (response.user?.id == null) {
         throw Exception('Login failed: user not found.');
       }
+      final uid = response.user!.id;
+
+      // Save FCM token for this user
+      await FirebaseNotifications().initialize(uid);
+
+      // Fetch user info to display name in notification
+      final userData = await getCurrentUserData();
+      if (userData != null) {
+        await AppNotificationsMessage.sendLoginMessage(userData.name);
+      }
 
       debugPrint('Login successful: ${response.user?.id}');
       return response;
@@ -96,6 +119,11 @@ class AuthService {
   /// LOGOUT
   /// ---------------------------
   Future<void> logout() async {
+    final user = supabase.auth.currentUser;
+    if (user != null) {
+      await SupaBaseService().removeAllTokens(user.id);
+    }
+
     await supabase.auth.signOut();
     debugPrint('User logged out.');
   }
