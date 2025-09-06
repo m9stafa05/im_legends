@@ -1,6 +1,6 @@
 import 'dart:convert';
-import '../../features/notification/data/models/notification_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../features/notification/data/models/notification_model.dart';
 
 class SharedPrefStorage {
   SharedPrefStorage._();
@@ -9,7 +9,9 @@ class SharedPrefStorage {
   late final SharedPreferences _prefs;
   bool _initialized = false;
 
-  /// Call this once before using (in main.dart)
+  /// ---------------------------
+  /// Initialize SharedPreferences (call once in main)
+  /// ---------------------------
   Future<void> init() async {
     if (_initialized) return;
     _prefs = await SharedPreferences.getInstance();
@@ -18,14 +20,13 @@ class SharedPrefStorage {
 
   void _checkInit() {
     if (!_initialized) {
-      throw Exception('SharedPrefs not initialized. Call init() before use.');
+      throw Exception('SharedPrefs not initialized. Call init() first.');
     }
   }
 
-  // --------------------
-  // Basic methods
-  // --------------------
-
+  /// ---------------------------
+  /// Basic getters/setters
+  /// ---------------------------
   Future<bool> setString(String key, String value) async {
     _checkInit();
     return _prefs.setString(key, value);
@@ -76,18 +77,15 @@ class SharedPrefStorage {
     return _prefs.getStringList(key);
   }
 
-  // --------------------
-  // Advanced methods
-  // --------------------
-
-  /// Save a list of NotificationModel
+  /// ---------------------------
+  /// Notification-specific methods
+  /// ---------------------------
   Future<bool> setNotifications(List<NotificationModel> notifications) async {
     _checkInit();
     final jsonList = notifications.map((n) => json.encode(n.toJson())).toList();
     return _prefs.setStringList('notifications', jsonList);
   }
 
-  /// Get all saved notifications
   List<NotificationModel> getNotifications() {
     _checkInit();
     final jsonList = _prefs.getStringList('notifications') ?? [];
@@ -96,6 +94,12 @@ class SharedPrefStorage {
           (jsonString) => NotificationModel.fromJson(json.decode(jsonString)),
         )
         .toList();
+  }
+
+  Future<void> removeDuplicateNotifications() async {
+    final notifications = getNotifications();
+    final uniqueNotifications = {for (var n in notifications) n.id: n};
+    await setNotifications(uniqueNotifications.values.toList());
   }
 
   Future<bool> remove(String key) async {
