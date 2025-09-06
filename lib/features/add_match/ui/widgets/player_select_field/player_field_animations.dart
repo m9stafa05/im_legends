@@ -43,9 +43,16 @@ class PlayerFieldAnimations {
       begin: 0.0,
       end: 1.0,
     ).animate(CurvedAnimation(parent: glowController, curve: Curves.easeInOut));
-
-    glowController.repeat(reverse: true);
   }
+
+  // 🔹 Control methods
+  void startScaleDown() => scaleController.forward();
+  void resetScale() => scaleController.reverse();
+
+  void startRotation() => rotationController.forward(from: 0);
+
+  void startGlow() => glowController.repeat(reverse: true);
+  void stopGlow() => glowController.stop();
 
   void dispose() {
     scaleController.dispose();
