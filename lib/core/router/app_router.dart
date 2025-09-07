@@ -24,7 +24,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 final GoRouter router = GoRouter(
   navigatorKey: navigatorKey,
-  initialLocation: Routes.loginScreen,
+  initialLocation: Routes.homeScreen,
   errorBuilder: (context, state) => const NotFoundScreen(),
   routes: [
     GoRoute(

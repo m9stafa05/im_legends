@@ -5,7 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:im_legends/core/di/dependency_injection.dart';
 import 'package:im_legends/core/router/app_router.dart';
 import 'package:im_legends/core/utils/shared_prefs.dart';
-import 'features/notification/data/service/firebase_notifications.dart';
 import 'features/notification/data/service/local_notifications.dart';
 import 'package:im_legends/firebase_options.dart';
 import 'package:im_legends/im_legends_app.dart';
@@ -21,7 +20,6 @@ Future<void> _initServices() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   await LocalNotificationService().initialize();
-  await FirebaseNotifications().initialize();
 
   // Initialize Supabase
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
