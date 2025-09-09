@@ -1,80 +1,117 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:im_legends/features/auth/data/models/user_data.dart';
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:im_legends/core/service/supa_base_service.dart';
+import 'package:im_legends/features/notification/app_notifications_message.dart';
+import '../../../../core/utils/shared_prefs.dart';
+import '../../../notification/data/service/firebase_notifications.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../models/user_data.dart';
 
 class AuthService {
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final CollectionReference usersCollection = FirebaseFirestore.instance
-      .collection('users');
+  final supabase = Supabase.instance.client;
+static Future<bool> isLoggedIn() async {
+    String? token = await SharedPrefStorage.instance.getString('userToken');
+    return token != null && token.isNotEmpty;
+  }
+  /// ---------------------------
+  /// UPLOAD PROFILE IMAGE
+  /// ---------------------------
+  Future<String> uploadProfileImage(File imageFile, String userId) async {
+    final fileName = 'profile_${DateTime.now().millisecondsSinceEpoch}.jpg';
+    final filePath = '$userId/$fileName';
+
+    try {
+      await supabase.storage.from('profile_images').upload(filePath, imageFile);
+      return supabase.storage.from('profile_images').getPublicUrl(filePath);
+    } on StorageException catch (e) {
+      throw Exception('Failed to upload profile image: ${e.message}');
+    } catch (e) {
+      throw Exception('Unexpected error while uploading profile image: $e');
+    }
+  }
 
   /// ---------------------------
   /// SIGN UP
   /// ---------------------------
-  Future<void> signUp({required UserData userData, required password}) async {
+  Future<AuthResponse> signUp({
+    required UserData userData,
+    required String password,
+    File? profileImage,
+  }) async {
     try {
-      // Create user in Firebase Auth
-      UserCredential credential = await _firebaseAuth
-          .createUserWithEmailAndPassword(
-            email: userData.email,
-            password: password,
-          );
+      // 1. Create user in Supabase Auth
+      final response = await supabase.auth.signUp(
+        email: userData.email,
+        password: password,
+      );
 
-      // Get user UID
-      String uid = credential.user!.uid;
-
-      // Save additional data to Firestore
-      await usersCollection.doc(uid).set({
-        'name': userData.name,
-        'phoneNumber': userData.phoneNumber,
-        'age': userData.age,
-        'email': userData.email,
-        'createdAt': FieldValue.serverTimestamp(),
-        'profileImage': userData.profileImageUrl, // Optional placeholder
-        'stats': {'matchesWon': 0, 'goalsScored': 0},
-      });
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        throw Exception('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        throw Exception('The account already exists for that email.');
-      } else {
-        throw Exception(e.message ?? 'Sign-up failed.');
+      final uid = response.user?.id;
+      if (uid == null) {
+        throw Exception('Sign-up failed: UID not found.');
       }
+
+      // 2. Upload profile image if provided
+      String? imageUrl;
+      if (profileImage != null) {
+        imageUrl = await uploadProfileImage(profileImage, uid);
+      }
+
+      // 3. Insert user profile into 'users' table
+      final updatedUserData = userData.copyWith(profileImageUrl: imageUrl);
+      await supabase.from('users').insert(updatedUserData.toMap(uid));
+
+      // 4. Save FCM token for this user
+      await FirebaseNotifications().initialize(uid);
+
+      // 5. Send welcome notification
+      await AppNotificationsMessage.sendSignUpMessage(userData.name);
+
+      debugPrint('Sign-up successful: $uid');
+      return response;
+    } on AuthException catch (e) {
+      throw Exception('Sign-up failed: ${e.message}');
+    } on PostgrestException catch (e) {
+      throw Exception('Database error: ${e.message}');
+    } catch (e) {
+      throw Exception('Unexpected error during sign-up: $e');
     }
   }
 
   /// ---------------------------
   /// LOGIN
   /// ---------------------------
-  Future<UserData> login({
+  Future<AuthResponse> login({
     required String email,
     required String password,
   }) async {
     try {
-      UserCredential credential = await _firebaseAuth
-          .signInWithEmailAndPassword(email: email, password: password);
-
-      // Fetch user data from Firestore
-      DocumentSnapshot snapshot = await usersCollection
-          .doc(credential.user!.uid)
-          .get();
-
-      final data = snapshot.data() as Map<String, dynamic>;
-
-      return UserData(
-        name: data['name'],
-        phoneNumber: data['phoneNumber'],
-        age: data['age'],
-        email: data['email'],
+      final response = await supabase.auth.signInWithPassword(
+        email: email,
+        password: password,
       );
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        throw Exception('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        throw Exception('Wrong password provided.');
-      } else {
-        throw Exception(e.message ?? 'Login failed.');
+
+      if (response.user?.id == null) {
+        throw Exception('Login failed: user not found.');
       }
+      final uid = response.user!.id;
+
+      // Save FCM token for this user
+      await FirebaseNotifications().initialize(uid);
+
+      // Fetch user info to display name in notification
+      final userData = await getCurrentUserData();
+      if (userData != null) {
+        await AppNotificationsMessage.sendLoginMessage(userData.name);
+      }
+
+      debugPrint('Login successful: ${response.user?.id}');
+      return response;
+    } on AuthException catch (e) {
+      throw Exception('Login failed: ${e.message}');
+    } on PostgrestException catch (e) {
+      throw Exception('Database error during login: ${e.message}');
+    } catch (e) {
+      throw Exception('Unexpected error during login: $e');
     }
   }
 
@@ -82,26 +119,36 @@ class AuthService {
   /// LOGOUT
   /// ---------------------------
   Future<void> logout() async {
-    await _firebaseAuth.signOut();
+    final user = supabase.auth.currentUser;
+    if (user != null) {
+      await SupaBaseService().removeAllTokens(user.id);
+    }
+
+    await supabase.auth.signOut();
+    debugPrint('User logged out.');
   }
 
   /// ---------------------------
   /// GET CURRENT USER DATA
   /// ---------------------------
   Future<UserData?> getCurrentUserData() async {
-    User? user = _firebaseAuth.currentUser;
+    final user = supabase.auth.currentUser;
     if (user == null) return null;
 
-    DocumentSnapshot snapshot = await usersCollection.doc(user.uid).get();
-    if (!snapshot.exists) return null;
+    try {
+      final data = await supabase
+          .from('users')
+          .select()
+          .eq('id', user.id)
+          .single();
 
-    final data = snapshot.data() as Map<String, dynamic>;
-
-    return UserData(
-      name: data['name'],
-      phoneNumber: data['phoneNumber'],
-      age: data['age'],
-      email: data['email'],
-    );
+      return UserData.fromMap(data);
+    } on PostgrestException catch (e) {
+      debugPrint('Database error fetching current user: ${e.message}');
+      return null;
+    } catch (e) {
+      debugPrint('Unexpected error fetching current user: $e');
+      return null;
+    }
   }
 }

@@ -8,7 +8,7 @@ class AppTextStyles {
   static const text20WhiteBold = TextStyle(
     fontSize: 20,
     fontWeight: FontWeightHelper.bold,
-    fontFamily: AppAssets.fontFederant,
+    fontFamily: AppAssets.fontBebasNeue,
     color: Colors.white,
   );
 
@@ -30,7 +30,7 @@ class AppTextStyles {
   static const text18WhiteBold = TextStyle(
     fontSize: 18,
     fontWeight: FontWeightHelper.bold,
-    fontFamily: AppAssets.fontBorel,
+    fontFamily: AppAssets.fontBebasNeue,
     color: Colors.white,
   );
 
@@ -45,7 +45,7 @@ class AppTextStyles {
   static const text16WhiteBold = TextStyle(
     fontSize: 16,
     fontWeight: FontWeightHelper.bold,
-    fontFamily: AppAssets.fontFederant,
+    fontFamily: AppAssets.fontBebasNeue,
     color: Colors.white,
     letterSpacing: .2,
   );
