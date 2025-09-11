@@ -2,7 +2,7 @@ name: im_legends
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+1
+version: 1.0.1+1
 
 environment:
   sdk: ^3.8.1
@@ -32,7 +32,7 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.8
-  # 
+  #
   flutter_screenutil: ^5.9.3
   flutter_svg: ^2.2.0
   get_it: ^8.2.0
@@ -55,16 +55,19 @@ dependencies:
   intl: ^0.20.2
   flutter_dotenv: ^6.0.0
 
-  
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.14.4
 
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/ImLogo.png"
+  adaptive_icon_foreground: "assets/images/ImLogo.png"
+  adaptive_icon_background: "#00000000"
+  remove_alpha_ios: true
+
   flutter_lints: ^5.0.0
 
 # For information on the generic Dart part of this file, see the
@@ -72,7 +75,6 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -82,6 +84,7 @@ flutter:
   assets:
     - assets/svgs/
     - assets/images/
+    - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
