@@ -5,7 +5,9 @@ import '../../../../core/utils/functions/image_picker.dart';
 import '../../../../core/utils/spacing.dart';
 
 class UploadImageField extends StatefulWidget {
-  const UploadImageField({super.key});
+  final Function(File? image)? onImageSelected;
+
+  const UploadImageField({super.key, this.onImageSelected});
 
   @override
   State<UploadImageField> createState() => _UploadImageFieldState();
@@ -13,14 +15,26 @@ class UploadImageField extends StatefulWidget {
 
 class _UploadImageFieldState extends State<UploadImageField> {
   File? _profileImage;
+
   Future<void> _pickImage() async {
-    final pickedImage = await ImagePickerHelper.showImageSourceActionSheet(
-      context,
-    );
-    if (pickedImage != null) {
-      setState(() {
-        _profileImage = pickedImage;
-      });
+    try {
+      final pickedImage = await ImagePickerHelper.showImageSourceActionSheet(
+        context,
+      );
+      if (pickedImage != null) {
+        setState(() {
+          _profileImage = pickedImage;
+        });
+        widget.onImageSelected?.call(pickedImage);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to pick image. Please try again.'),
+          ),
+        );
+      }
     }
   }
 
@@ -30,36 +44,45 @@ class _UploadImageFieldState extends State<UploadImageField> {
       children: [
         GestureDetector(
           onTap: _pickImage,
-          child: Stack(
-            alignment: Alignment.bottomRight,
-            children: [
-              // Profile image or placeholder
-              CircleAvatar(
-                radius: 50.r,
-                backgroundColor: Colors.grey.shade200,
-                backgroundImage: _profileImage != null
-                    ? FileImage(_profileImage!)
-                    : null,
-                child: _profileImage == null
-                    ? Icon(
-                        Icons.person,
-                        size: 50.r,
-                        color: Colors.grey.shade600,
-                      )
-                    : null,
-              ),
-
-              // Small edit icon
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.blueAccent,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white, width: 2),
+          child: Semantics(
+            label: 'Upload profile image',
+            child: Stack(
+              alignment: Alignment.bottomRight,
+              children: [
+                CircleAvatar(
+                  radius: 48.r,
+                  backgroundColor: Theme.of(context).colorScheme.surface,
+                  backgroundImage: _profileImage != null
+                      ? FileImage(_profileImage!)
+                      : null,
+                  child: _profileImage == null
+                      ? Icon(
+                          Icons.person,
+                          size: 48.r,
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withOpacity(0.6),
+                        )
+                      : null,
                 ),
-                padding: EdgeInsets.all(6.r),
-                child: const Icon(Icons.edit, color: Colors.white, size: 16),
-              ),
-            ],
+                Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary,
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.surface,
+                      width: 2.w,
+                    ),
+                  ),
+                  padding: EdgeInsets.all(6.r),
+                  child: Icon(
+                    Icons.edit,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                    size: 16.r,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         verticalSpacing(12),
