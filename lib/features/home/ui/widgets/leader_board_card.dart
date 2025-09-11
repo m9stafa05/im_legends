@@ -32,8 +32,8 @@ class LeaderBoardCard extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 16.w),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-        height: 88.h,
+        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 12.h),
+        height: 80.h,
         width: double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.r),
@@ -41,7 +41,7 @@ class LeaderBoardCard extends StatelessWidget {
               ? AppColors.lightDarkColor
               : const Color(0xFF1E2128),
           border: isCurrentUser
-              ? Border.all(color: const Color(0xFF4A90E2), width: 1.5)
+              ? Border.all(color: AppColors.darkRedColor, width: 1)
               : null,
           boxShadow: [
             BoxShadow(
@@ -53,7 +53,6 @@ class LeaderBoardCard extends StatelessWidget {
         ),
         child: Row(
           children: [
-            // Rank and Avatar Section
             RankAndAvatar(
               isCurrentUser: isCurrentUser,
               rank: rank,

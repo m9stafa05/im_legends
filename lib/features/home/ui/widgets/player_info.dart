@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:im_legends/core/themes/app_colors.dart';
 
 import '../../../../core/themes/app_texts_style.dart';
 import '../../../../core/utils/spacing.dart';
@@ -7,8 +8,8 @@ import '../../../../core/utils/spacing.dart';
 class PlayerInfo extends StatelessWidget {
   const PlayerInfo({super.key, required this.playerName, required this.points});
 
-  final String playerName ;
-  final int points ;
+  final String playerName;
+  final int points;
   final bool isCurrentUser = false;
 
   @override
@@ -19,27 +20,16 @@ class PlayerInfo extends StatelessWidget {
       children: [
         Text(
           playerName,
-          style: AppTextStyles.text16WhiteBold.copyWith(
-            color: isCurrentUser ? const Color(0xFF4A90E2) : Colors.white,
-          ),
+          style: AppTextStyles.textBebas20WhiteBold,
           overflow: TextOverflow.ellipsis,
         ),
-        verticalSpacing(4),
+        verticalSpacing(2),
         Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(
-              Icons.star_rounded,
-              size: 14.sp,
-              color: const Color(0xFFFFB800),
-            ),
+            Icon(Icons.star, size: 14.sp, color: AppColors.goldColor),
             horizontalSpacing(4),
-            Text(
-              '$points Points',
-              style: AppTextStyles.text12GreyRegular.copyWith(
-                color: const Color(0xFFFFB800),
-                fontWeight: FontWeight.w500,
-              ),
-            ),
+            Text('$points Points', style: AppTextStyles.textBebas14GreyBold),
           ],
         ),
       ],
