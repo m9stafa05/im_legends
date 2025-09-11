@@ -27,7 +27,7 @@ class _AuthFormState extends State<AuthForm> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-
+  final formKey = GlobalKey<FormState>();
   @override
   void dispose() {
     _emailController.dispose();
@@ -51,6 +51,7 @@ class _AuthFormState extends State<AuthForm> {
       child: Column(
         children: [
           AppTextFormField(
+            formKey: formKey,
             controller: _emailController,
             hintText: 'Email',
             validator: _validateEmail,
@@ -58,6 +59,7 @@ class _AuthFormState extends State<AuthForm> {
           ),
           verticalSpacing(16.h),
           AppTextFormField(
+               formKey: formKey,
             controller: _passwordController,
             hintText: 'Password',
             isObscureText: true,
