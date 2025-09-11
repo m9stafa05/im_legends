@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../core/utils/app_assets.dart';
+import '../../../../core/utils/functions/get_rank_color.dart';
 
 class RankAndAvatar extends StatelessWidget {
   const RankAndAvatar({
@@ -14,22 +16,16 @@ class RankAndAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 60.w,
+      width: isCurrentUser ? 70.w : 60.w,
       child: Stack(
         children: [
           // Avatar
           Center(
             child: Container(
-              width: 50.w,
-              height: 50.w,
+              width: isCurrentUser ? 70.w : 50.w,
+              height: isCurrentUser ? 70.w : 50.w,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(
-                  color: isCurrentUser
-                      ? const Color(0xFF4A90E2)
-                      : Colors.grey.withAlpha((0.2 * 255).toInt()),
-                  width: 2,
-                ),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withAlpha((0.2 * 255).toInt()),
@@ -39,14 +35,14 @@ class RankAndAvatar extends StatelessWidget {
                 ],
               ),
               child: CircleAvatar(
-                radius: 24.r,
-                backgroundColor: Colors.white,
+                radius: 50.r,
+                backgroundColor: Colors.transparent,
                 child: ClipOval(
                   child: Image.asset(
-                    avatarAsset ?? 'assets/images/AppLogo.png',
+                    avatarAsset ?? AppAssets.appLogoPng,
                     fit: BoxFit.cover,
-                    width: 44.w,
-                    height: 44.w,
+                    width: 100.w,
+                    height: 100.w,
                   ),
                 ),
               ),
@@ -63,7 +59,7 @@ class RankAndAvatar extends StatelessWidget {
                 height: 20.w,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: _getRankColor(),
+                  color: getRankColor(rank!),
                   border: Border.all(color: Colors.white, width: 1.5),
                 ),
                 child: Center(
@@ -81,20 +77,5 @@ class RankAndAvatar extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Color _getRankColor() {
-    if (rank == null) return const Color(0xFF6366F1);
-
-    switch (rank!) {
-      case 1:
-        return const Color(0xFFF59E0B); // Rich Gold
-      case 2:
-        return const Color(0xFF9CA3AF); // Modern Silver
-      case 3:
-        return const Color(0xFFEA580C); // Vibrant Bronze/Copper
-      default:
-        return const Color(0xFF6366F1); // Modern Purple
-    }
   }
 }

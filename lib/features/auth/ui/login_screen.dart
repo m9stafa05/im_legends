@@ -1,11 +1,10 @@
-// ignore_for_file: prefer_const_constructors
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import '../logic/cubit/auth_cubit.dart';
-import 'widgets/login_form.dart';
-import '../../../core/router/routes.dart';
+import '../../../core/widgets/gradient_background.dart';
 import '../../../core/themes/app_texts_style.dart';
+import 'widgets/auth_bloc_consumer.dart';
+import '../../../core/router/routes.dart';
 import '../../../core/utils/spacing.dart';
 import '../../../core/widgets/logo_top_bar.dart';
 
@@ -15,77 +14,56 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                LogoTopBar(),
-                verticalSpacing(50),
-                Text(
-                  'Login to IM Legends',
-                  style: AppTextStyles.text20WhiteBold,
-                ),
-                verticalSpacing(50),
-                BlocConsumer<AuthCubit, AuthState>(
-                  listener: (context, state) {
-                    if (state is AuthSuccess) {
-                      Navigator.pop(context); // Close loading
-                      context.go(Routes.homeScreen);
-                    } else if (state is AuthFailure) {
-                      Navigator.pop(context);
-                      _showErrorDialog(context, state.errorMessage);
-                    } else if (state is AuthLoading) {
-                      _showLoadingDialog(context);
-                    }
-                  },
-                  builder: (context, state) {
-                    return LoginForm(
-                      onLogin: (email, password) {
-                        context.read<AuthCubit>().emitLogin(
-                          email: email,
-                          password: password,
-                        );
-                      },
-                    );
-                  },
-                ),
-                verticalSpacing(20),
-                TextButton(
-                  onPressed: () =>
-                      context.go(Routes.signUpScreen),
-                  child: const Text('Create Account'),
-                ),
-              ],
+      body: GradientBackground(
+        child: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const LogoTopBar(),
+                  verticalSpacing(40.h),
+                  const Text(
+                    'Login to IM Legends',
+                    style: AppTextStyles.textBebas24WhiteBold,
+                    textAlign: TextAlign.center,
+                  ),
+                  verticalSpacing(32.h),
+                  const AuthBlocConsumer(),
+                  verticalSpacing(24.h),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Don't have an account?",
+                        style: AppTextStyles.textTajawal16WhiteBold,
+                      ),
+
+                      TextButton(
+                        onPressed: () => context.go(Routes.signUpScreen),
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.zero, // removes extra padding
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          overlayColor: Colors.white24, // subtle ripple effect
+                        ),
+                        child: Text(
+                          " Create an Account",
+                          style: AppTextStyles.textBebas16GreyRegular.copyWith(
+                            color: Colors.blueAccent,
+                            decoration: TextDecoration.underline,
+                            decorationThickness: 1.5, // makes underline bolder
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
       ),
-    );
-  }
-
-  void _showErrorDialog(BuildContext context, String message) {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('Login Failed'),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showLoadingDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => const Center(child: CircularProgressIndicator()),
     );
   }
 }

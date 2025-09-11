@@ -21,11 +21,10 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   HomeHeaderContainer(
                     userName: 'Mustafa',
-                    onCreateMatch: () =>
-                        context.go(Routes.addMatchScreen),
+                    onCreateMatch: () => context.go(Routes.addMatchScreen),
                   ),
                   verticalSpacing(20),
-                  const LeadBoardListView(), 
+                  const LeadBoardListView(),
                 ],
               ),
             ),
