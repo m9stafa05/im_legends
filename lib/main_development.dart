@@ -4,12 +4,12 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-import 'package:im_legends/core/di/dependency_injection.dart';
-import 'package:im_legends/core/router/app_router.dart';
+import 'core/di/dependency_injection.dart';
+import 'core/router/app_router.dart';
 import 'package:im_legends/core/utils/shared_prefs.dart';
 import 'features/notification/data/service/local_notifications.dart';
-import 'package:im_legends/firebase_options.dart';
-import 'package:im_legends/im_legends_app.dart';
+import 'firebase_options.dart';
+import 'im_legends_app.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
