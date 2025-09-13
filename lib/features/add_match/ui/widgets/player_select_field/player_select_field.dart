@@ -11,12 +11,14 @@ class PlayerSelectField extends StatefulWidget {
   final List<String> players;
   final void Function(String)? onSelected;
   final String hint;
+  final String? excludedPlayer;
 
   const PlayerSelectField({
     super.key,
     required this.players,
     this.onSelected,
     this.hint = 'Select Player',
+    this.excludedPlayer,
   });
 
   @override
@@ -41,8 +43,7 @@ class _PlayerSelectFieldState extends State<PlayerSelectField>
     // 2. Start animations after first frame renders
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        animations
-            .startGlow(); // <-- call a method you define inside PlayerFieldAnimations
+        animations.startGlow();
       }
     });
   }
@@ -125,6 +126,7 @@ class _PlayerSelectFieldState extends State<PlayerSelectField>
         players: widget.players,
         selectedPlayer: selectedPlayer,
         onSelect: _selectPlayer,
+        excludedPlayer: widget.excludedPlayer,
       ),
     ).then((_) => animations.rotationController.reverse());
   }
