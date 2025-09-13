@@ -70,11 +70,7 @@ class OnBoardingCustomCard extends StatelessWidget {
                     fit: BoxFit.scaleDown,
                     child: Text(
                       title,
-                      style: AppTextStyles.textBebas16WhiteBold.copyWith(
-                        fontSize: 14.sp,
-                        height: 1.1,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: BebasTextStyles.whiteBold14.copyWith(height: 1.1),
                       textAlign: TextAlign.center,
                       maxLines: 2,
                     ),
@@ -85,7 +81,7 @@ class OnBoardingCustomCard extends StatelessWidget {
                   flex: 5,
                   child: Text(
                     subTitle,
-                    style: AppTextStyles.textFederant14GreyRegular.copyWith(
+                    style: FederantTextStyles.greyRegular14.copyWith(
                       fontSize: 10.sp,
                       color: const Color(0xFFB0B8C1),
                       height: 1.2,

@@ -29,9 +29,9 @@ class SignUpScreen extends StatelessWidget {
                 children: [
                   const LogoTopBar(),
                   verticalSpacing(40.h),
-                  const Text(
+                  Text(
                     'Sign Up to IM Legends',
-                    style: AppTextStyles.textFederant20GreyBold,
+                    style: FederantTextStyles.greyBold20,
                     semanticsLabel: 'Sign Up to IM Legends',
                   ),
                   verticalSpacing(32.h),
@@ -77,9 +77,9 @@ class SignUpScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text(
+                      Text(
                         "Already have an account?",
-                        style: AppTextStyles.textTajawal16WhiteBold,
+                        style: TajawalTextStyles.whiteBold16,
                       ),
 
                       TextButton(
@@ -91,7 +91,7 @@ class SignUpScreen extends StatelessWidget {
                         ),
                         child: Text(
                           "Log In",
-                          style: AppTextStyles.textBebas16GreyRegular.copyWith(
+                          style: BebasTextStyles.greyRegular16.copyWith(
                             color: Colors.blueAccent,
                             decoration: TextDecoration.underline,
                             decorationThickness: 1.5, // makes underline bolder
