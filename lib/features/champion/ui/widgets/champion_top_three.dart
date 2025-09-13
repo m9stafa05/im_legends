@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:im_legends/core/themes/app_texts_style.dart';
+import '../../../../core/themes/app_texts_style.dart';
+import '../../../../core/utils/spacing.dart';
 import 'champions_card.dart';
 
 class ChampionTopThree extends StatelessWidget {
@@ -22,29 +23,25 @@ class ChampionTopThree extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Colors.black.withOpacity(0.3),
-            Colors.blue.shade900.withOpacity(0.6),
+            Colors.black.withAlpha((0.3 * 255).toInt()),
+            Colors.black.withAlpha((0.9 * 255).toInt()),
+            const Color(0xFF020D8C).withAlpha((0.9 * 255).toInt()),
           ],
         ),
         borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 8.r,
-            offset: Offset(0, 4.h),
-          ),
-        ],
-        border: Border.all(color: Colors.white.withOpacity(0.2), width: 1.w),
+
+        border: Border.all(
+          color: Colors.white.withAlpha((0.2 * 255).toInt()),
+          width: 1.w,
+        ),
       ),
       child: Column(
         children: [
-          Text(
+          const Text(
             'Top 3 Champions',
-            style: AppTextStyles.text20WhiteBold.copyWith(
-              shadows: const [Shadow(color: Color(0xFFFBC02D), blurRadius: 4)],
-            ),
+            style: AppTextStyles.textBebas24WhiteBold,
           ),
-          SizedBox(height: 24.h),
+          verticalSpacing(24),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
