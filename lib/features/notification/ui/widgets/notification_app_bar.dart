@@ -57,10 +57,7 @@ class NotificationAppBar extends StatelessWidget {
               children: [
                 Text(
                   'Notifications',
-                  style: AppTextStyles.text16WhiteBold.copyWith(
-                    color: Colors.white,
-                    fontSize: 24.sp,
-                  ),
+                  style: BebasTextStyles.whiteBold20,
                 ),
                 if (unreadCount > 0)
                   Text(
