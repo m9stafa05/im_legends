@@ -15,16 +15,20 @@ class CustomTextButton extends StatelessWidget {
     this.buttonHeight,
     this.verticalPadding,
     this.horizontalPadding,
+    this.isLoading = false, this.icon,
   });
   final String buttonText;
   final TextStyle? textStyle;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final double? borderRadius;
   final Color? backgroundColor;
   final double? buttonWidth;
   final double? buttonHeight;
   final double? verticalPadding;
   final double? horizontalPadding;
+  final bool isLoading;
+  final Icon? icon;
+
   @override
   Widget build(BuildContext context) {
     return TextButton(
@@ -49,11 +53,17 @@ class CustomTextButton extends StatelessWidget {
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         minimumSize: WidgetStateProperty.all(const Size(double.infinity, 52)),
       ),
-      onPressed: onPressed,
-      child: Text(
-        buttonText,
-        style: textStyle ?? AppTextStyles.text16WhiteBold,
-      ),
+      onPressed: isLoading ? null : onPressed,
+      child: isLoading
+          ? SizedBox(
+              width: 24.w,
+              height: 24.h,
+              child: const CircularProgressIndicator(
+                strokeWidth: 2.5,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              ),
+            )
+          : Text(buttonText, style: FederantTextStyles.whiteBold20),
     );
   }
 }
