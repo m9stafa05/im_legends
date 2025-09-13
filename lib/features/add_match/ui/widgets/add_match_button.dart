@@ -92,7 +92,7 @@ class _AddMatchButtonState extends State<AddMatchButton> {
             children: [
               Text(
                 widget.text,
-                style: AppTextStyles.text16WhiteBold.copyWith(
+                style: BebasTextStyles.whiteBold20.copyWith(
                   color: isDisabled ? Colors.white70 : Colors.white,
                 ),
               ),
