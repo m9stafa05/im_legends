@@ -29,7 +29,7 @@ class ScoreInputContainer extends StatefulWidget {
 }
 
 class _ScoreInputContainerState extends State<ScoreInputContainer>
-   with TickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late ScoreFieldAnimations animations;
   late int currentScore;
 
@@ -68,7 +68,7 @@ class _ScoreInputContainerState extends State<ScoreInputContainer>
     setState(() => currentScore--);
     widget.onScoreChanged?.call(currentScore);
 
-    animations.bumpScore(); // 🎉 trigger pop animation
+    animations.bumpScore();
   }
 
   @override

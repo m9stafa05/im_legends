@@ -43,7 +43,7 @@ class AppTextFormField extends StatelessWidget {
       validator: validator,
       keyboardType: keyboardType,
       obscureText: isObscureText,
-      style: inputTextStyle ?? AppTextStyles.textTajawal18WhiteBold,
+      style: inputTextStyle ?? FederantTextStyles.whiteBold18,
       decoration: InputDecoration(
         isDense: true,
         contentPadding:
@@ -76,7 +76,7 @@ class AppTextFormField extends StatelessWidget {
           borderRadius: BorderRadius.circular(12.r),
         ),
         hintText: hintText,
-        hintStyle: hintStyle ?? AppTextStyles.textFederant16GreyRegular,
+        hintStyle: hintStyle ?? FederantTextStyles.greyRegular16,
         suffixIcon: suffixIcon,
         filled: true,
         fillColor:

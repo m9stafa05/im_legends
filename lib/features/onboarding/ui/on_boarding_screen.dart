@@ -35,9 +35,9 @@ class OnBoardingScreen extends StatelessWidget {
                       shaderCallback: (bounds) => const LinearGradient(
                         colors: [Colors.white, Color(0xFFE8E8E8)],
                       ).createShader(bounds),
-                      child: const Text(
+                      child: Text(
                         'Dominate the Pitch\nWith Your Squad!',
-                        style: AppTextStyles.textBebas24WhiteBold,
+                        style: BebasTextStyles.whiteBold24,
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -49,7 +49,7 @@ class OnBoardingScreen extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Text(
                         'Challenge your friends, track your stats, and become the ultimate football legend in your crew',
-                        style: AppTextStyles.textFederant14GreyRegular.copyWith(
+                        style: FederantTextStyles.greyRegular14.copyWith(
                           fontSize: 16,
                           color: const Color(0xFFB0B8C1),
                           height: 1.4,
@@ -80,16 +80,13 @@ class OnBoardingScreen extends StatelessWidget {
                     verticalSpacing(40),
                     CustomTextButton(
                       buttonText: 'Start Your Journey',
-                      textStyle: AppTextStyles.textFederant20WhiteBold,
+                      textStyle: FederantTextStyles.whiteBold20,
                       onPressed: () => context.push(Routes.loginScreen),
                     ),
                     verticalSpacing(16),
                     Text(
                       'Join thousands of players already competing',
-                      style: AppTextStyles.textFederant14GreyRegular.copyWith(
-                        color: const Color(0xFF6B7280),
-                        fontSize: 12,
-                      ),
+                      style: FederantTextStyles.greyRegular12,
                     ),
                   ],
                 ),

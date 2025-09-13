@@ -28,13 +28,13 @@ class StatesColumn extends StatelessWidget {
             horizontalSpacing(4),
             Text(
               '$value',
-              style: AppTextStyles.textBebas14WhiteBold,
+              style: BebasTextStyles.whiteBold14,
               overflow: TextOverflow.ellipsis,
             ),
           ],
         ),
         verticalSpacing(2),
-        Text(label, style: AppTextStyles.textFederant12GreyRegular),
+        Text(label, style: FederantTextStyles.greyRegular12),
       ],
     );
   }

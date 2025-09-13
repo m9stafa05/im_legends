@@ -45,14 +45,7 @@ class LogoTopBar extends StatelessWidget {
             shaderCallback: (bounds) => const LinearGradient(
               colors: [Colors.white, Color(0xFFE8E8E8)],
             ).createShader(bounds),
-            child: Text(
-              'IM Legends',
-              style: AppTextStyles.textFederant20WhiteBold.copyWith(
-                fontSize: 24,
-                fontWeight: FontWeight.w900,
-                color: Colors.white,
-              ),
-            ),
+            child: Text('IM Legends', style: FederantTextStyles.whiteBold20),
           ),
         ],
       ),

@@ -29,7 +29,6 @@ jobs:
         with:
           ruby-version: '3.2.9'
           bundler-cache: true
-        working-directory: android
 
       - name: Build And Distribution
         env:

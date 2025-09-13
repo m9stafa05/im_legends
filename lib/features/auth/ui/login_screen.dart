@@ -24,9 +24,9 @@ class LoginScreen extends StatelessWidget {
                 children: [
                   const LogoTopBar(),
                   verticalSpacing(40.h),
-                  const Text(
+                  Text(
                     'Login to IM Legends',
-                    style: AppTextStyles.textBebas24WhiteBold,
+                    style: BebasTextStyles.whiteBold24,
                     textAlign: TextAlign.center,
                   ),
                   verticalSpacing(32.h),
@@ -35,9 +35,9 @@ class LoginScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text(
+                      Text(
                         "Don't have an account?",
-                        style: AppTextStyles.textTajawal16WhiteBold,
+                        style: TajawalTextStyles.whiteBold16,
                       ),
 
                       TextButton(
@@ -49,7 +49,7 @@ class LoginScreen extends StatelessWidget {
                         ),
                         child: Text(
                           " Create an Account",
-                          style: AppTextStyles.textBebas16GreyRegular.copyWith(
+                          style: BebasTextStyles.greyRegular16.copyWith(
                             color: Colors.blueAccent,
                             decoration: TextDecoration.underline,
                             decorationThickness: 1.5, // makes underline bolder

@@ -32,15 +32,15 @@ class NotFoundScreen extends StatelessWidget {
                   color: AppColors.darkRedColor,
                 ),
                 const SizedBox(height: 24),
-                const Text(
+                Text(
                   'Oops! Page not found.',
-                  style: AppTextStyles.text20WhiteBold, // make text bigger
+                  style: FederantTextStyles.greyBold20, // make text bigger
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 16),
-                const Text(
+                Text(
                   'The page you are looking for does not exist.\nTry going back to home.',
-                  style: AppTextStyles.text16WhiteBold, // normal text style
+                  style: FederantTextStyles.greyBold20, // normal text style
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 32),
@@ -59,9 +59,9 @@ class NotFoundScreen extends StatelessWidget {
                   onPressed: () {
                     context.go(Routes.homeScreen);
                   },
-                  child: const Text(
+                  child: Text(
                     'Go to Home',
-                    style: AppTextStyles.text16WhiteBold,
+                    style: FederantTextStyles.greyBold20,
                   ),
                 ),
               ],

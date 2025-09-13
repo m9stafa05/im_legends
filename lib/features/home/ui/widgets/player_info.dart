@@ -20,7 +20,7 @@ class PlayerInfo extends StatelessWidget {
       children: [
         Text(
           playerName,
-          style: AppTextStyles.textBebas20WhiteBold,
+          style: BebasTextStyles.whiteBold20,
           overflow: TextOverflow.ellipsis,
         ),
         verticalSpacing(2),
@@ -29,7 +29,7 @@ class PlayerInfo extends StatelessWidget {
           children: [
             Icon(Icons.star, size: 14.sp, color: AppColors.goldColor),
             horizontalSpacing(4),
-            Text('$points Points', style: AppTextStyles.textBebas14GreyBold),
+            Text('$points Points', style: BebasTextStyles.greyBold14),
           ],
         ),
       ],
