@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-
 class UserInfoCard extends StatelessWidget {
   final int age;
   final String email;
@@ -32,12 +31,15 @@ class UserInfoCard extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Colors.grey.shade900, Colors.blue.shade900.withOpacity(0.6)],
+          colors: [
+            Colors.grey.shade900,
+            Colors.blue.shade900.withAlpha((0.6 * 255).toInt()),
+          ],
         ),
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withAlpha((0.2 * 255).toInt()),
             blurRadius: 6.r,
             offset: Offset(0, 3.h),
           ),
