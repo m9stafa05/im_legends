@@ -14,7 +14,6 @@ class AuthBlocConsumer extends StatelessWidget {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is AuthSuccess) {
-          Navigator.pop(context); // Close loading dialog
           context.go(Routes.homeScreen);
         } else if (state is AuthFailure) {
           Navigator.pop(context); // Close loading dialog
