@@ -35,9 +35,9 @@ class ChampionStateItem extends StatelessWidget {
           child: Icon(icon, size: 24.sp, color: Colors.white),
         ),
         SizedBox(height: 8.h),
-        Text('$value', style: AppTextStyles.textFederant24WhiteBold),
+        Text('$value', style: FederantTextStyles.whiteBold24),
         SizedBox(height: 4.h),
-        Text(label, style: AppTextStyles.textBebas14WhiteBold),
+        Text(label, style: BebasTextStyles.whiteBold14),
       ],
     );
   }

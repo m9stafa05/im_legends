@@ -65,7 +65,7 @@ class ChampionsCard extends StatelessWidget {
                   width: 1.w,
                 ),
               ),
-              child: Text('#$rank', style: AppTextStyles.textBebas14WhiteBold),
+              child: Text('#$rank', style: BebasTextStyles.whiteBold14),
             ),
           ],
         ),

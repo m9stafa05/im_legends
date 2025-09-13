@@ -70,15 +70,9 @@ class HomeHeaderContainer extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  _getGreeting(),
-                  style: AppTextStyles.textBorel20GreyRegular,
-                ),
+                Text(_getGreeting(), style: BorelTextStyles.greyRegular20),
                 verticalSpacing(4),
-                Text(
-                  userName ?? 'Player',
-                  style: AppTextStyles.textBebas20WhiteBold,
-                ),
+                Text(userName ?? 'Player', style: BebasTextStyles.whiteBold20),
                 verticalSpacing(8),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -91,7 +85,7 @@ class HomeHeaderContainer extends StatelessWidget {
                     horizontalSpacing(4),
                     Text(
                       'Ready to play?',
-                      style: AppTextStyles.textFederant20GreyBold.copyWith(
+                      style: FederantTextStyles.greyBold20.copyWith(
                         color: const Color(0xFF4A90E2),
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w500,

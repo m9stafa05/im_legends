@@ -59,7 +59,7 @@ class ChampionHeader extends StatelessWidget {
                     radius: 100.r,
                     backgroundImage: imageUrl != null
                         ? NetworkImage(imageUrl!)
-                        : const AssetImage(AppAssets.appLogoPng, )
+                        : const AssetImage(AppAssets.appLogoPng)
                               as ImageProvider,
                   ),
                 ),
@@ -82,12 +82,12 @@ class ChampionHeader extends StatelessWidget {
           // Champion Name with Gradient
           Text(
             name,
-            style: AppTextStyles.textBebas24WhiteBold.copyWith(fontSize: 32.sp),
+            style: BebasTextStyles.whiteBold14.copyWith(fontSize: 32.sp),
           ),
           verticalSpacing(8),
           Text(
             'Champion',
-            style: AppTextStyles.textFederant20WhiteBold.copyWith(
+            style: FederantTextStyles.whiteBold20.copyWith(
               wordSpacing: 2,
               fontSize: 26.sp,
               color: AppColors.goldColor,

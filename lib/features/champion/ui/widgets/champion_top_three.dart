@@ -37,10 +37,7 @@ class ChampionTopThree extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const Text(
-            'Top 3 Champions',
-            style: AppTextStyles.textBebas24WhiteBold,
-          ),
+          Text('Top 3 Champions', style: BebasTextStyles.whiteBold24),
           verticalSpacing(24),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
