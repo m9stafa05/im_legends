@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:im_legends/features/notification/data/repos/notification_repo.dart';
 import '../../features/notification/logic/cubit/notifications_cubit.dart';
 import '../../features/notification/data/models/notification_model.dart';
 import '../../features/notification/ui/notifications_screen.dart';
@@ -24,7 +25,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 final GoRouter router = GoRouter(
   navigatorKey: navigatorKey,
-  initialLocation: Routes.homeScreen,
+  initialLocation: Routes.loginScreen,
   errorBuilder: (context, state) => const NotFoundScreen(),
   routes: [
     GoRoute(
@@ -48,7 +49,9 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: Routes.notificationScreen,
       builder: (context, state) => BlocProvider(
-        create: (context) => NotificationsCubit()..fetchNotifications(),
+        create: (context) =>
+            NotificationsCubit(notificationRepo: getIt<NotificationRepo>())
+              ..fetchNotifications(),
         child: const NotificationsScreen(),
       ),
     ),
