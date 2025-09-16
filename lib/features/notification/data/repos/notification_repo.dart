@@ -1,83 +1,100 @@
-import 'package:flutter/material.dart';
-import 'package:im_legends/features/notification/data/models/notification_model.dart';
-import 'package:im_legends/features/notification/data/service/firebase_notifications_service.dart';
+import 'package:im_legends/core/router/routes.dart';
+import '../../../../core/service/supa_base_service.dart';
+import '../../../../core/utils/notification_messages.dart';
+import '../models/notification_model.dart';
+import '../service/firebase_notifications_service.dart';
+import '../service/local_notifications.dart';
 
 class NotificationRepo {
-  NotificationRepo();
-
-
-  final FirebaseNotificationsService _firebaseNotificationsService =
+  final SupaBaseService _supabaseService = SupaBaseService();
+  final FirebaseNotificationsService _firebaseService =
       FirebaseNotificationsService();
+  final LocalNotificationService _localNotificationService =
+      LocalNotificationService();
 
-  /// Get all user notifications (sorted by time, newest first)
-  Future<List<NotificationModel>> getNotifications(String userId) async {
-    if (userId.isEmpty) {
-      debugPrint('❌ User ID is empty, cannot fetch notifications');
-      return [];
-    }
-    try {
-      final notifications = await _firebaseNotificationsService
-          .getUserNotifications();
-      notifications.sort((a, b) => b.time.compareTo(a.time));
-      debugPrint(
-        '✅ Fetched ${notifications.length} notifications for user $userId',
-      );
-      return notifications;
-    } catch (e) {
-      debugPrint('❌ Error fetching notifications: $e');
-      return [];
-    }
+  /// Initialize notifications for a user
+  Future<void> initialize(String userId) async {
+    await _firebaseService.initialize(userId);
+  }
+
+  /// Send sign-up notification
+  Future<void> sendSignUpNotification({
+    required String userId,
+    required String userName,
+    required String email,
+  }) async {
+    final notification = NotificationMessages.signUpMessage(
+      userId: userId,
+      userName: userName,
+      email: email,
+    );
+    await _supabaseService.insertNotificationFromModel(notification);
+
+    // Show local notification
+    await _localNotificationService.showNotification(
+      id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      title: notification.title,
+      body: notification.message,
+      userId: userId,
+      payload: Routes.notificationScreen,
+    );
+  }
+
+  /// Send login notification
+  Future<void> sendLoginNotification({
+    required String userId,
+    required String userName,
+    required String email,
+  }) async {
+    final notification = NotificationMessages.loginMessage(
+      userId: userId,
+      userName: userName,
+      email: email,
+    );
+    await _supabaseService.insertNotificationFromModel(notification);
+
+    // Show local notification
+    await _localNotificationService.showNotification(
+      id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      title: notification.title,
+      body: notification.message,
+      userId: userId,
+      payload: Routes.notificationScreen,
+    );
+  }
+
+  /// Get user notifications
+  Future<List<NotificationModel>> getUserNotifications(String userId) async {
+    if (userId.isEmpty) return [];
+    return await _supabaseService.getUserNotifications(userId);
   }
 
   /// Get unread notifications count
-  Future<int> getUnreadCount() async {
-    try {
-      return await _firebaseNotificationsService.getUnreadNotificationsCount();
-    } catch (e) {
-      debugPrint('❌ Error fetching unread count: $e');
-      return 0;
-    }
+  Future<int> getUnreadCount(String userId) async {
+    final notifications = await getUserNotifications(userId);
+    return notifications.where((n) => !n.isRead).length;
   }
 
-  /// Mark single notification as read
+  /// Mark notification as read
   Future<void> markAsRead(String notificationId) async {
-    try {
-      await _firebaseNotificationsService.markNotificationAsRead(
-        notificationId,
-      );
-      debugPrint("✅ Notification marked as read: $notificationId");
-    } catch (e) {
-      debugPrint("❌ Failed to mark notification as read: $e");
-    }
+    await _supabaseService.markAsRead(notificationId);
   }
 
   /// Mark all notifications as read
-  Future<void> markAllAsRead() async {
-    try {
-      await _firebaseNotificationsService.markAllNotificationsAsRead();
-      debugPrint("✅ All notifications marked as read");
-    } catch (e) {
-      debugPrint("❌ Failed to mark all notifications as read: $e");
+  Future<void> markAllAsRead(String userId) async {
+    final notifications = await getUserNotifications(userId);
+    for (final notification in notifications.where((n) => !n.isRead)) {
+      await markAsRead(notification.id);
     }
   }
 
   /// Delete a notification
   Future<void> deleteNotification(String notificationId) async {
-    try {
-      await _firebaseNotificationsService.deleteNotification(notificationId);
-      debugPrint("✅ Notification deleted: $notificationId");
-    } catch (e) {
-      debugPrint("❌ Failed to delete notification: $e");
-    }
+    await _supabaseService.deleteNotification(notificationId);
   }
 
-  /// Refresh notifications from server
-  Future<void> refreshSession() async {
-    try {
-      await _firebaseNotificationsService.refreshUserSessionData();
-      debugPrint("✅ User session data refreshed");
-    } catch (e) {
-      debugPrint("❌ Failed to refresh session data: $e");
-    }
+  /// Clean up resources on logout
+  Future<void> cleanup() async {
+    await _firebaseService.cleanup();
   }
 }
