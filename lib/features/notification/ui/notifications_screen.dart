@@ -133,20 +133,14 @@ class NotificationsScreen extends StatelessWidget {
                                 content: const Text('Notification deleted'),
                                 action: SnackBarAction(
                                   label: 'Undo',
-                                  onPressed: () {
-                                    context
-                                        .read<NotificationsCubit>()
-                                        .undoDelete();
-                                  },
+                                  onPressed: () {},
                                 ),
                                 duration: const Duration(seconds: 3),
                                 backgroundColor: Colors.grey[800],
                               ),
                             );
                           },
-                          onUndo: () {
-                            context.read<NotificationsCubit>().undoDelete();
-                          },
+                          onUndo: () {},
                           onTap: () {
                             // Mark as read first
                             context.read<NotificationsCubit>().markAsRead(
