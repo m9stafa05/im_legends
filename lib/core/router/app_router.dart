@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../features/auth/data/service/auth_service.dart';
 import 'package:im_legends/features/notification/data/repos/notification_repo.dart';
 import '../../features/notification/logic/cubit/notifications_cubit.dart';
 import '../../features/notification/data/models/notification_model.dart';
@@ -22,11 +23,22 @@ import '../widgets/not_screen_found.dart';
 import '../widgets/main_scaffold.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
 final GoRouter router = GoRouter(
   navigatorKey: navigatorKey,
-  initialLocation: Routes.loginScreen,
+  initialLocation: Routes.onBoardingScreen,
   errorBuilder: (context, state) => const NotFoundScreen(),
+  redirect: (context, state) async {
+    final isLoggedIn = await AuthService.isLoggedIn();
+    // If user is not logged in, always go to login
+    if (!isLoggedIn && state.matchedLocation != Routes.onBoardingScreen) {
+      return Routes.onBoardingScreen;
+    }
+    // If user is logged in and trying to go to login, send to home
+    if (isLoggedIn && state.matchedLocation == Routes.onBoardingScreen) {
+      return Routes.homeScreen;
+    }
+    return null; // No redirect
+  },
   routes: [
     GoRoute(
       path: Routes.onBoardingScreen,
@@ -34,15 +46,27 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       path: Routes.loginScreen,
-      builder: (context, state) => BlocProvider(
-        create: (_) => AuthCubit(authRepo: getIt<AuthRepo>()),
+      builder: (context, state) => MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (_) => AuthCubit(authRepo: getIt<AuthRepo>())),
+          BlocProvider(
+            create: (_) =>
+                NotificationsCubit(notificationRepo: getIt<NotificationRepo>()),
+          ),
+        ],
         child: const LoginScreen(),
       ),
     ),
     GoRoute(
       path: Routes.signUpScreen,
-      builder: (context, state) => BlocProvider(
-        create: (_) => AuthCubit(authRepo: getIt<AuthRepo>()),
+      builder: (context, state) => MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (_) => AuthCubit(authRepo: getIt<AuthRepo>())),
+          BlocProvider(
+            create: (_) =>
+                NotificationsCubit(notificationRepo: getIt<NotificationRepo>()),
+          ),
+        ],
         child: const SignUpScreen(),
       ),
     ),
