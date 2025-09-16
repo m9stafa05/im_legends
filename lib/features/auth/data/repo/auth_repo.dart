@@ -24,7 +24,7 @@ class AuthRepo {
       );
     } catch (e, stackTrace) {
       debugPrint('Sign-up error: $e\n$stackTrace');
-      rethrow; // Keeps original error trace
+      rethrow;
     }
   }
 
@@ -38,6 +38,16 @@ class AuthRepo {
     } catch (e, stackTrace) {
       debugPrint('Login error: $e\n$stackTrace');
       rethrow;
+    }
+  }
+
+  /// Fetch user data by user ID
+  Future<Map<String, dynamic>?> getUserDataById(String userId) async {
+    try {
+      return await _authService.getUserDataById(userId);
+    } catch (e, stackTrace) {
+      debugPrint('Fetch user data error: $e\n$stackTrace');
+      return null;
     }
   }
 }
