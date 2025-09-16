@@ -8,7 +8,6 @@ class SupaBaseService {
   final supabase = Supabase.instance.client;
   final SecureStorage secureStorage = SecureStorage();
 
-
   /// ---------------------------
   /// USER DATA METHODS
   /// ---------------------------
@@ -41,7 +40,7 @@ class SupaBaseService {
     }
   }
 
-  // Fetch current user data
+  /// Fetch current user data
   Future<Map<String, dynamic>?> fetchCurrentUserData() async {
     final user = supabase.auth.currentUser;
     if (user == null) return null;
@@ -146,7 +145,7 @@ class SupaBaseService {
   Future<void> logoutUser() async {
     try {
       await supabase.auth.signOut();
-      
+
       debugPrint('✅ User logged out successfully');
     } catch (e) {
       debugPrint("❌ Error during logout: $e");
