@@ -1,13 +1,10 @@
 import 'dart:io';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import '../models/notification_model.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:im_legends/core/router/app_router.dart';
-import '../../../../core/utils/shared_prefs.dart';
 
-/// Service to handle local notifications
 class LocalNotificationService {
-  // Singleton instance
+  // Singleton
   static final LocalNotificationService _instance =
       LocalNotificationService._internal();
   factory LocalNotificationService() => _instance;
@@ -15,8 +12,6 @@ class LocalNotificationService {
 
   final FlutterLocalNotificationsPlugin _localNotifications =
       FlutterLocalNotificationsPlugin();
-
-  final SharedPrefStorage _sharedPrefStorage = SharedPrefStorage.instance;
 
   /// Initialize local notifications
   Future<void> initialize() async {
@@ -51,11 +46,12 @@ class LocalNotificationService {
         ?.requestPermissions(alert: true, badge: true, sound: true);
   }
 
-  /// Show a local notification
+  /// Show a local notification AND save it for the specific user
   Future<void> showNotification({
     required int id,
     required String? title,
     required String? body,
+    required String userId, // 👈 added
     String? payload,
   }) async {
     const androidDetails = AndroidNotificationDetails(
@@ -68,29 +64,14 @@ class LocalNotificationService {
 
     const details = NotificationDetails(android: androidDetails);
 
-    // ✅ Show system tray notification
+    // ✅ Show in system tray
     await _localNotifications.show(id, title, body, details, payload: payload);
-
-    // ✅ Save notification to storage
-    final notification = NotificationModel(
-      id: id.toString(),
-      title: title ?? '',
-      message: body ?? '',
-      time: DateTime.now(),
-      type: NotificationType.system,
-      isRead: false, // Or dynamic
-    );
-
-    final existing = _sharedPrefStorage.getNotifications();
-    existing.add(notification);
-    await _sharedPrefStorage.setNotifications(existing);
   }
 
-  /// Handle notification tap and navigate
+  /// Handle notification tap → navigate
   void _handleNotificationTap(String payload) {
     final context = navigatorKey.currentContext;
     if (context == null) return;
-
     navigatorKey.currentState?.pushNamed(payload);
   }
 }
