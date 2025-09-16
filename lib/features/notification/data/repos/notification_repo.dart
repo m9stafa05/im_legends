@@ -1,81 +1,83 @@
-import 'package:im_legends/core/utils/shared_prefs.dart';
-import '../models/notification_model.dart';
+import 'package:flutter/material.dart';
+import 'package:im_legends/features/notification/data/models/notification_model.dart';
+import 'package:im_legends/features/notification/data/service/firebase_notifications_service.dart';
 
 class NotificationRepo {
-  final SharedPrefStorage _sharedPrefs = SharedPrefStorage.instance;
+  NotificationRepo();
 
-  /// ---------------------------
-  /// Remove duplicate notifications
-  /// ---------------------------
-  Future<void> cleanDuplicates() async {
-    try {
-      final notifications = _sharedPrefs.getNotifications();
-      final uniqueNotifications = {for (var n in notifications) n.id: n};
-      await _sharedPrefs.setNotifications(uniqueNotifications.values.toList());
-    } catch (e) {
-      print('❌ Error cleaning duplicates: $e');
+
+  final FirebaseNotificationsService _firebaseNotificationsService =
+      FirebaseNotificationsService();
+
+  /// Get all user notifications (sorted by time, newest first)
+  Future<List<NotificationModel>> getNotifications(String userId) async {
+    if (userId.isEmpty) {
+      debugPrint('❌ User ID is empty, cannot fetch notifications');
+      return [];
     }
-  }
-
-  /// ---------------------------
-  /// Fetch all notifications
-  /// ---------------------------
-  Future<List<NotificationModel>> getNotifications() async {
     try {
-      final notifications = _sharedPrefs.getNotifications();
-      notifications.sort((a, b) => b.time.compareTo(a.time)); // newest first
+      final notifications = await _firebaseNotificationsService
+          .getUserNotifications();
+      notifications.sort((a, b) => b.time.compareTo(a.time));
+      debugPrint(
+        '✅ Fetched ${notifications.length} notifications for user $userId',
+      );
       return notifications;
     } catch (e) {
-      print('❌ Error fetching notifications: $e');
+      debugPrint('❌ Error fetching notifications: $e');
       return [];
     }
   }
 
-  /// ---------------------------
-  /// Mark a single notification as read
-  /// ---------------------------
-  Future<void> markAsRead(String id) async {
+  /// Get unread notifications count
+  Future<int> getUnreadCount() async {
     try {
-      final notifications = _sharedPrefs.getNotifications();
-      final index = notifications.indexWhere((n) => n.id == id);
-      if (index != -1) {
-        notifications[index] = notifications[index].copyWith(isRead: true);
-        await _sharedPrefs.setNotifications(notifications);
-      }
+      return await _firebaseNotificationsService.getUnreadNotificationsCount();
     } catch (e) {
-      print('❌ Error marking notification as read: $e');
+      debugPrint('❌ Error fetching unread count: $e');
+      return 0;
     }
   }
 
-  /// ---------------------------
+  /// Mark single notification as read
+  Future<void> markAsRead(String notificationId) async {
+    try {
+      await _firebaseNotificationsService.markNotificationAsRead(
+        notificationId,
+      );
+      debugPrint("✅ Notification marked as read: $notificationId");
+    } catch (e) {
+      debugPrint("❌ Failed to mark notification as read: $e");
+    }
+  }
+
   /// Mark all notifications as read
-  /// ---------------------------
   Future<void> markAllAsRead() async {
     try {
-      final notifications = _sharedPrefs.getNotifications();
-      bool updated = false;
-      for (var i = 0; i < notifications.length; i++) {
-        if (!notifications[i].isRead) {
-          notifications[i] = notifications[i].copyWith(isRead: true);
-          updated = true;
-        }
-      }
-      if (updated) await _sharedPrefs.setNotifications(notifications);
+      await _firebaseNotificationsService.markAllNotificationsAsRead();
+      debugPrint("✅ All notifications marked as read");
     } catch (e) {
-      print('❌ Error marking all notifications as read: $e');
+      debugPrint("❌ Failed to mark all notifications as read: $e");
     }
   }
 
-  /// ---------------------------
-  /// Delete a notification by ID
-  /// ---------------------------
-  Future<void> deleteNotification(String id) async {
+  /// Delete a notification
+  Future<void> deleteNotification(String notificationId) async {
     try {
-      final notifications = _sharedPrefs.getNotifications();
-      notifications.removeWhere((n) => n.id == id);
-      await _sharedPrefs.setNotifications(notifications);
+      await _firebaseNotificationsService.deleteNotification(notificationId);
+      debugPrint("✅ Notification deleted: $notificationId");
     } catch (e) {
-      print('❌ Error deleting notification: $e');
+      debugPrint("❌ Failed to delete notification: $e");
+    }
+  }
+
+  /// Refresh notifications from server
+  Future<void> refreshSession() async {
+    try {
+      await _firebaseNotificationsService.refreshUserSessionData();
+      debugPrint("✅ User session data refreshed");
+    } catch (e) {
+      debugPrint("❌ Failed to refresh session data: $e");
     }
   }
 }
