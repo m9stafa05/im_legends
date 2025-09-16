@@ -26,7 +26,25 @@ class NotificationModel {
       message: json['message'] as String,
       time: DateTime.parse(json['time'] as String),
       isRead: json['isRead'] as bool,
-      type: NotificationType.values[json['type'] as int],
+      type: NotificationType.values.firstWhere(
+        (e) => e.name == json['type'] as String,
+        orElse: () => NotificationType.system,
+      ),
+    );
+  }
+
+  // Factory constructor for Supabase data
+  factory NotificationModel.fromSupabase(Map<String, dynamic> row) {
+    return NotificationModel(
+      id: row['notification_id'] as String,
+      title: row['title'] as String,
+      message: row['message'] as String,
+      time: DateTime.parse(row['created_at'] as String),
+      isRead: row['is_read'] as bool,
+      type: NotificationType.values.firstWhere(
+        (e) => e.name == row['type'] as String,
+        orElse: () => NotificationType.system,
+      ),
     );
   }
 
@@ -36,7 +54,17 @@ class NotificationModel {
     'message': message,
     'time': time.toIso8601String(),
     'isRead': isRead,
-    'type': type.index,
+    'type': type.name, // Store as string
+  };
+
+  // Method to convert to Supabase format
+  Map<String, dynamic> toSupabase() => {
+    'notification_id': id,
+    'title': title,
+    'message': message,
+    'created_at': time.toIso8601String(),
+    'is_read': isRead,
+    'type': type.name, // Store as string
   };
 
   /// convenience to/from encoded JSON string
