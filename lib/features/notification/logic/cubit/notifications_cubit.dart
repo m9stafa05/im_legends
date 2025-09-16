@@ -1,34 +1,32 @@
 import 'package:bloc/bloc.dart';
-import 'package:im_legends/features/notification/data/models/notification_model.dart';
-import 'package:im_legends/features/notification/data/repos/notification_repo.dart';
+import 'package:im_legends/core/utils/secure_storage.dart';
+import '../../data/models/notification_model.dart';
+import '../../data/repos/notification_repo.dart';
 import 'package:meta/meta.dart';
 
 part 'notifications_state.dart';
 
 class NotificationsCubit extends Cubit<NotificationsState> {
-  NotificationsCubit() : super(NotificationsInitial());
+  NotificationsCubit({required this.notificationRepo})
+    : super(NotificationsInitial());
 
-  final NotificationRepo _notificationRepo = NotificationRepo();
-
-  /// ---------------------------
-  /// Clean up duplicate notifications (call once)
-  /// ---------------------------
-  Future<void> cleanDuplicates() async {
-    try {
-      await _notificationRepo.cleanDuplicates();
-      await fetchNotifications(); // Refresh the UI
-    } catch (e) {
-      emit(NotificationsFailure(errorMessage: e.toString()));
-    }
-  }
+  final NotificationRepo notificationRepo;
+  final SecureStorage secureStorage = SecureStorage();
 
   /// ---------------------------
-  /// Fetch notifications
+  /// Fetch notifications for this user
   /// ---------------------------
   Future<void> fetchNotifications() async {
     emit(NotificationsLoading());
     try {
-      final notifications = await _notificationRepo.getNotifications();
+      // Await the getUserId() call since it returns a Future
+      final userId = await secureStorage.getUserId();
+      if (userId == null || userId.isEmpty) {
+        emit(NotificationsFailure(errorMessage: 'User ID not found'));
+        return;
+      }
+
+      final notifications = await notificationRepo.getNotifications(userId);
       emit(NotificationsSuccess(notifications: notifications));
     } catch (e) {
       emit(NotificationsFailure(errorMessage: e.toString()));
@@ -38,9 +36,9 @@ class NotificationsCubit extends Cubit<NotificationsState> {
   /// ---------------------------
   /// Mark a single notification as read
   /// ---------------------------
-  Future<void> markAsRead(String id) async {
+  Future<void> markAsRead(String notificationId) async {
     try {
-      await _notificationRepo.markAsRead(id);
+      await notificationRepo.markAsRead(notificationId);
       await fetchNotifications(); // Refresh state
     } catch (e) {
       emit(NotificationsFailure(errorMessage: e.toString()));
@@ -52,11 +50,8 @@ class NotificationsCubit extends Cubit<NotificationsState> {
   /// ---------------------------
   Future<void> markAllAsRead() async {
     try {
-      final currentState = state;
-      if (currentState is NotificationsSuccess) {
-        await _notificationRepo.markAllAsRead();
-      }
-      await fetchNotifications(); // Refresh state
+      await notificationRepo.markAllAsRead();
+      await fetchNotifications();
     } catch (e) {
       emit(NotificationsFailure(errorMessage: e.toString()));
     }
@@ -65,20 +60,53 @@ class NotificationsCubit extends Cubit<NotificationsState> {
   /// ---------------------------
   /// Delete a notification by ID
   /// ---------------------------
-  Future<void> deleteNotification(String id) async {
+  Future<void> deleteNotification(String notificationId) async {
     try {
-      final currentState = state;
-      if (currentState is NotificationsSuccess) {
-        await _notificationRepo.deleteNotification(id);
-      }
-      await fetchNotifications(); // Refresh state
+      await notificationRepo.deleteNotification(notificationId);
+      await fetchNotifications();
     } catch (e) {
       emit(NotificationsFailure(errorMessage: e.toString()));
     }
   }
 
   /// ---------------------------
+  /// Get unread notifications count
+  /// ---------------------------
+  Future<int> getUnreadCount() async {
+    try {
+      return await notificationRepo.getUnreadCount();
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  /// ---------------------------
+  /// Refresh notifications from server
+  /// ---------------------------
+  Future<void> refreshNotifications() async {
+    try {
+      await notificationRepo.refreshSession();
+      await fetchNotifications();
+    } catch (e) {
+      emit(NotificationsFailure(errorMessage: e.toString()));
+    }
+  }
+
+  /// ---------------------------
+  /// Get current user ID (helper method)
+  /// ---------------------------
+  Future<String?> getCurrentUserId() async {
+    try {
+      return await secureStorage.getUserId();
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// ---------------------------
   /// Undo delete placeholder
   /// ---------------------------
-  void undoDelete() {}
+  void undoDelete() {
+    // TODO: Implement restore from Supabase "deleted" status if needed
+  }
 }
