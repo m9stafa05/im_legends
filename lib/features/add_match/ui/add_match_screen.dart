@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import '../../../core/router/routes.dart';
+import 'widgets/add_match_bloc_consumer.dart';
 import '../../../core/widgets/custom_app_bar.dart';
-import 'widgets/add_match_button.dart';
 import 'widgets/player_select_field/player_select_field.dart';
 import 'widgets/score_input_field/score_count_field.dart';
 import '../../../core/utils/spacing.dart';
@@ -36,15 +34,15 @@ class _AddMatchScreenState extends State<AddMatchScreen> {
     });
   }
 
-  void _onWinnerPlayerChanged(String player) {
+  void _onWinnerPlayerChanged(String playerId) {
     setState(() {
-      winnerPlayer = player;
+      winnerPlayer = playerId;
     });
   }
 
-  void _onLoserPlayerChanged(String player) {
+  void _onLoserPlayerChanged(String playerId) {
     setState(() {
-      loserPlayer = player;
+      loserPlayer = playerId;
     });
   }
 
@@ -92,13 +90,12 @@ class _AddMatchScreenState extends State<AddMatchScreen> {
                       maxScore: winnerScore,
                     ),
                     verticalSpacing(50),
-                    AddMatchButton(
-                      onPressed: _isAddButtonEnabled
-                          ? () {
-                              context.go(Routes.homeScreen);
-                            }
-                          : null,
-                      isEnabled: _isAddButtonEnabled,
+                    AddMatchBlocConsumer(
+                      isAddButtonEnabled: _isAddButtonEnabled,
+                      winnerPlayer: winnerPlayer,
+                      loserPlayer: loserPlayer,
+                      winnerScore: winnerScore,
+                      loserScore: loserScore,
                     ),
                   ],
                 ),
