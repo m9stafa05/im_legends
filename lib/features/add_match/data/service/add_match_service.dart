@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import '../models/match_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AddMatchService {
-    final supabase = Supabase.instance.client;
-    // Fetch all users' IDs, names, and profile images
+  final supabase = Supabase.instance.client;
+
+  // Fetch all users' IDs, names, and profile images
   Future<List<Map<String, dynamic>>> fetchAllUsers() async {
     try {
       final response = await supabase
@@ -23,6 +25,22 @@ class AddMatchService {
     } catch (e) {
       debugPrint("❌ Error fetching all users: $e");
       return [];
+    }
+  }
+
+  // Insert new match into Supabase
+  Future<bool> insertMatch(MatchModel match) async {
+    try {
+      final response = await supabase
+          .from('matches')
+          .insert(match.toJson())
+          .select();
+
+      debugPrint("✅ Match inserted: $response");
+      return true;
+    } catch (e) {
+      debugPrint("❌ Error inserting match: $e");
+      return false;
     }
   }
 }
