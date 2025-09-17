@@ -286,7 +286,7 @@ class SupaBaseService {
     try {
       await supabase
           .from('user_notifications')
-          .upsert(notification.toSupabase());
+          .insert(notification.toSupabase());
       debugPrint('✅ Notification inserted successfully');
     } on PostgrestException catch (e) {
       debugPrint("❌ Failed to insert notification: ${e.message}");
@@ -306,8 +306,8 @@ class SupaBaseService {
     String? notificationId,
   }) async {
     try {
-      await supabase.from('user_notifications').upsert({
-        'user_id': userId,
+      await supabase.from('user_notifications').insert({
+        'user_id': Supabase.instance.client.auth.currentUser!.id,
         'notification_id':
             notificationId ?? DateTime.now().millisecondsSinceEpoch.toString(),
         'title': title,

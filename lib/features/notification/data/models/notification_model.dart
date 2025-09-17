@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 enum NotificationType { welcome, update, security, promotion, system }
 
@@ -59,12 +60,14 @@ class NotificationModel {
 
   // Method to convert to Supabase format
   Map<String, dynamic> toSupabase() => {
+    'user_id':
+        Supabase.instance.client.auth.currentUser!.id, // RLS
     'notification_id': id,
     'title': title,
     'message': message,
     'created_at': time.toIso8601String(),
     'is_read': isRead,
-    'type': type.name, // Store as string
+    'type': type.name,
   };
 
   /// convenience to/from encoded JSON string
