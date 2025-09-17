@@ -52,7 +52,4 @@ Future<void> main() async {
 
   // Run app
   runApp(IMLegendsApp(router: router));
-}
-
-// Run with:
 // flutter run --release --flavor development --target lib/main_development.dart
