@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:im_legends/core/themes/app_texts_style.dart';
-import 'package:im_legends/core/utils/app_assets.dart';
+import 'package:im_legends/core/themes/app_colors.dart';
+import 'package:im_legends/core/utils/spacing.dart';
+import '../../../../core/themes/app_texts_style.dart';
+import '../../../../core/utils/app_assets.dart';
 
 class ChampionHeader extends StatelessWidget {
   final String name;
@@ -16,17 +18,9 @@ class ChampionHeader extends StatelessWidget {
       height: 260.h,
       decoration: BoxDecoration(
         image: const DecorationImage(
-          image: AssetImage(AppAssets.championBanner),
+          image: AssetImage(AppAssets.championBannerjpg),
           fit: BoxFit.cover,
           opacity: 0.9,
-        ),
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Colors.black.withOpacity(0.2),
-            Colors.blue.shade900.withOpacity(0.5),
-          ],
         ),
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(16.r),
@@ -34,7 +28,7 @@ class ChampionHeader extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withAlpha((0.2 * 255).toInt()),
             blurRadius: 6.r,
             offset: Offset(0, 3.h),
           ),
@@ -50,13 +44,10 @@ class ChampionHeader extends StatelessWidget {
               Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(
-                    color: const Color(0xFFEDC81F).withOpacity(0.7),
-                    width: 3.w,
-                  ),
+                  border: Border.all(color: AppColors.goldColor, width: 3.w),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFFEDC81F).withOpacity(0.4),
+                      color: AppColors.goldColor,
                       blurRadius: 8.r,
                       spreadRadius: 2.r,
                     ),
@@ -64,7 +55,6 @@ class ChampionHeader extends StatelessWidget {
                 ),
                 child: CircleAvatar(
                   radius: 50.r,
-                  // backgroundColor: const Color(0xFFFDD835), // Gold
                   child: CircleAvatar(
                     radius: 100.r,
                     backgroundImage: imageUrl != null
@@ -77,7 +67,7 @@ class ChampionHeader extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(4.w),
                 decoration: const BoxDecoration(
-                  color: Color(0xFFEDC81F), // Gold
+                  color: AppColors.goldColor,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -88,47 +78,20 @@ class ChampionHeader extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 10.h),
+          verticalSpacing(8),
           // Champion Name with Gradient
-          ShaderMask(
-            shaderCallback: (bounds) => const LinearGradient(
-              colors: [Color(0xFFFDD835), Colors.white],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ).createShader(bounds),
-            child: Text(
-              name,
-              style: TextStyle(
-                fontSize: 24.sp,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-                shadows: const [
-                  Shadow(
-                    color: Color(0xFFFBC02D), // Lighter gold for glow
-                    blurRadius: 4,
-                  ),
-                ],
-              ),
-            ),
+          Text(
+            name,
+            style: BebasTextStyles.whiteBold14.copyWith(fontSize: 32.sp),
           ),
-
-          SizedBox(height: 10.h),
-          // Champion Badge
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFFCCA701), Color(0xFFD99C01)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: const BorderRadius.all(Radius.circular(16)),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.3),
-                width: 1.w,
-              ),
+          verticalSpacing(8),
+          Text(
+            'Champion',
+            style: FederantTextStyles.whiteBold20.copyWith(
+              wordSpacing: 2,
+              fontSize: 26.sp,
+              color: AppColors.goldColor,
             ),
-            child: const Text('Champion', style: AppTextStyles.text18WhiteBold),
           ),
         ],
       ),

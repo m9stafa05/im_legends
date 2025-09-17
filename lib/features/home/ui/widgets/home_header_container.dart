@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../core/themes/app_colors.dart';
+import '../../../../core/widgets/custom_text_button.dart';
 import '../../../../core/themes/app_texts_style.dart';
 import '../../../../core/utils/spacing.dart';
 import '../../../../core/utils/app_assets.dart';
@@ -47,9 +47,8 @@ class HomeHeaderContainer extends StatelessWidget {
         bottom: false,
         child: Column(
           children: [
-            // Logo Section
             Container(
-              padding: EdgeInsets.all(12.w),
+              padding: EdgeInsets.all(5.w),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.white.withAlpha((0.1 * 255).toInt()),
@@ -71,21 +70,9 @@ class HomeHeaderContainer extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  _getGreeting(),
-                  style: AppTextStyles.text12GreyRegular.copyWith(
-                    fontSize: 14.sp,
-                    color: Colors.grey[400],
-                  ),
-                ),
+                Text(_getGreeting(), style: BorelTextStyles.greyRegular20),
                 verticalSpacing(4),
-                Text(
-                  userName ?? 'Player',
-                  style: AppTextStyles.text16WhiteBold.copyWith(
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                Text(userName ?? 'Player', style: BebasTextStyles.whiteBold20),
                 verticalSpacing(8),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -98,7 +85,7 @@ class HomeHeaderContainer extends StatelessWidget {
                     horizontalSpacing(4),
                     Text(
                       'Ready to play?',
-                      style: AppTextStyles.text12GreyRegular.copyWith(
+                      style: FederantTextStyles.greyBold20.copyWith(
                         color: const Color(0xFF4A90E2),
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w500,
@@ -109,26 +96,11 @@ class HomeHeaderContainer extends StatelessWidget {
                 verticalSpacing(10),
 
                 // Add Match Button
-                GestureDetector(
-                  onTap: onCreateMatch,
-                  child: Container(
-                    width: 250.w,
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 16.w,
-                      vertical: 12.h,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12.r),
-                      color: AppColors.darkRedColor,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text('Add Match', style: AppTextStyles.text16WhiteBold),
-                        horizontalSpacing(4),
-                        Icon(Icons.add, color: Colors.white, size: 16.sp),
-                      ],
-                    ),
+                SizedBox(
+                  width: 200.w,
+                  child: CustomTextButton(
+                    buttonText: 'Add Match',
+                    onPressed: onCreateMatch,
                   ),
                 ),
               ],

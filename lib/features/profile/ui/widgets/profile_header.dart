@@ -1,24 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:im_legends/core/themes/app_colors.dart';
+import 'package:im_legends/core/themes/app_texts_style.dart';
+import 'package:im_legends/core/utils/functions/get_rank_color.dart';
+import 'package:im_legends/core/utils/spacing.dart';
 
 class ProfileHeader extends StatelessWidget {
   final int rank;
 
   const ProfileHeader({super.key, required this.rank});
-
-  Color _getRankColor() {
-    switch (rank) {
-      case 1:
-        return Colors.amber.shade600; // Gold for Rank 1
-      case 2:
-        return const Color(0xFFC0C0C0); // Silver for Rank 2
-      case 3:
-        return Colors.orange.shade900; // Bronze for Rank 3
-      default:
-        return Colors.grey.shade800; // Normal color for other ranks
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +27,7 @@ class ProfileHeader extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.3),
+            color: Colors.black.withAlpha((0.4 * 255).toInt()),
             blurRadius: 8.r,
             offset: Offset(0, 4.h),
           ),
@@ -71,16 +61,16 @@ class ProfileHeader extends StatelessWidget {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
             decoration: BoxDecoration(
-              color: _getRankColor(),
+              color: getRankColor(rank),
               borderRadius: BorderRadius.circular(20.r),
               border: Border.all(
-                color: Colors.white.withOpacity(0.3),
+                color: Colors.white.withAlpha((0.3 * 255).toInt()),
                 width: 1.w,
               ),
               boxShadow: rank <= 3
                   ? [
                       BoxShadow(
-                        color: _getRankColor().withOpacity(0.5),
+                        color: getRankColor(rank),
                         blurRadius: 6.r,
                         offset: Offset(0, 2.h),
                       ),
@@ -103,25 +93,20 @@ class ProfileHeader extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(height: 30.h),
+          verticalSpacing(32),
           // Favorite Team Badge
+          Text('Favorite Team', style: TajawalTextStyles.greyRegular16),
+          verticalSpacing(2),
           Container(
+            alignment: Alignment.center,
             padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
             decoration: BoxDecoration(
-              color: Colors.grey.shade900,
+              color: Colors.white.withAlpha((0.1 * 255).toInt()),
               borderRadius: BorderRadius.circular(20.r),
-              border: Border.all(
-                color: Colors.grey.shade300.withOpacity(0.5),
-                width: 1.w,
-              ),
             ),
             child: Text(
-              'Favorite Team: Liverpool',
-              style: TextStyle(
-                fontSize: 14.sp,
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-              ),
+              'Manchester City',
+              style: TajawalTextStyles.whiteBold20,
             ),
           ),
         ],

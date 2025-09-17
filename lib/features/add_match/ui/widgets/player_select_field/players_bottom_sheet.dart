@@ -7,15 +7,23 @@ class PlayerBottomSheet extends StatelessWidget {
   final List<String> players;
   final String? selectedPlayer;
   final void Function(String) onSelect;
+  final String? excludedPlayer;
 
-  const PlayerBottomSheet({super.key, 
+  const PlayerBottomSheet({
+    super.key,
     required this.players,
     required this.selectedPlayer,
     required this.onSelect,
+    this.excludedPlayer,
   });
 
   @override
   Widget build(BuildContext context) {
+    // Filter out the excluded player
+    final filteredPlayers = players
+        .where((player) => player != excludedPlayer)
+        .toList();
+
     return Container(
       height: MediaQuery.of(context).size.height * 0.6,
       decoration: BoxDecoration(
@@ -36,13 +44,13 @@ class PlayerBottomSheet extends StatelessWidget {
       child: Column(
         children: [
           _buildHandleBar(),
-          _buildHeader(context),
+          _buildHeader(context, filteredPlayers),
           Expanded(
             child: ListView.builder(
               padding: EdgeInsets.symmetric(horizontal: 16.w),
-              itemCount: players.length,
+              itemCount: filteredPlayers.length,
               itemBuilder: (context, index) {
-                final player = players[index];
+                final player = filteredPlayers[index];
                 final isSelected = selectedPlayer == player;
                 return PlayerTile(
                   player: player,
@@ -68,28 +76,29 @@ class PlayerBottomSheet extends StatelessWidget {
     ),
   );
 
-  Widget _buildHeader(BuildContext context) => Padding(
-    padding: EdgeInsets.all(20.w),
-    child: Row(
-      children: [
-        Icon(Icons.sports_esports_rounded, color: Colors.blue, size: 24.sp),
-        SizedBox(width: 12.w),
-        Text(
-          'Choose Player',
-          style: AppTextStyles.text14WhiteBold.copyWith(
-            fontSize: 20.sp,
-            fontWeight: FontWeight.bold,
-          ),
+  Widget _buildHeader(BuildContext context, List<String> filteredPlayers) =>
+      Padding(
+        padding: EdgeInsets.all(20.w),
+        child: Row(
+          children: [
+            Icon(Icons.sports_esports_rounded, color: Colors.blue, size: 24.sp),
+            SizedBox(width: 12.w),
+            Text(
+              'Choose Player',
+              style: BebasTextStyles.whiteBold20.copyWith(
+                fontSize: 20.sp,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const Spacer(),
+            Text(
+              '${filteredPlayers.length} players',
+              style: TextStyle(
+                color: Colors.white.withAlpha((0.6 * 255).toInt()),
+                fontSize: 12.sp,
+              ),
+            ),
+          ],
         ),
-        const Spacer(),
-        Text(
-          '${players.length} players',
-          style: TextStyle(
-            color: Colors.white.withAlpha((0.6 * 255).toInt()),
-            fontSize: 12.sp,
-          ),
-        ),
-      ],
-    ),
-  );
+      );
 }

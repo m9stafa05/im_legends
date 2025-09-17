@@ -17,9 +17,9 @@ class StatesSection extends StatelessWidget {
       ),
       child: Row(
         children: [
-          StatesColumn(label: 'Wins', value: wins, icon: Icons.emoji_events),
+          StatesColumn(label: 'Wins', value: wins, icon: Icons.sports_esports),
           horizontalSpacing(16),
-          StatesColumn(label: 'goals', value: goals, icon: Icons.sports_soccer),
+          StatesColumn(label: 'Goals', value: goals, icon: Icons.sports_soccer),
         ],
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:im_legends/core/themes/app_colors.dart';
 
 import '../../../../core/themes/app_texts_style.dart';
 import '../../../../core/utils/spacing.dart';
@@ -17,24 +18,23 @@ class StatesColumn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 16.sp, color: const Color(0xFF4A90E2)),
+            Icon(icon, size: 16.sp, color: AppColors.goldColor),
             horizontalSpacing(4),
             Text(
               '$value',
-              style: AppTextStyles.text16WhiteBold.copyWith(fontSize: 14.sp),
+              style: BebasTextStyles.whiteBold14,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),
         verticalSpacing(2),
-        Text(
-          label,
-          style: AppTextStyles.text12GreyRegular.copyWith(fontSize: 10.sp),
-        ),
+        Text(label, style: FederantTextStyles.greyRegular12),
       ],
     );
   }

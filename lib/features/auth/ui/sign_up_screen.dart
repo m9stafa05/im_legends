@@ -1,14 +1,12 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import '../data/models/user_data.dart';
-import 'widgets/sign_up_form.dart';
-import '../../../core/widgets/logo_top_bar.dart';
-import '../logic/cubit/auth_cubit.dart';
-import '../../../core/router/routes.dart';
+import 'widgets/sign_up_bloc_consumer.dart';
 import '../../../core/themes/app_texts_style.dart';
+import '../../../core/widgets/gradient_background.dart';
+import '../../../core/widgets/logo_top_bar.dart';
 import '../../../core/utils/spacing.dart';
+import '../../../core/router/routes.dart';
 
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({super.key});
@@ -16,94 +14,54 @@ class SignUpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                const LogoTopBar(),
-                verticalSpacing(50),
-                const Text(
-                  'Sign Up to IM Legends',
-                  style: AppTextStyles.text20WhiteBold,
-                ),
-                verticalSpacing(50),
-                BlocConsumer<AuthCubit, AuthState>(
-                  listener: (context, state) {
-                    if (state is AuthLoading) {
-                      _showLoadingDialog(context);
-                    } else {
-                      Navigator.pop(context); // Close loading dialog if open
-                    }
-
-                    if (state is AuthSuccess) {
-                      final user = state.authResponse.user;
-                      final token = state.authResponse.session?.accessToken;
-
-                      // Optionally store token/user for later use
-                      debugPrint('Logged in user: ${user?.id}');
-                      debugPrint('Access Token: $token');
-
-                      context.go(Routes.homeScreen);
-                    } else if (state is AuthFailure) {
-                      _showErrorDialog(context, state.errorMessage);
-                    }
-                  },
-                  builder: (context, state) {
-                    return SignUpForm(
-                      onSignUp:
-                          (
-                            UserData userData,
-                            String password,
-                            File? profileImage,
-                          ) async {
-                            context.read<AuthCubit>().emitSignUp(
-                              userData: userData,
-                              password: password,
-                              profileImage: profileImage,
-                            );
-                          },
-                    );
-                  },
-                ),
-                verticalSpacing(20),
-                TextButton(
-                  onPressed: () =>
-                      context.go(Routes.loginScreen),
-                  child: const Text('Already have an account? Login'),
-                ),
-              ],
+      body: GradientBackground(
+        child: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  const LogoTopBar(),
+                  verticalSpacing(40.h),
+                  Text(
+                    'Sign Up to IM Legends',
+                    style: FederantTextStyles.greyBold20,
+                    semanticsLabel: 'Sign Up to IM Legends',
+                  ),
+                  verticalSpacing(32),
+                  const SignUpBlocConsumer(),
+                  verticalSpacing(8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Already have an account?",
+                        style: TajawalTextStyles.whiteBold16,
+                      ),
+                      TextButton(
+                        onPressed: () => context.go(Routes.loginScreen),
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          overlayColor: Colors.white24,
+                        ),
+                        child: Text(
+                          "Log In",
+                          style: BebasTextStyles.greyRegular16.copyWith(
+                            color: Colors.blueAccent,
+                            decoration: TextDecoration.underline,
+                            decorationThickness: 1.5,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
       ),
-    );
-  }
-
-  void _showErrorDialog(BuildContext context, String message) {
-    debugPrint('Message: $message');
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('Sign Up Failed'),
-        content: Text(message),
-
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showLoadingDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => const Center(child: CircularProgressIndicator()),
     );
   }
 }

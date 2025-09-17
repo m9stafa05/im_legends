@@ -27,7 +27,7 @@ class NotificationAppBar extends StatelessWidget {
         color: Colors.grey[900],
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.4),
+            color: Colors.black.withAlpha((0.3 * 255).toInt()),
             blurRadius: 8.r,
             offset: Offset(0, 2.h),
           ),
@@ -55,13 +55,7 @@ class NotificationAppBar extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Notifications',
-                  style: AppTextStyles.text16WhiteBold.copyWith(
-                    color: Colors.white,
-                    fontSize: 24.sp,
-                  ),
-                ),
+                Text('Notifications', style: BebasTextStyles.whiteBold20),
                 if (unreadCount > 0)
                   Text(
                     '$unreadCount new notifications',

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:im_legends/core/utils/app_assets.dart';
+import '../../../../core/themes/app_texts_style.dart';
+import '../../../../core/utils/app_assets.dart';
+import '../../../../core/utils/functions/get_rank_color.dart';
 
 class ChampionsCard extends StatelessWidget {
   final Map<String, dynamic> champion;
@@ -26,24 +28,19 @@ class ChampionsCard extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: const Color(
-                    0xFFFDD835,
-                  ).withOpacity(isFirst ? 0.8 : 0.6),
+                  color: getRankColor(
+                    isFirst
+                        ? 1
+                        : isSecond
+                        ? 2
+                        : 3,
+                  ),
                   width: isFirst ? 4.w : 3.w,
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(
-                      0xFFFBC02D,
-                    ).withOpacity(isFirst ? 0.5 : 0.3),
-                    blurRadius: isFirst ? 10.r : 6.r,
-                    spreadRadius: isFirst ? 3.r : 2.r,
-                  ),
-                ],
               ),
               child: CircleAvatar(
                 radius: isFirst ? 50.r : 40.r,
-                backgroundColor: const Color(0xFFFDD835),
+                backgroundColor: Colors.transparent,
                 child: CircleAvatar(
                   radius: isFirst ? 46.r : 36.r,
                   backgroundImage: champion['imageUrl'] != null
@@ -55,50 +52,36 @@ class ChampionsCard extends StatelessWidget {
             Container(
               padding: EdgeInsets.all(isFirst ? 6.w : 4.w),
               decoration: BoxDecoration(
-                color: isFirst
-                    ? const Color(0xFFFDD835)
-                    : isSecond
-                    ? Colors.grey.shade400
-                    : const Color(0xFFCD7F32), // Bronze for third
+                color: getRankColor(
+                  isFirst
+                      ? 1
+                      : isSecond
+                      ? 2
+                      : 3,
+                ),
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: Colors.white.withOpacity(0.3),
+                  color: Colors.white.withAlpha((0.3 * 255).toInt()),
                   width: 1.w,
                 ),
               ),
-              child: Text(
-                '#$rank',
-                style: TextStyle(
-                  fontSize: isFirst ? 16.sp : 14.sp,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
+              child: Text('#$rank', style: BebasTextStyles.whiteBold14),
             ),
           ],
         ),
         SizedBox(height: 8.h),
-        ShaderMask(
-          shaderCallback: (bounds) => LinearGradient(
-            colors: [
+        Text(
+          champion['name'] as String,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: isFirst ? 18.sp : 16.sp,
+            fontWeight: FontWeight.bold,
+            color: getRankColor(
               isFirst
-                  ? const Color(0xFFFDD835)
+                  ? 1
                   : isSecond
-                  ? Colors.grey.shade400
-                  : const Color(0xFFCD7F32),
-              Colors.white,
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ).createShader(bounds),
-          child: Text(
-            champion['name'] as String,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: isFirst ? 18.sp : 16.sp,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-              shadows: const [Shadow(color: Color(0xFFFBC02D), blurRadius: 3)],
+                  ? 2
+                  : 3,
             ),
           ),
         ),

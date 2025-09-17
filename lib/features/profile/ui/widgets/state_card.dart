@@ -27,12 +27,12 @@ class StateCard extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(16.r),
         border: Border.all(
-          color: Colors.blue.shade700.withOpacity(0.4),
+          color: Colors.blue.shade700.withAlpha((0.2* 255).toInt()),
           width: 1.5.w,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withAlpha((0.2* 255).toInt()),
             blurRadius: 6.r,
             offset: Offset(0, 3.h),
           ),

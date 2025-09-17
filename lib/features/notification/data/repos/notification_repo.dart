@@ -1,81 +1,100 @@
-import 'package:im_legends/core/utils/shared_prefs.dart';
+import 'package:im_legends/core/router/routes.dart';
+import '../../../../core/service/supa_base_service.dart';
+import '../../../../core/utils/notification_messages.dart';
 import '../models/notification_model.dart';
+import '../service/firebase_notifications_service.dart';
+import '../service/local_notifications.dart';
 
 class NotificationRepo {
-  final SharedPrefStorage _sharedPrefs = SharedPrefStorage.instance;
+  final SupaBaseService _supabaseService = SupaBaseService();
+  final FirebaseNotificationsService _firebaseService =
+      FirebaseNotificationsService();
+  final LocalNotificationService _localNotificationService =
+      LocalNotificationService();
 
-  /// ---------------------------
-  /// Remove duplicate notifications
-  /// ---------------------------
-  Future<void> cleanDuplicates() async {
-    try {
-      final notifications = _sharedPrefs.getNotifications();
-      final uniqueNotifications = {for (var n in notifications) n.id: n};
-      await _sharedPrefs.setNotifications(uniqueNotifications.values.toList());
-    } catch (e) {
-      print('❌ Error cleaning duplicates: $e');
-    }
+  /// Initialize notifications for a user
+  Future<void> initialize(String userId) async {
+    await _firebaseService.initialize(userId);
   }
 
-  /// ---------------------------
-  /// Fetch all notifications
-  /// ---------------------------
-  Future<List<NotificationModel>> getNotifications() async {
-    try {
-      final notifications = _sharedPrefs.getNotifications();
-      notifications.sort((a, b) => b.time.compareTo(a.time)); // newest first
-      return notifications;
-    } catch (e) {
-      print('❌ Error fetching notifications: $e');
-      return [];
-    }
+  /// Send sign-up notification
+  Future<void> sendSignUpNotification({
+    required String userId,
+    required String userName,
+    required String email,
+  }) async {
+    final notification = NotificationMessages.signUpMessage(
+      userId: userId,
+      userName: userName,
+      email: email,
+    );
+    await _supabaseService.insertNotificationFromModel(notification);
+
+    // Show local notification
+    await _localNotificationService.showNotification(
+      id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      title: notification.title,
+      body: notification.message,
+      userId: userId,
+      payload: Routes.notificationScreen,
+    );
   }
 
-  /// ---------------------------
-  /// Mark a single notification as read
-  /// ---------------------------
-  Future<void> markAsRead(String id) async {
-    try {
-      final notifications = _sharedPrefs.getNotifications();
-      final index = notifications.indexWhere((n) => n.id == id);
-      if (index != -1) {
-        notifications[index] = notifications[index].copyWith(isRead: true);
-        await _sharedPrefs.setNotifications(notifications);
-      }
-    } catch (e) {
-      print('❌ Error marking notification as read: $e');
-    }
+  /// Send login notification
+  Future<void> sendLoginNotification({
+    required String userId,
+    required String userName,
+    required String email,
+  }) async {
+    final notification = NotificationMessages.loginMessage(
+      userId: userId,
+      userName: userName,
+      email: email,
+    );
+    await _supabaseService.insertNotificationFromModel(notification);
+
+    // Show local notification
+    await _localNotificationService.showNotification(
+      id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      title: notification.title,
+      body: notification.message,
+      userId: userId,
+      payload: Routes.notificationScreen,
+    );
   }
 
-  /// ---------------------------
+  /// Get user notifications
+  Future<List<NotificationModel>> getUserNotifications(String userId) async {
+    if (userId.isEmpty) return [];
+    return await _supabaseService.getUserNotifications(userId);
+  }
+
+  /// Get unread notifications count
+  Future<int> getUnreadCount(String userId) async {
+    final notifications = await getUserNotifications(userId);
+    return notifications.where((n) => !n.isRead).length;
+  }
+
+  /// Mark notification as read
+  Future<void> markAsRead(String notificationId) async {
+    await _supabaseService.markAsRead(notificationId);
+  }
+
   /// Mark all notifications as read
-  /// ---------------------------
-  Future<void> markAllAsRead() async {
-    try {
-      final notifications = _sharedPrefs.getNotifications();
-      bool updated = false;
-      for (var i = 0; i < notifications.length; i++) {
-        if (!notifications[i].isRead) {
-          notifications[i] = notifications[i].copyWith(isRead: true);
-          updated = true;
-        }
-      }
-      if (updated) await _sharedPrefs.setNotifications(notifications);
-    } catch (e) {
-      print('❌ Error marking all notifications as read: $e');
+  Future<void> markAllAsRead(String userId) async {
+    final notifications = await getUserNotifications(userId);
+    for (final notification in notifications.where((n) => !n.isRead)) {
+      await markAsRead(notification.id);
     }
   }
 
-  /// ---------------------------
-  /// Delete a notification by ID
-  /// ---------------------------
-  Future<void> deleteNotification(String id) async {
-    try {
-      final notifications = _sharedPrefs.getNotifications();
-      notifications.removeWhere((n) => n.id == id);
-      await _sharedPrefs.setNotifications(notifications);
-    } catch (e) {
-      print('❌ Error deleting notification: $e');
-    }
+  /// Delete a notification
+  Future<void> deleteNotification(String notificationId) async {
+    await _supabaseService.deleteNotification(notificationId);
+  }
+
+  /// Clean up resources on logout
+  Future<void> cleanup() async {
+    await _firebaseService.cleanup();
   }
 }

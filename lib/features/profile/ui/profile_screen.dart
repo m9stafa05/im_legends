@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:im_legends/core/utils/spacing.dart';
-import 'package:im_legends/core/widgets/custom_app_bar.dart';
-import 'package:im_legends/core/widgets/custom_text_button.dart';
-import 'package:im_legends/features/profile/ui/widgets/profile_header.dart';
-import 'package:im_legends/features/profile/ui/widgets/states_grid_view.dart';
-import 'package:im_legends/features/profile/ui/widgets/recent_matches_card.dart';
-import 'package:im_legends/features/profile/ui/widgets/user_card_info.dart';
+import '../../../core/utils/spacing.dart';
+import '../../../core/widgets/custom_app_bar.dart';
+import '../../../core/widgets/custom_text_button.dart';
+import 'widgets/profile_header.dart';
+import 'widgets/states_grid_view.dart';
+import 'widgets/recent_matches_card.dart';
+import 'widgets/user_card_info.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -100,19 +100,6 @@ class ProfileScreen extends StatelessWidget {
                     ],
                   ),
                   verticalSpacing(16),
-                  // Leaderboard Shortcut
-                  // SizedBox(
-                  //   width: 200.w,
-                  //   child: CustomTextButton(
-                  //     buttonText: 'View Leaderboard',
-                  //     onPressed: () {
-                  //       context.go(Routes.homeScreen);
-                  //     },
-                  //     backgroundColor: Colors.blue.shade900,
-                  //   ),
-                  // ),
-                  // verticalSpacing(32),
-                  // Logout Button
                   SizedBox(
                     width: 200.w,
                     child: CustomTextButton(

@@ -19,7 +19,7 @@ class PlayerFieldInfo extends StatelessWidget {
         children: [
           AnimatedDefaultTextStyle(
             duration: const Duration(milliseconds: 300),
-            style: AppTextStyles.text18WhiteBold.copyWith(
+            style: BebasTextStyles.whiteBold20.copyWith(
               color: selectedPlayer == null ? Colors.white54 : Colors.white,
               fontSize: selectedPlayer != null ? 20.sp : 16.sp,
               fontWeight: selectedPlayer != null

@@ -47,7 +47,7 @@ class PlayerTile extends StatelessWidget {
             Expanded(
               child: Text(
                 player,
-                style: AppTextStyles.text14WhiteBold.copyWith(
+                style: BebasTextStyles.whiteBold20.copyWith(
                   fontSize: 16.sp,
                   color: isSelected
                       ? Colors.white

@@ -1,0 +1,191 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
+import '../../../../core/router/app_router.dart';
+import '../../../../core/router/routes.dart';
+import '../../../../core/service/supa_base_service.dart';
+import '../../../../core/utils/secure_storage.dart';
+import '../models/notification_model.dart';
+import 'local_notifications.dart';
+
+class FirebaseNotificationsService {
+  final FirebaseMessaging _messaging = FirebaseMessaging.instance;
+  final SupaBaseService _supabaseService = SupaBaseService();
+  final LocalNotificationService _localNotificationService =
+      LocalNotificationService();
+
+  String? _userId;
+
+  /// Initialize Firebase service for a user
+  Future<void> initialize(String userId) async {
+    _userId = userId;
+
+    // Request notification permissions
+    await _messaging.requestPermission(alert: true, badge: true, sound: true);
+
+    // Save or update FCM token
+    final token = await _messaging.getToken();
+    if (token != null) {
+      await _supabaseService.saveOrUpdateToken(userId, token);
+      await SecureStorage().saveToken(token);
+    }
+
+    // Handle token refresh
+    _messaging.onTokenRefresh.listen((newToken) async {
+      await _supabaseService.saveOrUpdateToken(userId, newToken);
+    });
+
+    // Setup message handlers
+    FirebaseMessaging.onMessage.listen(
+      (message) => _handleForegroundMessage(message, userId),
+    );
+    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessageNavigation);
+    final initialMessage = await _messaging.getInitialMessage();
+    if (initialMessage != null) {
+      _handleMessageNavigation(initialMessage);
+    }
+  }
+
+  /// Handle foreground messages
+  Future<void> _handleForegroundMessage(
+    RemoteMessage message,
+    String userId,
+  ) async {
+    final notification = message.notification;
+    if (notification == null) return;
+
+    await saveNotification(message, userId);
+
+    // Show local notification
+    await _localNotificationService.showNotification(
+      id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      title: notification.title ?? 'New Notification',
+      body: notification.body ?? '',
+      userId: userId,
+      payload: message.data['route'] ?? Routes.notificationScreen,
+    );
+  }
+
+  /// Handle navigation when notification is tapped
+  void _handleMessageNavigation(RemoteMessage message) {
+    final context = navigatorKey.currentContext;
+    if (context == null) return;
+
+    final route = message.data['route'] ?? Routes.notificationScreen;
+    final currentRoute = ModalRoute.of(context)?.settings.name;
+
+    if (currentRoute != route) {
+      navigatorKey.currentState?.pushNamedAndRemoveUntil(
+        route,
+        (route) => false,
+        arguments: message,
+      );
+    }
+  }
+
+  /// Save notification to Supabase
+  Future<NotificationModel> saveNotification(
+    RemoteMessage message,
+    String userId,
+  ) async {
+    final notification = message.notification;
+    if (notification == null) {
+      throw Exception('No notification data');
+    }
+
+    final messageId =
+        message.messageId ?? DateTime.now().millisecondsSinceEpoch.toString();
+    final type = _getNotificationType(message.data);
+
+    final notificationModel = NotificationModel(
+      id: messageId,
+      title: notification.title ?? 'New Notification',
+      message: notification.body ?? '',
+      type: type,
+      isRead: false,
+      time: DateTime.now(),
+    );
+
+    // Show local notification
+    await _localNotificationService.showNotification(
+      id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      title: notification.title ?? 'New Notification',
+      body: notification.body ?? '',
+      userId: userId,
+      payload: message.data['route'] ?? Routes.notificationScreen,
+    );
+    
+    await _supabaseService.insertNotification(
+      userId: userId,
+      title: notification.title ?? 'New Notification',
+      message: notification.body ?? '',
+      type: type,
+      notificationId: messageId,
+    );
+
+    return notificationModel;
+  }
+
+  /// Determine notification type from message data
+  NotificationType _getNotificationType(Map<String, dynamic> data) {
+    final typeString = data['type'] as String?;
+    return typeString != null
+        ? NotificationType.values.firstWhere(
+            (type) => type.name == typeString,
+            orElse: () => NotificationType.system,
+          )
+        : NotificationType.system;
+  }
+
+  /// Handle background notifications
+  Future<void> handleBackgroundMessage(RemoteMessage message) async {
+    final userId = await SecureStorage().getUserId();
+    if (userId == null) return;
+
+    await saveNotification(message, userId);
+  }
+
+  /// Clean up resources on logout
+  Future<void> cleanup() async {
+    if (_userId != null) {
+      await _supabaseService.removeAllTokens(_userId!);
+      _userId = null;
+    }
+  }
+
+  /// Get current FCM token
+  Future<String?> getCurrentToken() async => await _messaging.getToken();
+
+  /// Check if notifications are enabled
+  Future<bool> areNotificationsEnabled() async {
+    final settings = await _messaging.getNotificationSettings();
+    return settings.authorizationStatus == AuthorizationStatus.authorized;
+  }
+}
+
+@pragma('vm:entry-point')
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  final userId = await SecureStorage().getUserId();
+  if (userId == null) return;
+
+  final supabaseService = SupaBaseService();
+  final notification = message.notification;
+  if (notification == null) return;
+
+  final messageId =
+      message.messageId ?? DateTime.now().millisecondsSinceEpoch.toString();
+  final typeString = message.data['type'] as String?;
+  final type = typeString != null
+      ? NotificationType.values.firstWhere(
+          (type) => type.name == typeString,
+          orElse: () => NotificationType.system,
+        )
+      : NotificationType.system;
+
+  await supabaseService.insertNotification(
+    userId: userId,
+    title: notification.title ?? 'New Notification',
+    message: notification.body ?? '',
+    type: type,
+    notificationId: messageId,
+  );
+}

@@ -36,7 +36,6 @@ class _ScoreCountFieldState extends State<ScoreCountField>
   Color get accentColor => widget.accentColor ?? AppColors.darkRedColor;
 
   @override
-  @override
   void initState() {
     super.initState();
 
@@ -80,6 +79,7 @@ class _ScoreCountFieldState extends State<ScoreCountField>
               minScore: widget.minScore,
               maxScore: widget.maxScore,
               isEditable: widget.isEditable,
+              onScoreChanged: widget.onScoreChanged,
             ),
           );
         },

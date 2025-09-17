@@ -30,7 +30,7 @@ class CustomAppBar extends StatelessWidget {
         children: [
           Expanded(
             child: Center(
-              child: Text(title, style: AppTextStyles.text20WhiteBold),
+              child: Text(title, style: BebasTextStyles.whiteBold20),
             ),
           ),
           // Notifications

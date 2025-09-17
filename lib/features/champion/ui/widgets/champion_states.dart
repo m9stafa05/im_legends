@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../core/themes/app_colors.dart';
 import 'champion_state_item.dart';
 
 class ChampionStats extends StatelessWidget {
@@ -26,38 +27,42 @@ class ChampionStats extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Colors.black.withOpacity(0.3),
-            Colors.blue.shade900.withOpacity(0.6),
+            Colors.black.withAlpha((0.3 * 255).toInt()),
+            Colors.black.withAlpha((0.9 * 255).toInt()),
+            AppColors.goldColor,
           ],
         ),
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withAlpha((0.3 * 255).toInt()),
             blurRadius: 8.r,
             offset: Offset(0, 4.h),
           ),
         ],
-        border: Border.all(color: Colors.white.withOpacity(0.2), width: 1.w),
+        border: Border.all(
+          color: Colors.white.withAlpha((0.3 * 255).toInt()),
+          width: 1.w,
+        ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           ChampionStateItem(
-            label: 'Goals',
-            value: goals,
-            icon: Icons.sports_soccer,
+            label: 'Matches',
+            value: matches,
+            icon: Icons.sports_esports,
           ),
-          ChampionStateItem(label: 'Points', value: points, icon: Icons.star),
           ChampionStateItem(
             label: 'Wins',
             value: wins,
             icon: Icons.emoji_events,
           ),
+          ChampionStateItem(label: 'Points', value: points, icon: Icons.star),
           ChampionStateItem(
-            label: 'Matches',
-            value: matches,
-            icon: Icons.sports_esports,
+            label: 'Goals',
+            value: goals,
+            icon: Icons.sports_soccer,
           ),
         ],
       ),

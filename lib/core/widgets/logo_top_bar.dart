@@ -10,12 +10,45 @@ class LogoTopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        SvgPicture.asset(AppAssets.appLogo, height: 100.h, width: 100.w),
-        const Text('IM Legends', style: AppTextStyles.text18RedBold),
-      ],
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Logo with subtle glow effect
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: const RadialGradient(
+                colors: [Color(0xFF2A3441), Color(0xFF1E2832)],
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withAlpha((0.3 * 255).toInt()),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: SvgPicture.asset(
+              AppAssets.appLogo,
+              height: 32.h,
+              width: 32.w,
+            ),
+          ),
+
+          const SizedBox(width: 12),
+
+          // App name with gradient text
+          ShaderMask(
+            shaderCallback: (bounds) => const LinearGradient(
+              colors: [Colors.white, Color(0xFFE8E8E8)],
+            ).createShader(bounds),
+            child: Text('IM Legends', style: FederantTextStyles.whiteBold20),
+          ),
+        ],
+      ),
     );
   }
 }
