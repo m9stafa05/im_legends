@@ -30,7 +30,7 @@ final GoRouter router = GoRouter(
   redirect: (context, state) async {
     final isLoggedIn = await AuthService.isLoggedIn();
     // If user is not logged in, always go to login
-    if (!isLoggedIn && state.matchedLocation != Routes.onBoardingScreen) {
+    if (!isLoggedIn && state.matchedLocation != Routes.loginScreen) {
       return Routes.onBoardingScreen;
     }
     // If user is logged in and trying to go to login, send to home
