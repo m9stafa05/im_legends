@@ -1,9 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../core/themes/app_texts_style.dart';
 
 class PlayerTile extends StatelessWidget {
   final String player;
+  final String playerImage;
   final bool isSelected;
   final int index;
   final void Function(String) onSelect;
@@ -14,6 +16,7 @@ class PlayerTile extends StatelessWidget {
     required this.isSelected,
     required this.index,
     required this.onSelect,
+    required this.playerImage,
   });
 
   @override
@@ -65,6 +68,8 @@ class PlayerTile extends StatelessWidget {
   }
 
   Widget _buildAvatar() {
+    final hasImage = playerImage.isNotEmpty;
+
     return Container(
       width: 40.w,
       height: 40.h,
@@ -82,14 +87,20 @@ class PlayerTile extends StatelessWidget {
         ),
       ),
       child: Center(
-        child: Text(
-          player.isNotEmpty ? player[0].toUpperCase() : 'P',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16.sp,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        child: hasImage
+            ? ClipOval(
+                child: CachedNetworkImage(
+                  imageUrl: playerImage,
+                  fit: BoxFit.cover,
+                  width: 40.w,
+                  height: 40.h,
+                  placeholder: (context, url) =>
+                      const CircularProgressIndicator(strokeWidth: 2),
+                  errorWidget: (context, url, error) =>
+                      const Icon(Icons.person, color: Colors.white),
+                ),
+              )
+            : const Icon(Icons.person, color: Colors.white), // 👈 fallback
       ),
     );
   }

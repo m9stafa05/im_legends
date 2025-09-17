@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../logic/cubit/add_match_cubit.dart';
 import '../../../../../core/themes/app_colors.dart';
 import 'player_field_avatar.dart';
 import 'player_field_drop_down_arrow.dart';
@@ -8,14 +10,12 @@ import 'player_field_animations.dart';
 import 'players_bottom_sheet.dart';
 
 class PlayerSelectField extends StatefulWidget {
-  final List<String> players;
   final void Function(String)? onSelected;
   final String hint;
   final String? excludedPlayer;
 
   const PlayerSelectField({
     super.key,
-    required this.players,
     this.onSelected,
     this.hint = 'Select Player',
     this.excludedPlayer,
@@ -29,18 +29,13 @@ class _PlayerSelectFieldState extends State<PlayerSelectField>
     with TickerProviderStateMixin {
   String? selectedPlayer;
   bool isPressed = false;
-  bool isExpanded = false;
 
   late PlayerFieldAnimations animations;
 
   @override
   void initState() {
     super.initState();
-
-    // 1. Initialize the animations helper
     animations = PlayerFieldAnimations(vsync: this);
-
-    // 2. Start animations after first frame renders
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         animations.startGlow();
@@ -122,11 +117,13 @@ class _PlayerSelectFieldState extends State<PlayerSelectField>
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (context) => PlayerBottomSheet(
-        players: widget.players,
-        selectedPlayer: selectedPlayer,
-        onSelect: _selectPlayer,
-        excludedPlayer: widget.excludedPlayer,
+      builder: (dialogContext) => BlocProvider.value(
+        value: context.read<AddMatchCubit>(),
+        child: PlayerBottomSheet(
+          selectedPlayer: selectedPlayer,
+          onSelect: _selectPlayer,
+          excludedPlayer: widget.excludedPlayer,
+        ),
       ),
     ).then((_) => animations.rotationController.reverse());
   }

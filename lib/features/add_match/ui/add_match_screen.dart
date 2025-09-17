@@ -69,7 +69,6 @@ class _AddMatchScreenState extends State<AddMatchScreen> {
                     verticalSpacing(20),
                     PlayerSelectField(
                       hint: 'Select Winner',
-                      players: ['Mustafa', 'Sayed', 'Ahmed', 'Hassan', 'Ali'],
                       onSelected: _onWinnerPlayerChanged,
                       excludedPlayer: loserPlayer,
                     ),
@@ -82,7 +81,6 @@ class _AddMatchScreenState extends State<AddMatchScreen> {
                     verticalSpacing(50),
                     PlayerSelectField(
                       hint: 'Select Loser',
-                      players: ['Mustafa', 'Sayed', 'Ahmed', 'Hassan', 'Ali'],
                       onSelected: _onLoserPlayerChanged,
                       excludedPlayer: winnerPlayer,
                     ),
