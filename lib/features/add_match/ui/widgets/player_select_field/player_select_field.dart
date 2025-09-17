@@ -10,7 +10,7 @@ import 'player_field_animations.dart';
 import 'players_bottom_sheet.dart';
 
 class PlayerSelectField extends StatefulWidget {
-  final void Function(String)? onSelected;
+  final void Function(String id)? onSelected; // ✅ return both
   final String hint;
   final String? excludedPlayer;
 
@@ -27,7 +27,8 @@ class PlayerSelectField extends StatefulWidget {
 
 class _PlayerSelectFieldState extends State<PlayerSelectField>
     with TickerProviderStateMixin {
-  String? selectedPlayer;
+  String? selectedPlayerId;
+  String? selectedPlayerName;
   bool isPressed = false;
 
   late PlayerFieldAnimations animations;
@@ -37,9 +38,7 @@ class _PlayerSelectFieldState extends State<PlayerSelectField>
     super.initState();
     animations = PlayerFieldAnimations(vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        animations.startGlow();
-      }
+      if (mounted) animations.startGlow();
     });
   }
 
@@ -99,12 +98,15 @@ class _PlayerSelectFieldState extends State<PlayerSelectField>
       ),
       child: Row(
         children: [
-          PlayerFieldAvatar(isSelected: selectedPlayer != null),
+          PlayerFieldAvatar(isSelected: selectedPlayerId != null),
           SizedBox(width: 16.w),
-          PlayerFieldInfo(selectedPlayer: selectedPlayer, hint: widget.hint),
+          PlayerFieldInfo(
+            selectedPlayer: selectedPlayerName, // ✅ show name not id
+            hint: widget.hint,
+          ),
           PlayerFieldDropdownArrow(
             rotationAnimation: animations.rotationAnimation,
-            isSelected: selectedPlayer != null,
+            isSelected: selectedPlayerId != null,
           ),
         ],
       ),
@@ -120,18 +122,23 @@ class _PlayerSelectFieldState extends State<PlayerSelectField>
       builder: (dialogContext) => BlocProvider.value(
         value: context.read<AddMatchCubit>(),
         child: PlayerBottomSheet(
-          selectedPlayer: selectedPlayer,
-          onSelect: _selectPlayer,
+          selectedPlayer: selectedPlayerId,
           excludedPlayer: widget.excludedPlayer,
+          onSelect: (id, name) => _selectPlayer(id, name), // ✅ proper callback
         ),
       ),
     ).then((_) => animations.rotationController.reverse());
   }
 
-  void _selectPlayer(String player) {
-    setState(() => selectedPlayer = player);
-    widget.onSelected?.call(player);
-    Navigator.pop(context);
+  void _selectPlayer(String id, String name) {
+    setState(() {
+      selectedPlayerId = id;
+      selectedPlayerName = name;
+    });
+
+    // ✅ return both to parent
+    widget.onSelected?.call(id);
+
     animations.glowController.forward().then(
       (_) => animations.glowController.reverse(),
     );

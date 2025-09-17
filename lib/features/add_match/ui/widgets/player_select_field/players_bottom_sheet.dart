@@ -7,7 +7,7 @@ import '../../../../../core/themes/app_texts_style.dart';
 
 class PlayerBottomSheet extends StatefulWidget {
   final String? selectedPlayer;
-  final void Function(String) onSelect;
+  final void Function(String id, String name) onSelect; // ✅ return id + name
   final String? excludedPlayer;
 
   const PlayerBottomSheet({
@@ -57,39 +57,13 @@ class _PlayerBottomSheetState extends State<PlayerBottomSheet> {
                 if (state is AddMatchLoading) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (state is AddMatchFailure) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.error_outline,
-                          color: Colors.red,
-                          size: 48.sp,
-                        ),
-                        SizedBox(height: 16.h),
-                        Text(
-                          'Error loading players',
-                          style: TextStyle(color: Colors.red, fontSize: 16.sp),
-                        ),
-                        SizedBox(height: 8.h),
-                        Text(
-                          state.error,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14.sp,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  );
-                } else if (state is AddMatchSuccess) {
+                  return _buildError(state.error);
+                } else if (state is AddMatchPlayersSuccess) {
                   final filteredPlayers = state.players
-                      .where(
-                        (p) => p['name'] != widget.excludedPlayer,
-                      ) // filter by name
+                      .where((p) => p['name'] != widget.excludedPlayer)
                       .map(
                         (p) => {
+                          'id': p['id'] as String,
                           'name': p['name'] as String,
                           'profile_image': p['profile_image'] as String?,
                         },
@@ -97,28 +71,7 @@ class _PlayerBottomSheetState extends State<PlayerBottomSheet> {
                       .toList();
 
                   if (filteredPlayers.isEmpty) {
-                    return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.person_off_outlined,
-                            color: Colors.white.withAlpha((0.4 * 255).toInt()),
-                            size: 48.sp,
-                          ),
-                          SizedBox(height: 16.h),
-                          Text(
-                            'No players available',
-                            style: TextStyle(
-                              color: Colors.white.withAlpha(
-                                (0.6 * 255).toInt(),
-                              ),
-                              fontSize: 16.sp,
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
+                    return _buildEmpty();
                   }
 
                   return ListView.builder(
@@ -126,15 +79,19 @@ class _PlayerBottomSheetState extends State<PlayerBottomSheet> {
                     itemCount: filteredPlayers.length,
                     itemBuilder: (context, index) {
                       final player = filteredPlayers[index];
-                      final isSelected = widget.selectedPlayer == player;
-                      print(player['profile_image']);
+                      final isSelected = widget.selectedPlayer == player['id'];
+
                       return PlayerTile(
-                        player: player['name'] as String,
+                        playerName: player['name'] as String,
                         isSelected: isSelected,
                         index: index,
-                        onSelect: widget.onSelect,
-                        playerImage:
-                            player['profile_image'] ?? '', // ✅ safe cast
+                        playerImage: player['profile_image'] ?? '',
+                        playerId: player['id'] as String,
+                        onSelect: (selectedId) {
+                          // ✅ pass id + name back
+                          widget.onSelect(selectedId, player['name'] as String);
+                          Navigator.pop(context);
+                        },
                       );
                     },
                   );
@@ -168,7 +125,7 @@ class _PlayerBottomSheetState extends State<PlayerBottomSheet> {
         const Spacer(),
         BlocBuilder<AddMatchCubit, AddMatchState>(
           builder: (context, state) {
-            if (state is AddMatchSuccess) {
+            if (state is AddMatchPlayersSuccess) {
               final filteredCount = state.players
                   .map((p) => p['name'] as String)
                   .where((player) => player != widget.excludedPlayer)
@@ -183,6 +140,47 @@ class _PlayerBottomSheetState extends State<PlayerBottomSheet> {
             }
             return const SizedBox.shrink();
           },
+        ),
+      ],
+    ),
+  );
+
+  Widget _buildError(String error) => Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(Icons.error_outline, color: Colors.red, size: 48.sp),
+        SizedBox(height: 16.h),
+        Text(
+          'Error loading players',
+          style: TextStyle(color: Colors.red, fontSize: 16.sp),
+        ),
+        SizedBox(height: 8.h),
+        Text(
+          error,
+          style: TextStyle(color: Colors.white, fontSize: 14.sp),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    ),
+  );
+
+  Widget _buildEmpty() => Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          Icons.person_off_outlined,
+          color: Colors.white.withAlpha((0.4 * 255).toInt()),
+          size: 48.sp,
+        ),
+        SizedBox(height: 16.h),
+        Text(
+          'No players available',
+          style: TextStyle(
+            color: Colors.white.withAlpha((0.6 * 255).toInt()),
+            fontSize: 16.sp,
+          ),
         ),
       ],
     ),

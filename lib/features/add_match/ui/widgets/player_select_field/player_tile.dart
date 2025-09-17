@@ -4,19 +4,21 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../core/themes/app_texts_style.dart';
 
 class PlayerTile extends StatelessWidget {
-  final String player;
+  final String playerName;
   final String playerImage;
+  final String playerId;
   final bool isSelected;
   final int index;
   final void Function(String) onSelect;
 
   const PlayerTile({
     super.key,
-    required this.player,
+    required this.playerName,
     required this.isSelected,
     required this.index,
     required this.onSelect,
     required this.playerImage,
+    required this.playerId,
   });
 
   @override
@@ -42,14 +44,14 @@ class PlayerTile extends StatelessWidget {
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(16.r),
-        onTap: () => onSelect(player),
+        onTap: () => onSelect(playerId),
         child: Row(
           children: [
             _buildAvatar(),
             SizedBox(width: 16.w),
             Expanded(
               child: Text(
-                player,
+                playerName,
                 style: BebasTextStyles.whiteBold20.copyWith(
                   fontSize: 16.sp,
                   color: isSelected
@@ -100,7 +102,7 @@ class PlayerTile extends StatelessWidget {
                       const Icon(Icons.person, color: Colors.white),
                 ),
               )
-            : const Icon(Icons.person, color: Colors.white), // 👈 fallback
+            : const Icon(Icons.person, color: Colors.white),
       ),
     );
   }
