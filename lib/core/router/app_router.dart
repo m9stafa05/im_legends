@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../features/add_match/data/repo/add_match_repo.dart';
+import '../../features/add_match/logic/cubit/add_match_cubit.dart';
 import '../../features/auth/data/service/auth_service.dart';
 import 'package:im_legends/features/notification/data/repos/notification_repo.dart';
 import '../../features/notification/logic/cubit/notifications_cubit.dart';
@@ -96,7 +98,11 @@ final GoRouter router = GoRouter(
         ),
         GoRoute(
           path: Routes.addMatchScreen,
-          builder: (context, state) => const AddMatchScreen(),
+          builder: (context, state) => BlocProvider(
+            create: (context) =>
+                AddMatchCubit(addMatchRepo: getIt<AddMatchRepo>()),
+            child: const AddMatchScreen(),
+          ),
         ),
         GoRoute(
           path: Routes.championsScreen,
