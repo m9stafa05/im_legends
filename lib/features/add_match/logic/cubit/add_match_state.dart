@@ -7,9 +7,16 @@ final class AddMatchInitial extends AddMatchState {}
 
 final class AddMatchLoading extends AddMatchState {}
 
-final class AddMatchSuccess extends AddMatchState {
+// For players list
+final class AddMatchPlayersSuccess extends AddMatchState {
   final List<Map<String, dynamic>> players;
-  AddMatchSuccess(this.players);
+  AddMatchPlayersSuccess(this.players);
+}
+
+// For insert match success
+final class AddMatchInsertSuccess extends AddMatchState {
+  final String message;
+  AddMatchInsertSuccess(this.message);
 }
 
 final class AddMatchFailure extends AddMatchState {
