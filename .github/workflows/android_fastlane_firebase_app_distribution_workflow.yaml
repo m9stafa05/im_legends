@@ -34,13 +34,18 @@ jobs:
           ruby-version: '3.2.9'
           bundler-cache: true
 
-      # Step 5: Create .env file
+      # Step 5: Create .env file from secrets
       - name: Create .env file
         run: |
           echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
           echo "SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" >> .env
-          
-      # Step 6: Build & distribute with Fastlane
+
+      # Step 6: Install Ruby dependencies (Fastlane, etc.)
+      - name: Install Ruby dependencies
+        working-directory: android
+        run: bundle install
+
+      # Step 7: Build & distribute with Fastlane
       - name: Build And Distribution
         working-directory: android
         env:
