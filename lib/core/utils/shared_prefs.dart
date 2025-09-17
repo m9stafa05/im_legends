@@ -1,7 +1,5 @@
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../../features/notification/data/models/notification_model.dart';
 
+import 'package:shared_preferences/shared_preferences.dart';
 class SharedPrefStorage {
   SharedPrefStorage._();
   static final SharedPrefStorage instance = SharedPrefStorage._();
@@ -78,30 +76,44 @@ class SharedPrefStorage {
   }
 
   /// ---------------------------
-  /// Notification-specific methods
+  /// Notification-specific methods (scoped by userId)
   /// ---------------------------
-  Future<bool> setNotifications(List<NotificationModel> notifications) async {
-    _checkInit();
-    final jsonList = notifications.map((n) => json.encode(n.toJson())).toList();
-    return _prefs.setStringList('notifications', jsonList);
-  }
 
-  List<NotificationModel> getNotifications() {
-    _checkInit();
-    final jsonList = _prefs.getStringList('notifications') ?? [];
-    return jsonList
-        .map(
-          (jsonString) => NotificationModel.fromJson(json.decode(jsonString)),
-        )
-        .toList();
-  }
+  // Future<bool> setNotifications(
+  //   String userId,
+  //   List<NotificationModel> notifications,
+  // ) async {
+  //   _checkInit();
+  //   final jsonList = notifications.map((n) => json.encode(n.toJson())).toList();
+  //   return _prefs.setStringList('notifications_$userId', jsonList);
+  // }
 
-  Future<void> removeDuplicateNotifications() async {
-    final notifications = getNotifications();
-    final uniqueNotifications = {for (var n in notifications) n.id: n};
-    await setNotifications(uniqueNotifications.values.toList());
-  }
+  // List<NotificationModel> getNotifications(String userId) {
+  //   _checkInit();
+  //   final jsonList = _prefs.getStringList('notifications_$userId') ?? [];
+  //   return jsonList
+  //       .map(
+  //         (jsonString) => NotificationModel.fromJson(json.decode(jsonString)),
+  //       )
+  //       .toList();
+  // }
 
+  /// Remove all notifications for a specific user
+  // Future<bool> clearUserNotifications(String userId) async {
+  //   _checkInit();
+  //   return _prefs.remove('notifications_$userId');
+  // }
+
+  /// Deduplicate notifications by id for a specific user
+  // Future<void> removeDuplicateNotifications(String userId) async {
+  //   final notifications = getNotifications(userId);
+  //   final unique = {for (var n in notifications) n.id: n}.values.toList();
+  //   await setNotifications(userId, unique);
+  // }
+
+  /// ---------------------------
+  /// General helpers
+  /// ---------------------------
   Future<bool> remove(String key) async {
     _checkInit();
     return _prefs.remove(key);

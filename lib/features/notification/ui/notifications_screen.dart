@@ -22,9 +22,6 @@ class NotificationsScreen extends StatelessWidget {
             builder: (context, state) {
               int unreadCount = 0;
               if (state is NotificationsSuccess) {
-                // Call this once in your notifications screen or app startup
-                context.read<NotificationsCubit>().cleanDuplicates();
-                // Count only unread notifications
                 unreadCount = state.notifications
                     .where((notification) => !notification.isRead)
                     .length;
@@ -87,7 +84,6 @@ class NotificationsScreen extends StatelessWidget {
                   );
                 } else if (state is NotificationsSuccess) {
                   final notifications = state.notifications;
-
                   // Add these debug prints
                   print('🔍 Total notifications: ${notifications.length}');
                   print(
@@ -137,20 +133,14 @@ class NotificationsScreen extends StatelessWidget {
                                 content: const Text('Notification deleted'),
                                 action: SnackBarAction(
                                   label: 'Undo',
-                                  onPressed: () {
-                                    context
-                                        .read<NotificationsCubit>()
-                                        .undoDelete();
-                                  },
+                                  onPressed: () {},
                                 ),
                                 duration: const Duration(seconds: 3),
                                 backgroundColor: Colors.grey[800],
                               ),
                             );
                           },
-                          onUndo: () {
-                            context.read<NotificationsCubit>().undoDelete();
-                          },
+                          onUndo: () {},
                           onTap: () {
                             // Mark as read first
                             context.read<NotificationsCubit>().markAsRead(

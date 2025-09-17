@@ -7,9 +7,9 @@ import '../../data/models/user_data.dart';
 part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
-  AuthCubit({required AuthRepo authRepo}) : super(AuthInitial());
+  AuthCubit({required this.authRepo}) : super(AuthInitial());
 
-  final AuthRepo authRepo = AuthRepo();
+  final AuthRepo authRepo;
 
   Future<void> emitSignUp({
     required UserData userData,
@@ -23,7 +23,7 @@ class AuthCubit extends Cubit<AuthState> {
         password: password,
         profileImage: profileImage,
       );
-      emit(AuthSuccess(authResponse: response));
+      emit(AuthSuccess(authResponse: response, userData: userData));
     } catch (e) {
       emit(AuthFailure(errorMessage: e.toString()));
     }
@@ -36,7 +36,17 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoading());
     try {
       final response = await authRepo.login(email: email, password: password);
-      emit(AuthSuccess(authResponse: response));
+      final userDataMap = await authRepo.getUserDataById(response.user!.id);
+      final userData = userDataMap != null
+          ? UserData(
+              name: userDataMap['name'] ?? '',
+              email: userDataMap['email'] ?? '',
+              phoneNumber: userDataMap['phone_number'] ?? '',
+              age: userDataMap['age'] ?? 0,
+              profileImageUrl: userDataMap['profile_image'],
+            )
+          : null;
+      emit(AuthSuccess(authResponse: response, userData: userData));
     } catch (e) {
       emit(AuthFailure(errorMessage: e.toString()));
     }

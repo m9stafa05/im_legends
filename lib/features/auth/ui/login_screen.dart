@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/widgets/gradient_background.dart';
 import '../../../core/themes/app_texts_style.dart';
-import 'widgets/auth_bloc_consumer.dart';
+import 'widgets/login_bloc_consumer.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/utils/spacing.dart';
 import '../../../core/widgets/logo_top_bar.dart';
@@ -29,9 +29,9 @@ class LoginScreen extends StatelessWidget {
                     style: BebasTextStyles.whiteBold24,
                     textAlign: TextAlign.center,
                   ),
-                  verticalSpacing(32.h),
-                  const AuthBlocConsumer(),
-                  verticalSpacing(24.h),
+                  verticalSpacing(32),
+                  const LoginBlocConsumer(),
+                  verticalSpacing(24),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
