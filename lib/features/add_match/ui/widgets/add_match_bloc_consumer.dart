@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:im_legends/features/add_match/data/models/match_model.dart';
-import 'package:im_legends/features/add_match/logic/cubit/add_match_cubit.dart';
-import 'package:im_legends/features/add_match/ui/widgets/add_match_button.dart';
+import '../../data/models/match_model.dart';
+import '../../logic/cubit/add_match_cubit.dart';
+import 'add_match_button.dart';
+import '../../../home/logic/cubit/leader_board_cubit.dart';
 
 class AddMatchBlocConsumer extends StatelessWidget {
   const AddMatchBlocConsumer({
@@ -38,7 +39,7 @@ class AddMatchBlocConsumer extends StatelessWidget {
 
         return AddMatchButton(
           isEnabled: _isAddButtonEnabled,
-          isLoading: isLoading, // ✅ إظهار اللودينج
+          isLoading: isLoading,
           onPressed: _isAddButtonEnabled
               ? () {
                   final match = MatchModel(
@@ -50,6 +51,7 @@ class AddMatchBlocConsumer extends StatelessWidget {
 
                   // call cubit
                   context.read<AddMatchCubit>().addMatch(match);
+                  context.read<LeaderBoardCubit>().loadLeaderboard();
                 }
               : null,
         );
