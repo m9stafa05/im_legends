@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../features/home/logic/cubit/leader_board_cubit.dart';
 import '../../features/add_match/data/repo/add_match_repo.dart';
 import '../../features/add_match/logic/cubit/add_match_cubit.dart';
 import '../../features/auth/data/service/auth_service.dart';
@@ -38,6 +39,7 @@ final GoRouter router = GoRouter(
     // If user is logged in and trying to go to login, send to home
     if (isLoggedIn && state.matchedLocation == Routes.onBoardingScreen) {
       return Routes.homeScreen;
+      
     }
     return null; // No redirect
   },
@@ -94,7 +96,10 @@ final GoRouter router = GoRouter(
       routes: [
         GoRoute(
           path: Routes.homeScreen,
-          builder: (context, state) => const HomeScreen(),
+          builder: (context, state) => BlocProvider(
+            create: (context) => LeaderBoardCubit(repo: getIt()),
+            child: const HomeScreen(),
+          ),
         ),
         GoRoute(
           path: Routes.addMatchScreen,
