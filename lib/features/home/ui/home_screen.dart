@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/utils/spacing.dart';
+import 'package:im_legends/core/utils/spacing.dart';
 import 'widgets/home_header_container.dart';
 import 'widgets/leader_board_list_view.dart';
 import '../../../core/router/routes.dart';
@@ -13,18 +13,20 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           const CustomAppBar(title: 'Leaderboard'),
           Expanded(
             child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
               child: Column(
                 children: [
                   HomeHeaderContainer(
-                    userName: 'Mustafa',
+                    userName: 'Mustafa Elbaz',
                     onCreateMatch: () => context.go(Routes.addMatchScreen),
                   ),
-                  verticalSpacing(20),
-                  const LeadBoardListView(),
+                  verticalSpacing(16),
+                  const LeadBoardListView(shrinkWrap: true),
                 ],
               ),
             ),

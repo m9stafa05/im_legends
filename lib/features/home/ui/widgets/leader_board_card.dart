@@ -9,9 +9,9 @@ import '../../../../core/utils/spacing.dart';
 class LeaderBoardCard extends StatelessWidget {
   final String playerName;
   final int points;
-  final int wins;
+  final int Match;
   final int goals;
-  final String? avatarAsset;
+  final String? imageUrl;
   final int? rank;
   final bool isCurrentUser;
 
@@ -19,9 +19,9 @@ class LeaderBoardCard extends StatelessWidget {
     super.key,
     required this.playerName,
     required this.points,
-    required this.wins,
+    required this.Match,
     required this.goals,
-    this.avatarAsset,
+    this.imageUrl,
     this.rank,
     this.isCurrentUser = false,
   });
@@ -56,7 +56,7 @@ class LeaderBoardCard extends StatelessWidget {
             RankAndAvatar(
               isCurrentUser: isCurrentUser,
               rank: rank,
-              avatarAsset: avatarAsset,
+              imageUrl: imageUrl,
             ),
             horizontalSpacing(12),
 
@@ -67,7 +67,7 @@ class LeaderBoardCard extends StatelessWidget {
             ),
 
             // Stats Section
-            StatesSection(wins: wins, goals: goals),
+            StatesSection(Match: Match, goals: goals),
           ],
         ),
       ),

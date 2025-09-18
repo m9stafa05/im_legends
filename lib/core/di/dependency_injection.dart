@@ -1,4 +1,7 @@
 import 'package:get_it/get_it.dart';
+import '../../features/home/data/repo/leader_board_repo.dart';
+import '../../features/home/data/service/leader_board_service.dart';
+import '../../features/home/logic/cubit/leader_board_cubit.dart';
 import '../../features/add_match/data/repo/add_match_repo.dart';
 import '../../features/add_match/logic/cubit/add_match_cubit.dart';
 import '../../features/notification/data/repos/notification_repo.dart';
@@ -34,5 +37,15 @@ Future<void> setupGetIt() async {
 
   getIt.registerFactory<AddMatchCubit>(
     () => AddMatchCubit(addMatchRepo: getIt<AddMatchRepo>()),
+  );
+
+  getIt.registerLazySingleton<LeaderboardService>(() => LeaderboardService());
+
+  getIt.registerLazySingleton<LeaderBoardRepo>(
+    () => LeaderBoardRepo(leaderboardService: getIt<LeaderboardService>()),
+  );
+
+  getIt.registerFactory<LeaderBoardCubit>(
+    () => LeaderBoardCubit(repo: getIt<LeaderBoardRepo>()),
   );
 }
