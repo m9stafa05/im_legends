@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/utils/app_assets.dart';
@@ -6,13 +7,15 @@ import '../../../../core/utils/functions/get_rank_color.dart';
 class RankAndAvatar extends StatelessWidget {
   const RankAndAvatar({
     super.key,
-    this.avatarAsset,
+    this.imageUrl,
     this.rank,
     required this.isCurrentUser,
   });
-  final String? avatarAsset;
+
+  final String? imageUrl;
   final int? rank;
   final bool isCurrentUser;
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -38,12 +41,20 @@ class RankAndAvatar extends StatelessWidget {
                 radius: 50.r,
                 backgroundColor: Colors.transparent,
                 child: ClipOval(
-                  child: Image.asset(
-                    avatarAsset ?? AppAssets.appLogoPng,
-                    fit: BoxFit.cover,
-                    width: 100.w,
-                    height: 100.w,
-                  ),
+                  child: imageUrl == null || imageUrl!.isEmpty
+                      ? Image.asset(AppAssets.appLogoPng, fit: BoxFit.cover)
+                      : CachedNetworkImage(
+                          imageUrl: imageUrl!,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => Image.asset(
+                            AppAssets.appLogoPng,
+                            fit: BoxFit.cover,
+                          ),
+                          errorWidget: (context, url, error) => Image.asset(
+                            AppAssets.appLogoPng,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                 ),
               ),
             ),

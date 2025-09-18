@@ -4,8 +4,8 @@ import 'states_column.dart';
 import '../../../../core/utils/spacing.dart';
 
 class StatesSection extends StatelessWidget {
-  const StatesSection({super.key, required this.wins, required this.goals});
-  final int wins;
+  const StatesSection({super.key, required this.Match, required this.goals});
+  final int Match;
   final int goals;
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,11 @@ class StatesSection extends StatelessWidget {
       ),
       child: Row(
         children: [
-          StatesColumn(label: 'Wins', value: wins, icon: Icons.sports_esports),
+          StatesColumn(
+            label: 'Matches',
+            value: Match,
+            icon: Icons.sports_esports,
+          ),
           horizontalSpacing(16),
           StatesColumn(label: 'Goals', value: goals, icon: Icons.sports_soccer),
         ],
