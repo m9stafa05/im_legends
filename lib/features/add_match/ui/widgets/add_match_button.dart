@@ -10,6 +10,8 @@ class AddMatchButton extends StatefulWidget {
   final String text;
   final IconData icon;
   final double? width;
+  final bool isLoading;
+  final Widget? child;
 
   const AddMatchButton({
     super.key,
@@ -18,6 +20,8 @@ class AddMatchButton extends StatefulWidget {
     this.text = 'Add Match',
     this.icon = Icons.add,
     this.width,
+    this.isLoading = false,
+    this.child,
   });
 
   @override
@@ -28,11 +32,13 @@ class _AddMatchButtonState extends State<AddMatchButton> {
   bool _isPressed = false;
 
   void _handleTapDown(TapDownDetails details) {
-    if (widget.isEnabled) setState(() => _isPressed = true);
+    if (widget.isEnabled && !widget.isLoading) {
+      setState(() => _isPressed = true);
+    }
   }
 
   void _handleTapUp(TapUpDetails details) {
-    if (widget.isEnabled) {
+    if (widget.isEnabled && !widget.isLoading) {
       setState(() => _isPressed = false);
       widget.onPressed?.call();
     }
@@ -44,7 +50,7 @@ class _AddMatchButtonState extends State<AddMatchButton> {
 
   @override
   Widget build(BuildContext context) {
-    final isDisabled = !widget.isEnabled;
+    final isDisabled = !widget.isEnabled || widget.isLoading;
 
     return GestureDetector(
       onTapDown: _handleTapDown,
@@ -86,23 +92,35 @@ class _AddMatchButtonState extends State<AddMatchButton> {
               width: 1.w,
             ),
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                widget.text,
-                style: BebasTextStyles.whiteBold20.copyWith(
-                  color: isDisabled ? Colors.white70 : Colors.white,
-                ),
-              ),
-              horizontalSpacing(6),
-              Icon(
-                widget.icon,
-                color: isDisabled ? Colors.white70 : Colors.white,
-                size: 18.sp,
-              ),
-            ],
+          child: Center(
+            child: widget.isLoading
+                ? SizedBox(
+                    height: 22.sp,
+                    width: 22.sp,
+                    child: const CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Colors.white,
+                    ),
+                  )
+                : widget.child ??
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            widget.text,
+                            style: BebasTextStyles.whiteBold20.copyWith(
+                              color: isDisabled ? Colors.white70 : Colors.white,
+                            ),
+                          ),
+                          horizontalSpacing(6),
+                          Icon(
+                            widget.icon,
+                            color: isDisabled ? Colors.white70 : Colors.white,
+                            size: 18.sp,
+                          ),
+                        ],
+                      ),
           ),
         ),
       ),
