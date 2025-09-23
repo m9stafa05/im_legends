@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../profile/logic/cubit/profile_cubit.dart';
 import '../../../history/logic/cubit/match_history_cubit.dart';
 import '../../../home/logic/cubit/leader_board_cubit.dart';
 import '../../data/models/match_model.dart';
@@ -33,6 +34,7 @@ class AddMatchBlocConsumer extends StatelessWidget {
           // Trigger refresh in other cubits
           context.read<LeaderBoardCubit>().loadLeaderboard();
           context.read<MatchHistoryCubit>().getMatchHistory();
+          context.read<ProfileCubit>().fetchProfile();
         } else if (state is AddMatchFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.error), backgroundColor: Colors.red),
