@@ -4,15 +4,15 @@ import 'package:im_legends/core/themes/app_colors.dart';
 
 class StateCard extends StatelessWidget {
   final String label;
-  final String value;
+  final dynamic value;
   final IconData icon;
 
-  const StateCard({
+  StateCard({
     super.key,
     required this.label,
-    required this.value,
+    required dynamic value, // accept anything
     required this.icon,
-  });
+  }) : value = value.toString(); //
 
   @override
   Widget build(BuildContext context) {
@@ -27,12 +27,12 @@ class StateCard extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(16.r),
         border: Border.all(
-          color: Colors.blue.shade700.withAlpha((0.2* 255).toInt()),
+          color: Colors.blue.shade700.withAlpha((0.2 * 255).toInt()),
           width: 1.5.w,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha((0.2* 255).toInt()),
+            color: Colors.black.withAlpha((0.2 * 255).toInt()),
             blurRadius: 6.r,
             offset: Offset(0, 3.h),
           ),
