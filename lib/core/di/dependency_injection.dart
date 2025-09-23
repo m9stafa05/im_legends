@@ -13,38 +13,30 @@ import '../../features/auth/logic/cubit/auth_cubit.dart';
 final getIt = GetIt.instance;
 
 Future<void> setupGetIt() async {
-  // 1. Register AuthService as a singleton (shared instance)
+  // Services
   getIt.registerLazySingleton<AuthService>(() => AuthService());
+  getIt.registerLazySingleton<LeaderboardService>(() => LeaderboardService());
 
-  // 2. Register AuthRepo as a singleton (depends on AuthService)
+  // Repositories
   getIt.registerLazySingleton<AuthRepo>(
     () => AuthRepo(authService: getIt<AuthService>()),
   );
-
-  // 3. Register AuthCubit as a factory (new instance each time)
-  getIt.registerFactory<AuthCubit>(
-    () => AuthCubit(authRepo: getIt<AuthRepo>()),
-  );
-
-  // 4. Register NotificationRepo as a singleton (shared instance)
   getIt.registerLazySingleton<NotificationRepo>(() => NotificationRepo());
-
-  getIt.registerFactory<NotificationsCubit>(
-    () => NotificationsCubit(notificationRepo: getIt<NotificationRepo>()),
-  );
-
   getIt.registerLazySingleton<AddMatchRepo>(() => AddMatchRepo());
-
-  getIt.registerFactory<AddMatchCubit>(
-    () => AddMatchCubit(addMatchRepo: getIt<AddMatchRepo>()),
-  );
-
-  getIt.registerLazySingleton<LeaderboardService>(() => LeaderboardService());
-
   getIt.registerLazySingleton<LeaderBoardRepo>(
     () => LeaderBoardRepo(leaderboardService: getIt<LeaderboardService>()),
   );
 
+  // Cubits (always factory)
+  getIt.registerFactory<AuthCubit>(
+    () => AuthCubit(authRepo: getIt<AuthRepo>()),
+  );
+  getIt.registerFactory<NotificationsCubit>(
+    () => NotificationsCubit(notificationRepo: getIt<NotificationRepo>()),
+  );
+  getIt.registerFactory<AddMatchCubit>(
+    () => AddMatchCubit(addMatchRepo: getIt<AddMatchRepo>()),
+  );
   getIt.registerFactory<LeaderBoardCubit>(
     () => LeaderBoardCubit(repo: getIt<LeaderBoardRepo>()),
   );
