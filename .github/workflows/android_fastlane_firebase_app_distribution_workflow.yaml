@@ -39,7 +39,7 @@ jobs:
         run: |
           echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" > .env
           echo "SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" >> .env
-          echo "Other_Keys=${{ secrets.OTHER_KEYS }}" >> .env # if needed
+          echo "Other_Keys=${{ secrets.OTHER_KEYS || '' }}" >> .env
 
       # Step 6: Install Ruby dependencies (Fastlane, etc.)
       - name: Install Ruby dependencies
