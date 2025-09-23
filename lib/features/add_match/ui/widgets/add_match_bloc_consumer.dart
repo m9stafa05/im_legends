@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../history/logic/cubit/match_history_cubit.dart';
+import '../../../home/logic/cubit/leader_board_cubit.dart';
 import '../../data/models/match_model.dart';
 import '../../logic/cubit/add_match_cubit.dart';
 import 'add_match_button.dart';
-import '../../../home/logic/cubit/leader_board_cubit.dart';
 
 class AddMatchBlocConsumer extends StatelessWidget {
   const AddMatchBlocConsumer({
@@ -27,7 +28,11 @@ class AddMatchBlocConsumer extends StatelessWidget {
     return BlocConsumer<AddMatchCubit, AddMatchState>(
       listener: (context, state) {
         if (state is AddMatchInsertSuccess) {
+          //  Show success dialog
           SuccessMessage(context);
+          // Trigger refresh in other cubits
+          context.read<LeaderBoardCubit>().loadLeaderboard();
+          context.read<MatchHistoryCubit>().getMatchHistory();
         } else if (state is AddMatchFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.error), backgroundColor: Colors.red),
@@ -48,10 +53,8 @@ class AddMatchBlocConsumer extends StatelessWidget {
                     winnerScore: winnerScore,
                     loserScore: loserScore,
                   );
-
                   // call cubit
                   context.read<AddMatchCubit>().addMatch(match);
-                  context.read<LeaderBoardCubit>().loadLeaderboard();
                 }
               : null,
         );
@@ -63,7 +66,7 @@ class AddMatchBlocConsumer extends StatelessWidget {
     return showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        backgroundColor: Colors.grey[900], // خلفية داكنة
+        backgroundColor: Colors.grey[900],
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Text(
           'Success',
@@ -75,11 +78,13 @@ class AddMatchBlocConsumer extends StatelessWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => context.pop(),
+            onPressed: () {
+              context.pop();
+            },
             child: const Text(
               'OK',
               style: TextStyle(
-                color: Colors.redAccent, // يفضل لون من AppColors.darkRedColor
+                color: Colors.redAccent,
                 fontWeight: FontWeight.bold,
               ),
             ),

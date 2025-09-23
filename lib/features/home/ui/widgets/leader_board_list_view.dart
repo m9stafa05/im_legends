@@ -11,8 +11,6 @@ class LeadBoardListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context.read<LeaderBoardCubit>().loadLeaderboard();
-
     return BlocBuilder<LeaderBoardCubit, LeaderBoardState>(
       builder: (context, state) {
         if (state is LeaderBoardFailure) {
