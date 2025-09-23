@@ -2,9 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/themes/app_colors.dart';
-import '../../../../core/themes/app_texts_style.dart';
 import '../../../../core/utils/functions/get_rank_color.dart';
-import 'package:im_legends/core/utils/spacing.dart';
 
 class ProfileHeader extends StatelessWidget {
   final int rank;
@@ -116,22 +114,6 @@ class ProfileHeader extends StatelessWidget {
                   ),
                 ),
               ],
-            ),
-          ),
-          verticalSpacing(32),
-          // Favorite Team Badge
-          Text('Favorite Team', style: TajawalTextStyles.greyRegular16),
-          verticalSpacing(2),
-          Container(
-            alignment: Alignment.center,
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-            decoration: BoxDecoration(
-              color: Colors.white.withAlpha((0.1 * 255).toInt()),
-              borderRadius: BorderRadius.circular(20.r),
-            ),
-            child: Text(
-              'Manchester City',
-              style: TajawalTextStyles.whiteBold20,
             ),
           ),
         ],
