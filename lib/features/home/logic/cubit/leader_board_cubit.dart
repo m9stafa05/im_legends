@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import '../../data/models/players_states_model.dart';
+import '../../../../core/models/players_states_model.dart';
 import '../../data/repo/leader_board_repo.dart';
 import 'package:meta/meta.dart';
 

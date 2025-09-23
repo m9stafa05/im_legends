@@ -4,7 +4,7 @@ import 'package:im_legends/core/service/supa_base_service.dart';
 import '../../../../core/utils/secure_storage.dart';
 import '../../../notification/data/service/firebase_notifications_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../models/user_data.dart';
+import '../../../../core/models/user_data.dart';
 
 class AuthService {
   final SupaBaseService _supaBaseService = SupaBaseService();
