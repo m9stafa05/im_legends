@@ -1,32 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:im_legends/core/themes/app_colors.dart';
-import 'package:im_legends/features/history/ui/widgets/history_card_player_info.dart';
-import 'package:im_legends/features/history/ui/widgets/match_card_header.dart';
-import 'package:im_legends/features/history/ui/widgets/score_display.dart';
-import 'package:im_legends/features/history/ui/widgets/tie_message.dart';
+import '../../../../core/themes/app_colors.dart';
+import '../../data/models/match_history_card_model.dart';
+import 'history_card_player_info.dart';
+import 'match_card_header.dart';
+import 'score_display.dart';
 
-import '../../../../core/models/match_data.dart';
+class HistoryListCard extends StatelessWidget {
+  final MatchHistoryCardModel match;
 
-// Main History Card Widget using MatchData model
-class HistoryCard extends StatelessWidget {
-  final MatchData match;
+  const HistoryListCard({super.key, required this.match});
 
-  const HistoryCard({super.key, required this.match});
-
-  @override
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    // Dark mode friendly outcome highlight colors
-    final Color winColor = Colors.green.shade400; // bright but calm green
-    final Color loseColor = const Color(0xFF7D3130); // muted neutral grey
-    final Color tieColor = Colors.amber.shade300; // pastel amber
+    final Color winColor = Colors.green.shade400;
+    final Color loseColor = const Color(0xFF7D3130);
 
     List<Color> cardGradient = [
+      const Color(0xFF120D0E),
       AppColors.lightDarkColor,
-      const Color.fromARGB(255, 18, 13, 14),
     ];
 
     return Container(
@@ -42,12 +36,12 @@ class HistoryCard extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.5),
+            color: Colors.black.withAlpha((0.5 * 255).toInt()),
             blurRadius: 12.r,
             offset: Offset(0, 6.h),
           ),
         ],
-        border: Border.all(color: Colors.white.withOpacity(0.05), width: 1),
+        border: Border.all(color: Colors.white.withAlpha((0.5 * 255).toInt())),
       ),
       child: Column(
         children: [
@@ -57,14 +51,14 @@ class HistoryCard extends StatelessWidget {
           ),
           SizedBox(height: 12.h),
 
-          // Main Row for players and score
+          // Main Row
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               HistoryCardPlayerInfo(
-                playerName: match.player1Name,
-                avatarUrl: match.player1AvatarUrl,
-                isWinner: match.player1Won,
+                playerName: match.winnerName,
+                avatarUrl: match.winnerImage,
+                isWinner: true,
                 winColor: winColor,
                 loseColor: loseColor,
                 isLeftSide: true,
@@ -73,20 +67,17 @@ class HistoryCard extends StatelessWidget {
                 match: match,
                 winColor: winColor,
                 loseColor: loseColor,
-                tieColor: tieColor,
               ),
               HistoryCardPlayerInfo(
-                playerName: match.player2Name,
-                avatarUrl: match.player2AvatarUrl,
-                isWinner: match.player2Won,
+                playerName: match.loserName,
+                avatarUrl: match.loserImage,
+                isWinner: false,
                 winColor: winColor,
                 loseColor: loseColor,
                 isLeftSide: false,
               ),
             ],
           ),
-
-          if (match.isTie) TieMessage(tieColor: tieColor),
         ],
       ),
     );

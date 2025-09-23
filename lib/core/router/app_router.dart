@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../features/home/data/repo/leader_board_repo.dart';
+import '../../features/profile/data/repo/profile_repo.dart';
+import '../../features/profile/logic/cubit/profile_cubit.dart';
+import '../../features/history/logic/cubit/match_history_cubit.dart';
+import '../../features/home/logic/cubit/leader_board_cubit.dart';
+import '../../features/add_match/data/repo/add_match_repo.dart';
+import '../../features/add_match/logic/cubit/add_match_cubit.dart';
 import '../../features/auth/data/service/auth_service.dart';
 import 'package:im_legends/features/notification/data/repos/notification_repo.dart';
 import '../../features/notification/logic/cubit/notifications_cubit.dart';
@@ -23,22 +30,28 @@ import '../widgets/not_screen_found.dart';
 import '../widgets/main_scaffold.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 final GoRouter router = GoRouter(
   navigatorKey: navigatorKey,
   initialLocation: Routes.onBoardingScreen,
   errorBuilder: (context, state) => const NotFoundScreen(),
-  redirect: (context, state) async {
+redirect: (context, state) async {
     final isLoggedIn = await AuthService.isLoggedIn();
-    // If user is not logged in, always go to login
-    if (!isLoggedIn && state.matchedLocation != Routes.loginScreen) {
+
+    // Allow access to login and signup screens without redirect
+    final loggingScreens = [Routes.loginScreen, Routes.signUpScreen];
+
+    if (!isLoggedIn && !loggingScreens.contains(state.matchedLocation)) {
       return Routes.onBoardingScreen;
     }
-    // If user is logged in and trying to go to login, send to home
+
     if (isLoggedIn && state.matchedLocation == Routes.onBoardingScreen) {
       return Routes.homeScreen;
     }
-    return null; // No redirect
+
+    return null;
   },
+
   routes: [
     GoRoute(
       path: Routes.onBoardingScreen,
@@ -86,9 +99,34 @@ final GoRouter router = GoRouter(
         return NotificationDetailsScreen(notification: notification);
       },
     ),
-    // Main scaffold as root for bottom nav
+
+    /// -------------------------------
+    /// Main scaffold as root for bottom nav
+    /// -------------------------------
     ShellRoute(
-      builder: (context, state, child) => MainScaffold(child: child),
+      builder: (context, state, child) => MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (_) =>
+                LeaderBoardCubit(repo: getIt<LeaderBoardRepo>())
+                  ..loadLeaderboard(),
+          ),
+          BlocProvider(create: (_) => MatchHistoryCubit()..getMatchHistory()),
+          BlocProvider(
+            create: (context) =>
+                AddMatchCubit(addMatchRepo: getIt<AddMatchRepo>()),
+          ),
+          BlocProvider(
+            create: (_) =>
+                ProfileCubit(profileRepo: getIt<ProfileRepo>())..fetchProfile(),
+          ),
+          BlocProvider(
+            create: (_) =>
+                NotificationsCubit(notificationRepo: getIt<NotificationRepo>()),
+          ),
+        ],
+        child: MainScaffold(child: child),
+      ),
       routes: [
         GoRoute(
           path: Routes.homeScreen,

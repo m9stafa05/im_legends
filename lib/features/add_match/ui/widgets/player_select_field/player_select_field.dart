@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../logic/cubit/add_match_cubit.dart';
 import '../../../../../core/themes/app_colors.dart';
 import 'player_field_avatar.dart';
 import 'player_field_drop_down_arrow.dart';
@@ -8,14 +10,12 @@ import 'player_field_animations.dart';
 import 'players_bottom_sheet.dart';
 
 class PlayerSelectField extends StatefulWidget {
-  final List<String> players;
-  final void Function(String)? onSelected;
+  final void Function(String id)? onSelected; // ✅ return both
   final String hint;
   final String? excludedPlayer;
 
   const PlayerSelectField({
     super.key,
-    required this.players,
     this.onSelected,
     this.hint = 'Select Player',
     this.excludedPlayer,
@@ -27,24 +27,18 @@ class PlayerSelectField extends StatefulWidget {
 
 class _PlayerSelectFieldState extends State<PlayerSelectField>
     with TickerProviderStateMixin {
-  String? selectedPlayer;
+  String? selectedPlayerId;
+  String? selectedPlayerName;
   bool isPressed = false;
-  bool isExpanded = false;
 
   late PlayerFieldAnimations animations;
 
   @override
   void initState() {
     super.initState();
-
-    // 1. Initialize the animations helper
     animations = PlayerFieldAnimations(vsync: this);
-
-    // 2. Start animations after first frame renders
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        animations.startGlow();
-      }
+      if (mounted) animations.startGlow();
     });
   }
 
@@ -104,12 +98,15 @@ class _PlayerSelectFieldState extends State<PlayerSelectField>
       ),
       child: Row(
         children: [
-          PlayerFieldAvatar(isSelected: selectedPlayer != null),
+          PlayerFieldAvatar(isSelected: selectedPlayerId != null),
           SizedBox(width: 16.w),
-          PlayerFieldInfo(selectedPlayer: selectedPlayer, hint: widget.hint),
+          PlayerFieldInfo(
+            selectedPlayer: selectedPlayerName, // ✅ show name not id
+            hint: widget.hint,
+          ),
           PlayerFieldDropdownArrow(
             rotationAnimation: animations.rotationAnimation,
-            isSelected: selectedPlayer != null,
+            isSelected: selectedPlayerId != null,
           ),
         ],
       ),
@@ -122,19 +119,26 @@ class _PlayerSelectFieldState extends State<PlayerSelectField>
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (context) => PlayerBottomSheet(
-        players: widget.players,
-        selectedPlayer: selectedPlayer,
-        onSelect: _selectPlayer,
-        excludedPlayer: widget.excludedPlayer,
+      builder: (dialogContext) => BlocProvider.value(
+        value: context.read<AddMatchCubit>(),
+        child: PlayerBottomSheet(
+          selectedPlayer: selectedPlayerId,
+          excludedPlayer: widget.excludedPlayer,
+          onSelect: (id, name) => _selectPlayer(id, name), // ✅ proper callback
+        ),
       ),
     ).then((_) => animations.rotationController.reverse());
   }
 
-  void _selectPlayer(String player) {
-    setState(() => selectedPlayer = player);
-    widget.onSelected?.call(player);
-    Navigator.pop(context);
+  void _selectPlayer(String id, String name) {
+    setState(() {
+      selectedPlayerId = id;
+      selectedPlayerName = name;
+    });
+
+    // ✅ return both to parent
+    widget.onSelected?.call(id);
+
     animations.glowController.forward().then(
       (_) => animations.glowController.reverse(),
     );

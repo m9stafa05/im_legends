@@ -1,17 +1,34 @@
 default_platform(:android)
 
 platform :android do
-  desc "Android Firebase App Distribution"
+  desc "Android Firebase App Distribution with env verification"
   lane :firebase_distribution do
+    # 1 Verify that .env exists and contains keys
+    unless File.exist?("../.env")
+      UI.user_error!("❌ .env file not found! Build cannot proceed.")
+    end
+
+    env_content = File.read("../.env")
+    unless env_content.include?("SUPABASE_URL") && env_content.include?("SUPABASE_ANON_KEY")
+      UI.user_error!("❌ SUPABASE_URL or SUPABASE_ANON_KEY missing in .env!")
+    end
+
+    UI.message("✅ .env file verified. Keys present.")
+
+    # 2 Clean previous builds
     sh "flutter clean"
+
+    # 3 Build APK for production flavor
     sh "flutter build apk --release --flavor production --target lib/main_production.dart --no-tree-shake-icons"
+
+    # 4 Firebase App Distribution
     firebase_app_distribution(
       app: "1:312322499437:android:01b1e54c76c6ecfdf43064",
       firebase_cli_token: ENV["FIREBASE_CLI_TOKEN"],
       android_artifact_type: "APK",
       android_artifact_path: "../build/app/outputs/flutter-apk/app-production-release.apk",
       testers: "melbaz187@gmail.com, aelbaz0189@gmail.com, islam.m.fayad@gmail.com",
-      release_notes: "Fix Notifications - App Release v.1.0.2, [Mustafa Elbaz]"
+      release_notes: "New version - App Release v.1.0.3, [Mustafa Elbaz]"
     )
   end
 end

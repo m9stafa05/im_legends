@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../models/user_data.dart';
+import '../../../../core/models/user_data.dart';
 import '../service/auth_service.dart';
 
 class AuthRepo {
