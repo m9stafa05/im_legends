@@ -34,11 +34,12 @@ jobs:
           ruby-version: '3.2.9'
           bundler-cache: true
 
-      # Step 5: Create .env file from secrets
+      # Step 5: Create .env file from GitHub secrets
       - name: Create .env file
         run: |
-          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
+          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" > .env
           echo "SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" >> .env
+          echo "Other_Keys=${{ secrets.OTHER_KEYS }}" >> .env # if needed
 
       # Step 6: Install Ruby dependencies (Fastlane, etc.)
       - name: Install Ruby dependencies
