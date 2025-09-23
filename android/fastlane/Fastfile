@@ -5,7 +5,7 @@ platform :android do
   lane :firebase_distribution do
     # 1. Fetch Supabase keys from ENV
     supabase_url = ENV['SUPABASE_URL']
-    supabase_anon_key = ENV['SUPABASE_ANON_KEY']
+    supabase_anon_key = ENV['SUPABASE_KEY']
 
     unless supabase_url && supabase_anon_key
       UI.user_error!("❌ SUPABASE_URL or SUPABASE_ANON_KEY not provided in environment variables!")
