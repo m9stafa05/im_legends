@@ -23,8 +23,8 @@ Future<void> _initServices() async {
 
   // Supabase
   await Supabase.initialize(
-    url: dotenv.env['SUPABASE_URL']!,
-    anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
+    url: const String.fromEnvironment('SUPABASE_URL'),
+    anonKey: const String.fromEnvironment('SUPABASE_ANON_KEY'),
   );
 
   // Dependency Injection
@@ -34,9 +34,6 @@ Future<void> _initServices() async {
 /// === Main entry point ===
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Load env vars
-  await dotenv.load(fileName: ".env");
 
   // Ensure screen util sizing
   await ScreenUtil.ensureScreenSize();

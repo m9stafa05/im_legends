@@ -18,37 +18,32 @@ jobs:
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
-          java-version: '17'
-          distribution: 'temurin'
+          java-version: "17"
+          distribution: "temurin"
 
       # Step 3: Install Flutter
       - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
+          channel: "stable"
 
       # Step 4: Setup Ruby
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.2.9'
+          ruby-version: "3.2.9"
           bundler-cache: true
 
-      # Step 5: Create .env file from GitHub secrets
-      - name: Create .env file
-        run: |
-          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" > .env
-          echo "SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" >> .env
-          echo "Other_Keys=${{ secrets.OTHER_KEYS || '' }}" >> .env
-
-      # Step 6: Install Ruby dependencies (Fastlane, etc.)
+      # Step 5: Install Ruby dependencies (Fastlane)
       - name: Install Ruby dependencies
         working-directory: android
         run: bundle install
 
-      # Step 7: Build & distribute with Fastlane
+      # Step 6: Build & distribute with Fastlane
       - name: Build And Distribution
         working-directory: android
         env:
           FIREBASE_CLI_TOKEN: ${{ secrets.FIREBASE_CLI_TOKEN }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: bundle exec fastlane firebase_distribution

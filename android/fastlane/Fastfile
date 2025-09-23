@@ -3,31 +3,29 @@ default_platform(:android)
 platform :android do
   desc "Android Firebase App Distribution with env verification"
   lane :firebase_distribution do
-    # 1. Resolve the full path to the .env file
-    env_path = File.expand_path("../.env", __dir__)
+    # 1. Fetch Supabase keys from ENV
+    supabase_url = ENV['SUPABASE_URL']
+    supabase_anon_key = ENV['SUPABASE_ANON_KEY']
 
-    # 2. Verify that the .env file exists
-    unless File.exist?(env_path)
-      UI.user_error!("❌ .env file not found! Build cannot proceed.")
+    unless supabase_url && supabase_anon_key
+      UI.user_error!("❌ SUPABASE_URL or SUPABASE_ANON_KEY not provided in environment variables!")
     end
 
-    # 3. Read the content of the .env file
-    env_content = File.read(env_path)
+    UI.message("✅ Supabase keys found in environment variables.")
 
-    # 4. Check that required keys exist
-    unless env_content.include?("SUPABASE_URL") && env_content.include?("SUPABASE_ANON_KEY")
-      UI.user_error!("❌ SUPABASE_URL or SUPABASE_ANON_KEY missing in .env!")
-    end
-
-    UI.message("✅ .env file verified. Keys present.")
-
-    # 5. Clean previous builds
+    # 2. Clean previous builds
     sh "flutter clean"
 
-    # 6. Build APK for production flavor
-    sh "flutter build apk --release --flavor production --target lib/main_production.dart --no-tree-shake-icons"
+    # 3. Build APK for production flavor with dart-define
+    sh <<-SH
+      flutter build apk --release --flavor production \
+        --target lib/main_production.dart \
+        --dart-define=SUPABASE_URL=#{supabase_url} \
+        --dart-define=SUPABASE_ANON_KEY=#{supabase_anon_key} \
+        --no-tree-shake-icons
+    SH
 
-    # 7. Firebase App Distribution
+    # 4. Firebase App Distribution
     firebase_app_distribution(
       app: "1:312322499437:android:01b1e54c76c6ecfdf43064",
       firebase_cli_token: ENV["FIREBASE_CLI_TOKEN"],
