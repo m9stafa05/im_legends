@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../features/home/data/repo/leader_board_repo.dart';
+import '../../features/profile/data/repo/profile_repo.dart';
+import '../../features/profile/logic/cubit/profile_cubit.dart';
 import '../../features/history/logic/cubit/match_history_cubit.dart';
 import '../../features/home/logic/cubit/leader_board_cubit.dart';
 import '../../features/add_match/data/repo/add_match_repo.dart';
@@ -102,12 +105,22 @@ final GoRouter router = GoRouter(
       builder: (context, state, child) => MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (_) => LeaderBoardCubit(repo: getIt())..loadLeaderboard(),
+            create: (_) =>
+                LeaderBoardCubit(repo: getIt<LeaderBoardRepo>())
+                  ..loadLeaderboard(),
           ),
           BlocProvider(create: (_) => MatchHistoryCubit()..getMatchHistory()),
           BlocProvider(
             create: (context) =>
                 AddMatchCubit(addMatchRepo: getIt<AddMatchRepo>()),
+          ),
+          BlocProvider(
+            create: (_) =>
+                ProfileCubit(profileRepo: getIt<ProfileRepo>())..fetchProfile(),
+          ),
+          BlocProvider(
+            create: (_) =>
+                NotificationsCubit(notificationRepo: getIt<NotificationRepo>()),
           ),
         ],
         child: MainScaffold(child: child),
