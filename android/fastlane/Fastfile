@@ -1,31 +1,10 @@
 default_platform(:android)
 
 platform :android do
-  desc "Android Firebase App Distribution with env verification"
+  desc "Android Firebase App Distribution"
   lane :firebase_distribution do
-    # 1. Fetch Supabase keys from ENV
-    supabase_url = ENV['SUPABASE_URL']
-    supabase_anon_key = ENV['SUPABASE_KEY']
-
-    unless supabase_url && supabase_anon_key
-      UI.user_error!("❌ SUPABASE_URL or SUPABASE_KEY not provided in environment variables!")
-    end
-
-    UI.message("✅ Supabase keys found in environment variables.")
-
-    # 2. Clean previous builds
     sh "flutter clean"
-
-    # 3. Build APK for production flavor with dart-define
-    sh <<-SH
-      flutter build apk --release --flavor production \
-        --target lib/main_production.dart \
-        --dart-define=SUPABASE_URL=#{supabase_url} \
-        --dart-define=SUPABASE_ANON_KEY=#{supabase_anon_key} \
-        --no-tree-shake-icons
-    SH
-
-    # 4. Firebase App Distribution
+    sh "flutter build apk --release --flavor production --target lib/main_production.dart --no-tree-shake-icons"
     firebase_app_distribution(
       app: "1:312322499437:android:01b1e54c76c6ecfdf43064",
       firebase_cli_token: ENV["FIREBASE_CLI_TOKEN"],
