@@ -1,4 +1,7 @@
 import 'package:get_it/get_it.dart';
+import '../../features/profile/data/repo/profile_repo.dart';
+import '../../features/profile/data/service/profile_service.dart';
+import '../../features/profile/logic/cubit/profile_cubit.dart';
 import '../../features/home/data/repo/leader_board_repo.dart';
 import '../../features/home/data/service/leader_board_service.dart';
 import '../../features/home/logic/cubit/leader_board_cubit.dart';
@@ -16,6 +19,7 @@ Future<void> setupGetIt() async {
   // Services
   getIt.registerLazySingleton<AuthService>(() => AuthService());
   getIt.registerLazySingleton<LeaderboardService>(() => LeaderboardService());
+  getIt.registerLazySingleton<ProfileService>(() => ProfileService());
 
   // Repositories
   getIt.registerLazySingleton<AuthRepo>(
@@ -25,6 +29,9 @@ Future<void> setupGetIt() async {
   getIt.registerLazySingleton<AddMatchRepo>(() => AddMatchRepo());
   getIt.registerLazySingleton<LeaderBoardRepo>(
     () => LeaderBoardRepo(leaderboardService: getIt<LeaderboardService>()),
+  );
+  getIt.registerLazySingleton<ProfileRepo>(
+    () => ProfileRepo(profileService: getIt<ProfileService>()),
   );
 
   // Cubits (always factory)
@@ -39,5 +46,8 @@ Future<void> setupGetIt() async {
   );
   getIt.registerFactory<LeaderBoardCubit>(
     () => LeaderBoardCubit(repo: getIt<LeaderBoardRepo>()),
+  );
+  getIt.registerFactory<ProfileCubit>(
+    () => ProfileCubit(profileRepo: getIt<ProfileRepo>()),
   );
 }
