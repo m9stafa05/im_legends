@@ -64,7 +64,7 @@ flutter:
   assets:
     - assets/svgs/
     - assets/images/
-    - .env
+    # - .env
   fonts:
     - family: Tajawal
       fonts:
