@@ -8,7 +8,7 @@ platform :android do
     supabase_anon_key = ENV['SUPABASE_KEY']
 
     unless supabase_url && supabase_anon_key
-      UI.user_error!("❌ SUPABASE_URL or SUPABASE_ANON_KEY not provided in environment variables!")
+      UI.user_error!("❌ SUPABASE_URL or SUPABASE_KEY not provided in environment variables!")
     end
 
     UI.message("✅ Supabase keys found in environment variables.")
