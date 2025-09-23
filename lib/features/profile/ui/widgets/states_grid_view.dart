@@ -20,7 +20,7 @@ class StatsGridView extends StatelessWidget {
       children: stats.map((stat) {
         return StateCard(
           label: stat['label'] as String,
-          value: stat['value'] as String,
+          value: stat['value'],
           icon: stat['icon'] as IconData,
         );
       }).toList(),

@@ -1,5 +1,5 @@
-import 'package:im_legends/features/home/data/models/players_states_model.dart';
-import 'package:im_legends/features/home/data/service/leader_board_service.dart';
+import '../../../../core/models/players_states_model.dart';
+import '../service/leader_board_service.dart';
 
 class LeaderBoardRepo {
   final LeaderboardService _leaderboardService;

@@ -3,7 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import '../../data/repo/auth_repo.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../../data/models/user_data.dart';
+import '../../../../core/models/user_data.dart';
 part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {

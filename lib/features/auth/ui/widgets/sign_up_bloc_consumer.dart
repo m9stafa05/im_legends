@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/widgets/custom_text_button.dart';
-import '../../data/models/user_data.dart';
+import '../../../../core/models/user_data.dart';
 import '../../logic/cubit/auth_cubit.dart';
 import 'sign_up_form.dart';
 import '../../../notification/logic/cubit/notifications_cubit.dart';
