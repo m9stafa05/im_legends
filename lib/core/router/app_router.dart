@@ -35,21 +35,23 @@ final GoRouter router = GoRouter(
   navigatorKey: navigatorKey,
   initialLocation: Routes.onBoardingScreen,
   errorBuilder: (context, state) => const NotFoundScreen(),
-  redirect: (context, state) async {
+redirect: (context, state) async {
     final isLoggedIn = await AuthService.isLoggedIn();
 
-    // If user is not logged in, always go to onboarding
-    if (!isLoggedIn && state.matchedLocation != Routes.loginScreen) {
+    // Allow access to login and signup screens without redirect
+    final loggingScreens = [Routes.loginScreen, Routes.signUpScreen];
+
+    if (!isLoggedIn && !loggingScreens.contains(state.matchedLocation)) {
       return Routes.onBoardingScreen;
     }
 
-    // If user is logged in and trying to go to onboarding, send to home
     if (isLoggedIn && state.matchedLocation == Routes.onBoardingScreen) {
       return Routes.homeScreen;
     }
 
-    return null; // No redirect
+    return null;
   },
+
   routes: [
     GoRoute(
       path: Routes.onBoardingScreen,
