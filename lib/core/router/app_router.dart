@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../features/champion/data/repo/champion_repo.dart';
+import '../../features/champion/logic/cubit/champion_cubit.dart';
 import '../../features/home/data/repo/leader_board_repo.dart';
 import '../../features/profile/data/repo/profile_repo.dart';
 import '../../features/profile/logic/cubit/profile_cubit.dart';
@@ -35,7 +37,7 @@ final GoRouter router = GoRouter(
   navigatorKey: navigatorKey,
   initialLocation: Routes.onBoardingScreen,
   errorBuilder: (context, state) => const NotFoundScreen(),
-redirect: (context, state) async {
+  redirect: (context, state) async {
     final isLoggedIn = await AuthService.isLoggedIn();
 
     // Allow access to login and signup screens without redirect
@@ -119,6 +121,11 @@ redirect: (context, state) async {
           BlocProvider(
             create: (_) =>
                 ProfileCubit(profileRepo: getIt<ProfileRepo>())..fetchProfile(),
+          ),
+          BlocProvider(
+            create: (_) =>
+                ChampionCubit(repository: getIt<ChampionRepo>())
+                  ..fetchTopThree(),
           ),
           BlocProvider(
             create: (_) =>
