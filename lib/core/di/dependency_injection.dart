@@ -1,4 +1,7 @@
 import 'package:get_it/get_it.dart';
+import '../../features/champion/data/repo/champion_repo.dart';
+import '../../features/champion/data/service/champion_service.dart';
+import '../../features/champion/logic/cubit/champion_cubit.dart';
 import '../../features/profile/data/repo/profile_repo.dart';
 import '../../features/profile/data/service/profile_service.dart';
 import '../../features/profile/logic/cubit/profile_cubit.dart';
@@ -20,6 +23,7 @@ Future<void> setupGetIt() async {
   getIt.registerLazySingleton<AuthService>(() => AuthService());
   getIt.registerLazySingleton<LeaderboardService>(() => LeaderboardService());
   getIt.registerLazySingleton<ProfileService>(() => ProfileService());
+  getIt.registerLazySingleton<ChampionService>(() => ChampionService());
 
   // Repositories
   getIt.registerLazySingleton<AuthRepo>(
@@ -32,6 +36,9 @@ Future<void> setupGetIt() async {
   );
   getIt.registerLazySingleton<ProfileRepo>(
     () => ProfileRepo(profileService: getIt<ProfileService>()),
+  );
+  getIt.registerLazySingleton<ChampionRepo>(
+    () => ChampionRepo(championService: getIt<ChampionService>()),
   );
 
   // Cubits (always factory)
@@ -49,5 +56,8 @@ Future<void> setupGetIt() async {
   );
   getIt.registerFactory<ProfileCubit>(
     () => ProfileCubit(profileRepo: getIt<ProfileRepo>()),
+  );
+  getIt.registerFactory<ChampionCubit>(
+    () => ChampionCubit(repository: getIt<ChampionRepo>()),
   );
 }

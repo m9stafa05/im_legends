@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../data/model/champion_player_model.dart';
 import '../../../../core/themes/app_texts_style.dart';
 import '../../../../core/utils/spacing.dart';
 import 'champions_card.dart';
 
 class ChampionTopThree extends StatelessWidget {
-  final List<Map<String, dynamic>> topChampions = const [
-    {'name': 'Mustafa Elbaz', 'imageUrl': null, 'rank': 1},
-    {'name': 'Alex Johnson', 'imageUrl': null, 'rank': 2},
-    {'name': 'Sarah Lee', 'imageUrl': null, 'rank': 3},
-  ];
-
-  const ChampionTopThree({super.key});
+  final List<ChampionPlayerModel> topThree;
+  const ChampionTopThree({super.key, required this.topThree});
 
   @override
   Widget build(BuildContext context) {
@@ -43,16 +39,16 @@ class ChampionTopThree extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               // Second place (left)
-              Flexible(child: ChampionsCard(champion: topChampions[1])),
+              Flexible(child: ChampionsCard(champion: topThree[1])),
               // First place (center, elevated)
               Flexible(
                 child: Transform.translate(
                   offset: Offset(0, -20.h),
-                  child: ChampionsCard(champion: topChampions[0]),
+                  child: ChampionsCard(champion: topThree[0]),
                 ),
               ),
               // Third place (right)
-              Flexible(child: ChampionsCard(champion: topChampions[2])),
+              Flexible(child: ChampionsCard(champion: topThree[2])),
             ],
           ),
         ],

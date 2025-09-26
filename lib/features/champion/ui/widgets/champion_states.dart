@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../core/themes/app_colors.dart';
 import 'champion_state_item.dart';
 
 class ChampionStats extends StatelessWidget {
@@ -29,7 +28,7 @@ class ChampionStats extends StatelessWidget {
           colors: [
             Colors.black.withAlpha((0.3 * 255).toInt()),
             Colors.black.withAlpha((0.9 * 255).toInt()),
-            AppColors.goldColor,
+            const Color(0xFF020D8C).withAlpha((0.9 * 255).toInt()),
           ],
         ),
         borderRadius: BorderRadius.circular(16.r),
