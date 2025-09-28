@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/router/routes.dart';
+import '../../../../core/router/route_paths.dart';
 import '../../../../core/widgets/custom_text_button.dart';
 import '../../../../core/models/user_data.dart';
 import '../../logic/cubit/auth_cubit.dart';

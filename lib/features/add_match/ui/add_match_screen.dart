@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'widgets/add_match_bloc_consumer.dart';
-import '../../../core/widgets/custom_app_bar.dart';
 import 'widgets/player_select_field/player_select_field.dart';
 import 'widgets/score_input_field/score_count_field.dart';
 import '../../../core/utils/spacing.dart';
@@ -57,7 +56,6 @@ class _AddMatchScreenState extends State<AddMatchScreen> {
     return Scaffold(
       body: Column(
         children: [
-          const CustomAppBar(title: 'Add Match'),
           Expanded(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),

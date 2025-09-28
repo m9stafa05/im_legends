@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../router/routes.dart';
+import '../router/route_paths.dart';
 
 class NotificationIcon extends StatelessWidget {
   const NotificationIcon({super.key, required this.unreadCount});
@@ -15,7 +15,7 @@ class NotificationIcon extends StatelessWidget {
         IconButton(
           icon: const Icon(Icons.notifications_rounded, color: Colors.white),
           onPressed: () {
-            context.push(Routes.notificationScreen);
+            context.push(Routes.notificationsScreen);
           },
         ),
         if (unreadCount > 0)
