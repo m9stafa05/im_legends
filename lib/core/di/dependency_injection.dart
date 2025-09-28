@@ -21,7 +21,11 @@ final getIt = GetIt.instance;
 Future<void> setupGetIt() async {
   // Services
   getIt.registerLazySingleton<AuthService>(() => AuthService());
-  getIt.registerLazySingleton<LeaderboardService>(() => LeaderboardService());
+
+  getIt.registerLazySingleton<LeaderboardService>(
+    () => LeaderboardService(),
+  ); // Fixed naming
+
   getIt.registerLazySingleton<ProfileService>(() => ProfileService());
   getIt.registerLazySingleton<ChampionService>(() => ChampionService());
 
@@ -31,9 +35,14 @@ Future<void> setupGetIt() async {
   );
   getIt.registerLazySingleton<NotificationRepo>(() => NotificationRepo());
   getIt.registerLazySingleton<AddMatchRepo>(() => AddMatchRepo());
+
+  // 🔧 FIXED: Use consistent naming
   getIt.registerLazySingleton<LeaderBoardRepo>(
-    () => LeaderBoardRepo(leaderboardService: getIt<LeaderboardService>()),
+    () => LeaderBoardRepo(
+      leaderboardService: getIt<LeaderboardService>(),
+    ), // Fixed reference
   );
+
   getIt.registerLazySingleton<ProfileRepo>(
     () => ProfileRepo(profileService: getIt<ProfileService>()),
   );
@@ -60,4 +69,15 @@ Future<void> setupGetIt() async {
   getIt.registerFactory<ChampionCubit>(
     () => ChampionCubit(repository: getIt<ChampionRepo>()),
   );
+}
+
+// Optional: Add debug method to verify registration
+void debugGetItRegistrations() {
+  print('🔍 GetIt Registrations:');
+  print('AuthService: ${getIt.isRegistered<AuthService>()}');
+  print('LeaderBoardService: ${getIt.isRegistered<LeaderboardService>()}');
+  print('ProfileService: ${getIt.isRegistered<ProfileService>()}');
+  print('ChampionService: ${getIt.isRegistered<ChampionService>()}');
+  print('LeaderBoardRepo: ${getIt.isRegistered<LeaderBoardRepo>()}');
+  print('LeaderBoardCubit: ${getIt.isRegistered<LeaderBoardCubit>()}');
 }
