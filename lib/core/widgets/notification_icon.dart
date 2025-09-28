@@ -3,9 +3,8 @@ import 'package:go_router/go_router.dart';
 import '../router/route_paths.dart';
 
 class NotificationIcon extends StatelessWidget {
-  const NotificationIcon({super.key, required this.unreadCount});
-
   final int unreadCount;
+  const NotificationIcon({super.key, required this.unreadCount});
 
   @override
   Widget build(BuildContext context) {

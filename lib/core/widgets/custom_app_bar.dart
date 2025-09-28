@@ -1,15 +1,16 @@
+// custom_app_bar.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:im_legends/features/notification/logic/cubit/notifications_cubit.dart';
 import '../utils/spacing.dart';
 import 'notification_icon.dart';
 import '../themes/app_texts_style.dart';
 import '../utils/app_assets.dart';
 
 class CustomAppBar extends StatelessWidget {
-  const CustomAppBar({super.key, required this.title, this.unreadCount = 0});
-
   final String title;
-  final int unreadCount;
+  const CustomAppBar({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +34,19 @@ class CustomAppBar extends StatelessWidget {
               child: Text(title, style: BebasTextStyles.whiteBold20),
             ),
           ),
-          // Notifications
-          NotificationIcon(unreadCount: unreadCount),
+          // Notifications from cubit
+          BlocBuilder<NotificationsCubit, NotificationsState>(
+            builder: (context, state) {
+              if (state is NotificationsSuccess) {
+                final unreadCount = state.notifications
+                    .where((notification) => !notification.isRead)
+                    .length;
+                return NotificationIcon(unreadCount: unreadCount);
+              } else {
+                return const NotificationIcon(unreadCount: 0);
+              }
+            },
+          ),
           horizontalSpacing(8),
           // Avatar / Logo
           CircleAvatar(
