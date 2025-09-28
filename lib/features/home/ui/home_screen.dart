@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:im_legends/core/utils/spacing.dart';
 import 'widgets/home_header_container.dart';
 import 'widgets/leader_board_list_view.dart';
-import '../../../core/router/routes.dart';
+import '../../../core/router/route_paths.dart';
 import '../../../core/widgets/custom_app_bar.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -22,8 +22,7 @@ class HomeScreen extends StatelessWidget {
               child: Column(
                 children: [
                   HomeHeaderContainer(
-                    userName: 'Mustafa Elbaz',
-                    onCreateMatch: () => context.go(Routes.addMatchScreen),
+                    onCreateMatch: () => context.go(RoutePaths.addMatch),
                   ),
                   verticalSpacing(16),
                   const LeadBoardListView(shrinkWrap: true),
