@@ -1,62 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import '../router/routes.dart';
+import 'package:im_legends/core/router/route_paths.dart';
 import 'custom_bottom_navigation_bar.dart';
 
-class MainScaffold extends StatefulWidget {
+class MainScaffold extends StatelessWidget {
   final Widget child;
   const MainScaffold({super.key, required this.child});
 
-  @override
-  State<MainScaffold> createState() => _MainScaffoldState();
-}
-
-class _MainScaffoldState extends State<MainScaffold> {
-  int _selectedIndex = 0;
-
-  final tabs = [
+  static final List<String> _tabs = [
     Routes.homeScreen,
-    Routes.addMatchScreen,
     Routes.championsScreen,
     Routes.historyScreen,
     Routes.profileScreen,
   ];
 
-  void _onTabSelected(int index) {
-    if (_selectedIndex != index) {
-      setState(() => _selectedIndex = index);
-      HapticFeedback.selectionClick();
-      GoRouter.of(context).go(tabs[index]);
-    }
+  int _getCurrentIndex(BuildContext context) {
+    final location = GoRouter.of(context);
+    final index = _tabs.indexWhere(
+      (path) => location.routerDelegate.currentConfiguration.fullPath
+          .startsWith(path),
+    );
+    return index == -1 ? 0 : index;
+  }
+
+  void _onTabSelected(BuildContext context, int index) {
+    HapticFeedback.selectionClick();
+    context.go(_tabs[index]);
   }
 
   @override
   Widget build(BuildContext context) {
+    final currentIndex = _getCurrentIndex(context);
+
     return Scaffold(
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
-        switchInCurve: Curves.easeOutCubic,
-        switchOutCurve: Curves.easeInCubic,
-        transitionBuilder: (child, animation) {
-          return FadeTransition(
-            opacity: animation,
-            child: SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(0.1, 0),
-                end: Offset.zero,
-              ).animate(animation),
-              child: ScaleTransition(
-                scale: Tween<double>(begin: 0.98, end: 1.0).animate(animation),
-                child: child,
-              ),
-            ),
-          );
-        },
-        // ❌ Remove KeyedSubtree
-        // ✅ Just use widget.child directly
-        child: widget.child,
-      ),
+      body: _AnimatedPage(child: child),
 
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
@@ -69,10 +47,41 @@ class _MainScaffoldState extends State<MainScaffold> {
           ],
         ),
         child: CustomBottomNavBar(
-          selectedIndex: _selectedIndex,
-          onTabSelected: _onTabSelected,
+          selectedIndex: currentIndex,
+          onTabSelected: (i) => _onTabSelected(context, i),
         ),
       ),
+    );
+  }
+}
+
+// Extracted animation wrapper for clarity
+class _AnimatedPage extends StatelessWidget {
+  final Widget child;
+  const _AnimatedPage({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 300),
+      switchInCurve: Curves.easeOutCubic,
+      switchOutCurve: Curves.easeInCubic,
+      transitionBuilder: (child, animation) {
+        return FadeTransition(
+          opacity: animation,
+          child: SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(0.1, 0),
+              end: Offset.zero,
+            ).animate(animation),
+            child: ScaleTransition(
+              scale: Tween<double>(begin: 0.98, end: 1.0).animate(animation),
+              child: child,
+            ),
+          ),
+        );
+      },
+      child: child,
     );
   }
 }
