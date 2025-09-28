@@ -9,7 +9,7 @@ abstract class Routes {
   static const String addMatchScreen = '/add-match';
   static const String championsScreen = '/champions';
   static const String historyScreen = '/history';
-  static const String profile = '/profile';
+  static const String profileScreen = '/profile';
 
   // Protected standalone routes
   static const String notificationsScreen = '/notifications';

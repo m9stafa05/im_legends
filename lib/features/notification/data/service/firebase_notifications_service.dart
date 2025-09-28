@@ -1,7 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import '../../../../core/router/route_paths.dart';
 import '../../../../core/router/app_router.dart';
-import '../../../../core/router/routes.dart';
 import '../../../../core/service/supa_base_service.dart';
 import '../../../../core/utils/secure_storage.dart';
 import '../models/notification_model.dart';
@@ -61,7 +61,7 @@ class FirebaseNotificationsService {
       title: notification.title ?? 'New Notification',
       body: notification.body ?? '',
       userId: userId,
-      payload: message.data['route'] ?? Routes.notificationScreen,
+      payload: message.data['route'] ?? Routes.notificationsScreen,
     );
   }
 
@@ -70,7 +70,7 @@ class FirebaseNotificationsService {
     final context = navigatorKey.currentContext;
     if (context == null) return;
 
-    final route = message.data['route'] ?? Routes.notificationScreen;
+    final route = message.data['route'] ?? Routes.notificationsScreen;
     final currentRoute = ModalRoute.of(context)?.settings.name;
 
     if (currentRoute != route) {
@@ -111,7 +111,7 @@ class FirebaseNotificationsService {
       title: notification.title ?? 'New Notification',
       body: notification.body ?? '',
       userId: userId,
-      payload: message.data['route'] ?? Routes.notificationScreen,
+      payload: message.data['route'] ?? Routes.notificationsScreen,
     );
     
     await _supabaseService.insertNotification(
