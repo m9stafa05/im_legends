@@ -6,6 +6,7 @@ class PlayerStatsModel {
   final int wins;
   final int goals;
   final int points;
+  final int? rank; 
 
   PlayerStatsModel({
     required this.playerId,
@@ -15,6 +16,7 @@ class PlayerStatsModel {
     this.wins = 0,
     this.goals = 0,
     this.points = 0,
+    this.rank = 0, 
   });
 
   PlayerStatsModel copyWith({
@@ -25,6 +27,7 @@ class PlayerStatsModel {
     int? wins,
     int? goals,
     int? points,
+    int? rank,
   }) {
     return PlayerStatsModel(
       playerId: playerId ?? this.playerId,
@@ -34,6 +37,7 @@ class PlayerStatsModel {
       wins: wins ?? this.wins,
       goals: goals ?? this.goals,
       points: points ?? this.points,
+      rank: rank ?? this.rank, 
     );
   }
 }
