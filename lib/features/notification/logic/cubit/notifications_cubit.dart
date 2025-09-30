@@ -1,4 +1,6 @@
 import 'package:bloc/bloc.dart';
+import '../../../../core/service/supa_base_service.dart';
+import '../../../../core/utils/notification_messages.dart';
 import 'package:im_legends/core/utils/secure_storage.dart';
 import '../../data/repos/notification_repo.dart';
 import '../../data/models/notification_model.dart';
@@ -12,6 +14,7 @@ class NotificationsCubit extends Cubit<NotificationsState> {
 
   final NotificationRepo notificationRepo;
   final SecureStorage secureStorage = SecureStorage();
+  final SupaBaseService supabaseService = SupaBaseService();
 
   /// Fetch notifications for the current user
   Future<void> fetchNotifications() async {
@@ -74,6 +77,44 @@ class NotificationsCubit extends Cubit<NotificationsState> {
     }
   }
 
+  Future<void> handleMatchResult({
+    required String winnerId,
+    required String loserId,
+  }) async {
+    try {
+      print("⚡ WinnerId: $winnerId | LoserId: $loserId");
+
+      final winnerData = await supabaseService.fetchUserProfileById(winnerId);
+      final loserData = await supabaseService.fetchUserProfileById(loserId);
+
+      final winnerName = winnerData?['name'] ?? 'Player';
+      final loserName = loserData?['name'] ?? 'Player';
+
+      print("🏆 WinnerName: $winnerName | ❌ LoserName: $loserName");
+
+      // ✅ Create notifications
+      final winnerNotification = NotificationMessages.winnerMessage(
+        userId: winnerId,
+        userName: winnerName,
+      );
+
+      final loserNotification = NotificationMessages.loserMessage(
+        userId: loserId,
+        userName: loserName,
+      );
+
+      // ✅ Send both
+      await notificationRepo.sendNotification(winnerNotification);
+      await notificationRepo.sendNotification(loserNotification);
+
+      await fetchNotifications();
+    } catch (e) {
+      emit(
+        NotificationsFailure(errorMessage: 'Failed to send match results: $e'),
+      );
+    }
+  }
+
   /// Mark a single notification as read
   Future<void> markAsRead(String notificationId) async {
     try {
@@ -104,6 +145,23 @@ class NotificationsCubit extends Cubit<NotificationsState> {
     try {
       await notificationRepo.deleteNotification(notificationId);
       await fetchNotifications(); // Refresh state
+    } catch (e) {
+      emit(NotificationsFailure(errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> resetNotificationsCount() async {
+    try {
+      if (state is NotificationsSuccess) {
+        final currentState = state as NotificationsSuccess;
+
+        final updatedNotifications = currentState.notifications
+            .map((n) => n.copyWith(isRead: true))
+            .toList();
+
+        // 🔑 emit immediately with all read
+        emit(NotificationsSuccess(notifications: updatedNotifications));
+      }
     } catch (e) {
       emit(NotificationsFailure(errorMessage: e.toString()));
     }
