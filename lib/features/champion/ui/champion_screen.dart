@@ -26,7 +26,10 @@ class ChampionScreen extends StatelessWidget {
                     final topThree = state.players;
                     return Column(
                       children: [
-                        ChampionHeader(name: champion.user.name),
+                        ChampionHeader(
+                          name: champion.user.name,
+                          imageUrl: champion.user.profileImageUrl,
+                        ),
                         ChampionStats(
                           goals: champion.stats.goals,
                           points: champion.stats.points,
