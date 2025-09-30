@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:im_legends/core/router/app_router.dart';
+import '../../../../core/router/app_router.dart' as AppRouter;
 
 class LocalNotificationService {
   // Singleton
@@ -70,8 +70,8 @@ class LocalNotificationService {
 
   /// Handle notification tap → navigate
   void _handleNotificationTap(String payload) {
-    final context = navigatorKey.currentContext;
+    final context = AppRouter.navigatorKey.currentContext;
     if (context == null) return;
-    navigatorKey.currentState?.pushNamed(payload);
+    AppRouter.navigatorKey.currentState?.pushNamed(payload);
   }
 }

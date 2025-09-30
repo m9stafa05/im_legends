@@ -6,7 +6,7 @@ import '../../../core/themes/app_texts_style.dart';
 import '../../../core/widgets/gradient_background.dart';
 import '../../../core/widgets/logo_top_bar.dart';
 import '../../../core/utils/spacing.dart';
-import '../../../core/router/routes.dart';
+import '../../../core/router/route_paths.dart';
 
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({super.key});

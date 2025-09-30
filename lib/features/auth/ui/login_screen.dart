@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/widgets/gradient_background.dart';
 import '../../../core/themes/app_texts_style.dart';
 import 'widgets/login_bloc_consumer.dart';
-import '../../../core/router/routes.dart';
+import '../../../core/router/route_paths.dart';
 import '../../../core/utils/spacing.dart';
 import '../../../core/widgets/logo_top_bar.dart';
 
