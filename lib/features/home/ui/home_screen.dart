@@ -22,7 +22,7 @@ class HomeScreen extends StatelessWidget {
               child: Column(
                 children: [
                   HomeHeaderContainer(
-                    onCreateMatch: () => context.go(Routes.addMatchScreen),
+                    onCreateMatch: () => context.push(Routes.addMatchScreen),
                   ),
                   verticalSpacing(16),
                   const LeadBoardListView(shrinkWrap: true),
