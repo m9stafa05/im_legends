@@ -29,7 +29,7 @@ class profileSuccessState extends StatelessWidget {
           alignment: Alignment.topRight,
           children: [
             ProfileHeader(
-              rank: 1,
+              rank: playerStats.rank ?? 0,
               name: playerProfile.name,
               imageUrl: playerProfile.profileImageUrl,
             ),

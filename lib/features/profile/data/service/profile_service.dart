@@ -5,52 +5,62 @@ import '../../../../core/service/supa_base_service.dart';
 class ProfileService {
   final SupaBaseService supabaseService = SupaBaseService();
 
-  /// ✅ Fetch player stats (calculated from matches)
+  /// ✅ Fetch player stats including rank
   Future<PlayerStatsModel> fetchPlayerStats(String userId) async {
     try {
-      // 1. Fetch matches where user is winner or loser
-      final matches = await supabaseService.supabase
-          .from('matches')
-          .select()
-          .or('winner_id.eq.$userId,loser_id.eq.$userId');
+      // 1. Fetch all users
+      final users = await supabaseService.supabase.from('users').select();
 
-      // 2. Fetch player basic data
-      final user = await supabaseService.fetchUserProfileById(userId);
-      if (user == null) {
-        throw Exception("User not found");
-      }
+      // 2. Fetch all matches
+      final matches = await supabaseService.supabase.from('matches').select();
 
-      int matchesPlayed = 0;
-      int wins = 0;
-      int goals = 0;
-      int points = 0;
+      // 3. Build initial stats map
+      final Map<String, PlayerStatsModel> stats = {
+        for (var u in users)
+          u['id']: PlayerStatsModel(
+            playerId: u['id'],
+            playerName: u['name'],
+            profileImage: u['profile_image'],
+          ),
+      };
 
+      // 4. Calculate stats from matches
       for (var match in matches) {
         final winnerId = match['winner_id'] as String;
         final loserId = match['loser_id'] as String;
         final winnerScore = match['winner_score'] as int;
         final loserScore = match['loser_score'] as int;
 
-        if (winnerId == userId) {
-          matchesPlayed++;
-          wins++;
-          goals += winnerScore;
-          points += 3; // win = 3 points
-        } else if (loserId == userId) {
-          matchesPlayed++;
-          goals += loserScore;
-        }
+        // Winner
+        final winner = stats[winnerId]!;
+        stats[winnerId] = winner.copyWith(
+          matchesPlayed: winner.matchesPlayed + 1,
+          wins: winner.wins + 1,
+          goals: winner.goals + winnerScore,
+          points: winner.points + 3,
+        );
+
+        // Loser
+        final loser = stats[loserId]!;
+        stats[loserId] = loser.copyWith(
+          matchesPlayed: loser.matchesPlayed + 1,
+          goals: loser.goals + loserScore,
+        );
       }
 
-      return PlayerStatsModel(
-        playerId: user['id'],
-        playerName: user['name'],
-        profileImage: user['profile_image'],
-        matchesPlayed: matchesPlayed,
-        wins: wins,
-        goals: goals,
-        points: points,
-      );
+      // 5. Sort leaderboard
+      final leaderboard = stats.values.toList()
+        ..sort((a, b) => b.points.compareTo(a.points));
+
+      // 6. Assign ranks
+      for (int i = 0; i < leaderboard.length; i++) {
+        leaderboard[i] = leaderboard[i].copyWith(rank: i + 1);
+      }
+
+      // 7. Return this user's stats with rank
+      final playerStats = leaderboard.firstWhere((p) => p.playerId == userId);
+
+      return playerStats;
     } catch (e) {
       print("❌ Error fetching stats: $e");
       rethrow;
