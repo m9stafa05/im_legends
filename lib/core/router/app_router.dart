@@ -70,7 +70,7 @@ final GoRouter router = GoRouter(
       builder: (_, __) => BlocProvider(
         create: (_) =>
             NotificationsCubit(notificationRepo: getIt<NotificationRepo>())
-              ,
+              ..fetchNotifications(),
         child: const NotificationsScreen(),
       ),
     ),
@@ -149,7 +149,8 @@ Widget _withMainProviders(Widget child) {
       ),
       BlocProvider(
         create: (_) =>
-            NotificationsCubit(notificationRepo: getIt<NotificationRepo>())..fetchNotifications(),
+            NotificationsCubit(notificationRepo: getIt<NotificationRepo>())
+              ..fetchNotifications(),
       ),
     ],
     child: child,
