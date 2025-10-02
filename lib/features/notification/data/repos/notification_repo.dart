@@ -63,6 +63,18 @@ class NotificationRepo {
     );
   }
 
+  Future<void> sendNotification(NotificationModel notification) async {
+    await _supabaseService.insertNotificationFromModel(notification);
+
+    await _localNotificationService.showNotification(
+      id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      title: notification.title,
+      body: notification.message,
+      userId: notification.userId,
+      payload: Routes.notificationsScreen,
+    );
+  }
+
   /// Get user notifications
   Future<List<NotificationModel>> getUserNotifications(String userId) async {
     if (userId.isEmpty) return [];
@@ -91,10 +103,5 @@ class NotificationRepo {
   /// Delete a notification
   Future<void> deleteNotification(String notificationId) async {
     await _supabaseService.deleteNotification(notificationId);
-  }
-
-  /// Clean up resources on logout
-  Future<void> cleanup() async {
-    await _firebaseService.cleanup();
   }
 }

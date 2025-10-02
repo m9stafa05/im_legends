@@ -19,65 +19,51 @@ import '../../features/auth/logic/cubit/auth_cubit.dart';
 final getIt = GetIt.instance;
 
 Future<void> setupGetIt() async {
-  // Services
+  // Auth Dependencies
   getIt.registerLazySingleton<AuthService>(() => AuthService());
-
-  getIt.registerLazySingleton<LeaderboardService>(
-    () => LeaderboardService(),
-  ); // Fixed naming
-
-  getIt.registerLazySingleton<ProfileService>(() => ProfileService());
-  getIt.registerLazySingleton<ChampionService>(() => ChampionService());
-
-  // Repositories
   getIt.registerLazySingleton<AuthRepo>(
     () => AuthRepo(authService: getIt<AuthService>()),
   );
-  getIt.registerLazySingleton<NotificationRepo>(() => NotificationRepo());
-  getIt.registerLazySingleton<AddMatchRepo>(() => AddMatchRepo());
 
-  // 🔧 FIXED: Use consistent naming
+  // Leaderboard Dependencies
+  getIt.registerLazySingleton<LeaderboardService>(() => LeaderboardService());
   getIt.registerLazySingleton<LeaderBoardRepo>(
-    () => LeaderBoardRepo(
-      leaderboardService: getIt<LeaderboardService>(),
-    ), // Fixed reference
+    () => LeaderBoardRepo(leaderboardService: getIt<LeaderboardService>()),
   );
-
-  getIt.registerLazySingleton<ProfileRepo>(
-    () => ProfileRepo(profileService: getIt<ProfileService>()),
-  );
-  getIt.registerLazySingleton<ChampionRepo>(
-    () => ChampionRepo(championService: getIt<ChampionService>()),
-  );
-
-  // Cubits (always factory)
   getIt.registerFactory<AuthCubit>(
     () => AuthCubit(authRepo: getIt<AuthRepo>()),
-  );
-  getIt.registerFactory<NotificationsCubit>(
-    () => NotificationsCubit(notificationRepo: getIt<NotificationRepo>()),
-  );
-  getIt.registerFactory<AddMatchCubit>(
-    () => AddMatchCubit(addMatchRepo: getIt<AddMatchRepo>()),
   );
   getIt.registerFactory<LeaderBoardCubit>(
     () => LeaderBoardCubit(repo: getIt<LeaderBoardRepo>()),
   );
-  getIt.registerFactory<ProfileCubit>(
-    () => ProfileCubit(profileRepo: getIt<ProfileRepo>()),
+
+  // Add Match Dependencies
+  getIt.registerLazySingleton<AddMatchRepo>(() => AddMatchRepo());
+  getIt.registerFactory<AddMatchCubit>(
+    () => AddMatchCubit(addMatchRepo: getIt<AddMatchRepo>()),
+  );
+
+  //  Champion Dependencies
+  getIt.registerLazySingleton<ChampionService>(() => ChampionService());
+  getIt.registerLazySingleton<ChampionRepo>(
+    () => ChampionRepo(championService: getIt<ChampionService>()),
   );
   getIt.registerFactory<ChampionCubit>(
     () => ChampionCubit(repository: getIt<ChampionRepo>()),
   );
-}
 
-// Optional: Add debug method to verify registration
-void debugGetItRegistrations() {
-  print('🔍 GetIt Registrations:');
-  print('AuthService: ${getIt.isRegistered<AuthService>()}');
-  print('LeaderBoardService: ${getIt.isRegistered<LeaderboardService>()}');
-  print('ProfileService: ${getIt.isRegistered<ProfileService>()}');
-  print('ChampionService: ${getIt.isRegistered<ChampionService>()}');
-  print('LeaderBoardRepo: ${getIt.isRegistered<LeaderBoardRepo>()}');
-  print('LeaderBoardCubit: ${getIt.isRegistered<LeaderBoardCubit>()}');
+  //  Profile Dependencies
+  getIt.registerLazySingleton<ProfileService>(() => ProfileService());
+  getIt.registerLazySingleton<ProfileRepo>(
+    () => ProfileRepo(profileService: getIt<ProfileService>()),
+  );
+  getIt.registerFactory<ProfileCubit>(
+    () => ProfileCubit(profileRepo: getIt<ProfileRepo>()),
+  );
+
+  // Notification Dependencies
+  getIt.registerLazySingleton<NotificationRepo>(() => NotificationRepo());
+  getIt.registerFactory<NotificationsCubit>(
+    () => NotificationsCubit(notificationRepo: getIt<NotificationRepo>()),
+  );
 }

@@ -5,20 +5,13 @@ import '../../../../core/router/app_router.dart';
 import '../../../../core/service/supa_base_service.dart';
 import '../../../../core/utils/secure_storage.dart';
 import '../models/notification_model.dart';
-import 'local_notifications.dart';
 
 class FirebaseNotificationsService {
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   final SupaBaseService _supabaseService = SupaBaseService();
-  final LocalNotificationService _localNotificationService =
-      LocalNotificationService();
-
-  String? _userId;
 
   /// Initialize Firebase service for a user
   Future<void> initialize(String userId) async {
-    _userId = userId;
-
     // Request notification permissions
     await _messaging.requestPermission(alert: true, badge: true, sound: true);
 
@@ -54,15 +47,6 @@ class FirebaseNotificationsService {
     if (notification == null) return;
 
     await saveNotification(message, userId);
-
-    // Show local notification
-    await _localNotificationService.showNotification(
-      id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      title: notification.title ?? 'New Notification',
-      body: notification.body ?? '',
-      userId: userId,
-      payload: message.data['route'] ?? Routes.notificationsScreen,
-    );
   }
 
   /// Handle navigation when notification is tapped
@@ -98,6 +82,7 @@ class FirebaseNotificationsService {
 
     final notificationModel = NotificationModel(
       id: messageId,
+      userId: userId,
       title: notification.title ?? 'New Notification',
       message: notification.body ?? '',
       type: type,
@@ -105,15 +90,6 @@ class FirebaseNotificationsService {
       time: DateTime.now(),
     );
 
-    // Show local notification
-    await _localNotificationService.showNotification(
-      id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      title: notification.title ?? 'New Notification',
-      body: notification.body ?? '',
-      userId: userId,
-      payload: message.data['route'] ?? Routes.notificationsScreen,
-    );
-    
     await _supabaseService.insertNotification(
       userId: userId,
       title: notification.title ?? 'New Notification',
@@ -142,23 +118,6 @@ class FirebaseNotificationsService {
     if (userId == null) return;
 
     await saveNotification(message, userId);
-  }
-
-  /// Clean up resources on logout
-  Future<void> cleanup() async {
-    if (_userId != null) {
-      await _supabaseService.removeAllTokens(_userId!);
-      _userId = null;
-    }
-  }
-
-  /// Get current FCM token
-  Future<String?> getCurrentToken() async => await _messaging.getToken();
-
-  /// Check if notifications are enabled
-  Future<bool> areNotificationsEnabled() async {
-    final settings = await _messaging.getNotificationSettings();
-    return settings.authorizationStatus == AuthorizationStatus.authorized;
   }
 }
 

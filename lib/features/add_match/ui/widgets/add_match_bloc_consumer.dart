@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../notification/logic/cubit/notifications_cubit.dart';
 import '../../../champion/logic/cubit/champion_cubit.dart';
 import '../../../profile/logic/cubit/profile_cubit.dart';
 import '../../../history/logic/cubit/match_history_cubit.dart';
@@ -30,9 +31,11 @@ class AddMatchBlocConsumer extends StatelessWidget {
     return BlocConsumer<AddMatchCubit, AddMatchState>(
       listener: (context, state) {
         if (state is AddMatchInsertSuccess) {
-          //  Show success dialog
           SuccessMessage(context);
-          // Trigger refresh in other cubits
+          context.read<NotificationsCubit>().handleMatchResult(
+            winnerId: winnerPlayer!,
+            loserId: loserPlayer!,
+          );
           context.read<LeaderBoardCubit>().loadLeaderboard();
           context.read<MatchHistoryCubit>().getMatchHistory();
           context.read<ProfileCubit>().fetchProfile();

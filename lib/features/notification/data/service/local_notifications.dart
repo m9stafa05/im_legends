@@ -1,7 +1,9 @@
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../../../core/router/app_router.dart' as AppRouter;
+import '../../../../core/utils/secure_storage.dart';
 
 class LocalNotificationService {
   // Singleton
@@ -51,9 +53,17 @@ class LocalNotificationService {
     required int id,
     required String? title,
     required String? body,
-    required String userId, // 👈 added
+    required String userId,
     String? payload,
   }) async {
+    final currentUserId = await SecureStorage().getUserId();
+
+    // 🚨 Only show if this notification belongs to the logged-in user
+    if (currentUserId != userId) {
+      debugPrint("⏩ Skipping notification for another user: $userId");
+      return;
+    }
+
     const androidDetails = AndroidNotificationDetails(
       'default_channel',
       'General Notifications',
@@ -64,7 +74,6 @@ class LocalNotificationService {
 
     const details = NotificationDetails(android: androidDetails);
 
-    // ✅ Show in system tray
     await _localNotifications.show(id, title, body, details, payload: payload);
   }
 
