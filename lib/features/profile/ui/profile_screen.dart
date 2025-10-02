@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/router/routes.dart';
+import '../../../core/router/route_paths.dart';
 import 'widgets/profile_success_state.dart';
 import '../logic/cubit/profile_cubit.dart';
 import '../../../core/widgets/custom_app_bar.dart';

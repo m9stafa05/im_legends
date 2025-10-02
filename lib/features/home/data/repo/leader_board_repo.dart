@@ -26,7 +26,7 @@ class LeaderBoardRepo {
       final winnerScore = match['winner_score'] as int;
       final loserScore = match['loser_score'] as int;
 
-      // ✅ Winner
+      // Winner
       final winner = stats[winnerId]!;
       stats[winnerId] = winner.copyWith(
         matchesPlayed: winner.matchesPlayed + 1,
@@ -35,7 +35,7 @@ class LeaderBoardRepo {
         points: winner.points + 3,
       );
 
-      // ✅ Loser
+      // Loser
       final loser = stats[loserId]!;
       stats[loserId] = loser.copyWith(
         matchesPlayed: loser.matchesPlayed + 1,
@@ -43,9 +43,13 @@ class LeaderBoardRepo {
       );
     }
 
-    // ✅ Sort by points DESC
     final leaderboard = stats.values.toList()
       ..sort((a, b) => b.points.compareTo(a.points));
+
+    // Assign ranks
+    for (int i = 0; i < leaderboard.length; i++) {
+      leaderboard[i] = leaderboard[i].copyWith(rank: i + 1);
+    }
 
     return leaderboard;
   }

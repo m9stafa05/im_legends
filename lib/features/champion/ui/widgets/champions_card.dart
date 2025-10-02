@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../data/model/champion_player_model.dart';
 import '../../../../core/themes/app_texts_style.dart';
 import '../../../../core/utils/app_assets.dart';
 import '../../../../core/utils/functions/get_rank_color.dart';
 
 class ChampionsCard extends StatelessWidget {
-  final Map<String, dynamic> champion;
+  final ChampionPlayerModel champion;
   late final int rank;
   late final bool isFirst;
   late final bool isSecond;
 
   ChampionsCard({super.key, required this.champion}) {
-    rank = champion['rank'] as int;
+    rank = champion.rank;
     isFirst = rank == 1;
     isSecond = rank == 2;
   }
@@ -43,8 +44,8 @@ class ChampionsCard extends StatelessWidget {
                 backgroundColor: Colors.transparent,
                 child: CircleAvatar(
                   radius: isFirst ? 46.r : 36.r,
-                  backgroundImage: champion['imageUrl'] != null
-                      ? NetworkImage(champion['imageUrl'] as String)
+                  backgroundImage: champion.user.profileImageUrl != null
+                      ? NetworkImage(champion.user.profileImageUrl!)
                       : const AssetImage(AppAssets.appLogoPng) as ImageProvider,
                 ),
               ),
@@ -71,7 +72,7 @@ class ChampionsCard extends StatelessWidget {
         ),
         SizedBox(height: 8.h),
         Text(
-          champion['name'] as String,
+          champion.user.name,
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: isFirst ? 18.sp : 16.sp,

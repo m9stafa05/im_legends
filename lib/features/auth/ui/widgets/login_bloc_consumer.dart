@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../notification/logic/cubit/notifications_cubit.dart';
 import '../../logic/cubit/auth_cubit.dart';
 import 'login_form.dart';
-import '../../../../core/router/routes.dart';
+import '../../../../core/router/route_paths.dart';
 
 class LoginBlocConsumer extends StatelessWidget {
   const LoginBlocConsumer({super.key});

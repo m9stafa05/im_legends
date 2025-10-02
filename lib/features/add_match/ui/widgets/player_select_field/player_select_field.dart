@@ -10,7 +10,7 @@ import 'player_field_animations.dart';
 import 'players_bottom_sheet.dart';
 
 class PlayerSelectField extends StatefulWidget {
-  final void Function(String id)? onSelected; // ✅ return both
+  final void Function(String id)? onSelected;
   final String hint;
   final String? excludedPlayer;
 
@@ -29,6 +29,7 @@ class _PlayerSelectFieldState extends State<PlayerSelectField>
     with TickerProviderStateMixin {
   String? selectedPlayerId;
   String? selectedPlayerName;
+  String? selectedPlayerImage;
   bool isPressed = false;
 
   late PlayerFieldAnimations animations;
@@ -98,10 +99,13 @@ class _PlayerSelectFieldState extends State<PlayerSelectField>
       ),
       child: Row(
         children: [
-          PlayerFieldAvatar(isSelected: selectedPlayerId != null),
+          PlayerFieldAvatar(
+            isSelected: selectedPlayerId != null,
+            imageUrl: selectedPlayerImage,
+          ),
           SizedBox(width: 16.w),
           PlayerFieldInfo(
-            selectedPlayer: selectedPlayerName, // ✅ show name not id
+            selectedPlayer: selectedPlayerName,
             hint: widget.hint,
           ),
           PlayerFieldDropdownArrow(
@@ -124,19 +128,19 @@ class _PlayerSelectFieldState extends State<PlayerSelectField>
         child: PlayerBottomSheet(
           selectedPlayer: selectedPlayerId,
           excludedPlayer: widget.excludedPlayer,
-          onSelect: (id, name) => _selectPlayer(id, name), // ✅ proper callback
+          onSelect: (id, name, imageUrl) => _selectPlayer(id, name, imageUrl),
         ),
       ),
     ).then((_) => animations.rotationController.reverse());
   }
 
-  void _selectPlayer(String id, String name) {
+  void _selectPlayer(String id, String name, String imageUrl) {
     setState(() {
       selectedPlayerId = id;
       selectedPlayerName = name;
+      selectedPlayerImage = imageUrl;
     });
 
-    // ✅ return both to parent
     widget.onSelected?.call(id);
 
     animations.glowController.forward().then(

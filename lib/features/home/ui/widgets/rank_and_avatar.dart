@@ -18,15 +18,17 @@ class RankAndAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final avatarSize = isCurrentUser ? 55.w : 50.w;
     return SizedBox(
       width: isCurrentUser ? 70.w : 60.w,
       child: Stack(
+        clipBehavior: Clip.none,
         children: [
           // Avatar
           Center(
             child: Container(
-              width: isCurrentUser ? 70.w : 50.w,
-              height: isCurrentUser ? 70.w : 50.w,
+              width: avatarSize,
+              height: avatarSize,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 boxShadow: [
@@ -38,23 +40,29 @@ class RankAndAvatar extends StatelessWidget {
                 ],
               ),
               child: CircleAvatar(
-                radius: 50.r,
-                backgroundColor: Colors.transparent,
+                radius: avatarSize / 2,
+                backgroundColor: Colors.white,
                 child: ClipOval(
-                  child: imageUrl == null || imageUrl!.isEmpty
-                      ? Image.asset(AppAssets.appLogoPng, fit: BoxFit.cover)
-                      : CachedNetworkImage(
-                          imageUrl: imageUrl!,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => Image.asset(
-                            AppAssets.appLogoPng,
+                  child: SizedBox(
+                    width: avatarSize,
+                    height: avatarSize,
+                    child: imageUrl == null || imageUrl!.isEmpty
+                        ? Image.asset(AppAssets.appLogoPng, fit: BoxFit.cover)
+                        : CachedNetworkImage(
+                            imageUrl: imageUrl!,
                             fit: BoxFit.cover,
+                            width: avatarSize,
+                            height: avatarSize,
+                            placeholder: (context, url) => Image.asset(
+                              AppAssets.appLogoPng,
+                              fit: BoxFit.cover,
+                            ),
+                            errorWidget: (context, url, error) => Image.asset(
+                              AppAssets.appLogoPng,
+                              fit: BoxFit.cover,
+                            ),
                           ),
-                          errorWidget: (context, url, error) => Image.asset(
-                            AppAssets.appLogoPng,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                  ),
                 ),
               ),
             ),
@@ -63,8 +71,8 @@ class RankAndAvatar extends StatelessWidget {
           // Rank Badge
           if (rank != null)
             Positioned(
-              top: 0,
-              right: 0,
+              top: -2,
+              right: -2,
               child: Container(
                 width: 20.w,
                 height: 20.w,

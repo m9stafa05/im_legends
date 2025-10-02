@@ -1,4 +1,4 @@
-import 'package:im_legends/core/router/routes.dart';
+import 'package:im_legends/core/router/route_paths.dart';
 import '../../../../core/service/supa_base_service.dart';
 import '../../../../core/utils/notification_messages.dart';
 import '../models/notification_model.dart';
@@ -36,7 +36,7 @@ class NotificationRepo {
       title: notification.title,
       body: notification.message,
       userId: userId,
-      payload: Routes.notificationScreen,
+      payload: Routes.notificationsScreen,
     );
   }
 
@@ -59,7 +59,19 @@ class NotificationRepo {
       title: notification.title,
       body: notification.message,
       userId: userId,
-      payload: Routes.notificationScreen,
+      payload: Routes.notificationsScreen,
+    );
+  }
+
+  Future<void> sendNotification(NotificationModel notification) async {
+    await _supabaseService.insertNotificationFromModel(notification);
+
+    await _localNotificationService.showNotification(
+      id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      title: notification.title,
+      body: notification.message,
+      userId: notification.userId,
+      payload: Routes.notificationsScreen,
     );
   }
 
@@ -91,10 +103,5 @@ class NotificationRepo {
   /// Delete a notification
   Future<void> deleteNotification(String notificationId) async {
     await _supabaseService.deleteNotification(notificationId);
-  }
-
-  /// Clean up resources on logout
-  Future<void> cleanup() async {
-    await _firebaseService.cleanup();
   }
 }

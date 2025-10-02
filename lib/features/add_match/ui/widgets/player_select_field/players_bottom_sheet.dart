@@ -7,7 +7,7 @@ import '../../../../../core/themes/app_texts_style.dart';
 
 class PlayerBottomSheet extends StatefulWidget {
   final String? selectedPlayer;
-  final void Function(String id, String name) onSelect; // ✅ return id + name
+  final void Function(String id, String name, String imageUrl) onSelect;
   final String? excludedPlayer;
 
   const PlayerBottomSheet({
@@ -60,12 +60,12 @@ class _PlayerBottomSheetState extends State<PlayerBottomSheet> {
                   return _buildError(state.error);
                 } else if (state is AddMatchPlayersSuccess) {
                   final filteredPlayers = state.players
-                      .where((p) => p['name'] != widget.excludedPlayer)
+                      .where((p) => p['id'] != widget.excludedPlayer)
                       .map(
                         (p) => {
                           'id': p['id'] as String,
                           'name': p['name'] as String,
-                          'profile_image': p['profile_image'] as String?,
+                          'profile_image': p['profile_image'] as String? ?? '',
                         },
                       )
                       .toList();
@@ -87,9 +87,12 @@ class _PlayerBottomSheetState extends State<PlayerBottomSheet> {
                         index: index,
                         playerImage: player['profile_image'] ?? '',
                         playerId: player['id'] as String,
-                        onSelect: (selectedId) {
-                          // ✅ pass id + name back
-                          widget.onSelect(selectedId, player['name'] as String);
+                        onSelect: (selectedId, selectedName, selectedImage) {
+                          widget.onSelect(
+                            selectedId,
+                            selectedName,
+                            selectedImage,
+                          );
                           Navigator.pop(context);
                         },
                       );
@@ -127,8 +130,8 @@ class _PlayerBottomSheetState extends State<PlayerBottomSheet> {
           builder: (context, state) {
             if (state is AddMatchPlayersSuccess) {
               final filteredCount = state.players
-                  .map((p) => p['name'] as String)
-                  .where((player) => player != widget.excludedPlayer)
+                  .map((p) => p['id'] as String)
+                  .where((id) => id != widget.excludedPlayer)
                   .length;
               return Text(
                 '$filteredCount players',

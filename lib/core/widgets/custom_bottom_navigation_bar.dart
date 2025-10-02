@@ -21,7 +21,6 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
   Widget build(BuildContext context) {
     final items = [
       {'icon': Icons.home, 'label': 'Home'},
-      {'icon': Icons.add, 'label': 'Add Match'},
       {'icon': Icons.star, 'label': 'Champions'},
       {'icon': Icons.history, 'label': 'History'},
       {'icon': Icons.person, 'label': 'Profile'},

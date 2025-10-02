@@ -9,7 +9,7 @@ class ChampionHeader extends StatelessWidget {
   final String name;
   final String? imageUrl;
 
-  const ChampionHeader({super.key, required this.name, this.imageUrl});
+  const ChampionHeader({super.key, required this.name, required this.imageUrl});
 
   @override
   Widget build(BuildContext context) {

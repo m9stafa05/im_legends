@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
 import '../../../../core/widgets/custom_text_button.dart';
 import '../../../../core/themes/app_texts_style.dart';
 import '../../../../core/utils/spacing.dart';
 import '../../../../core/utils/app_assets.dart';
+import '../../logic/cubit/leader_board_cubit.dart';
 
 class HomeHeaderContainer extends StatelessWidget {
-  final String? userName;
   final String? greeting;
   final VoidCallback? onCreateMatch;
 
-  const HomeHeaderContainer({
-    super.key,
-    this.userName,
-    this.greeting,
-    this.onCreateMatch,
-  });
+  const HomeHeaderContainer({super.key, this.greeting, this.onCreateMatch});
 
   String _getGreeting() {
     if (greeting != null) return greeting!;
@@ -47,6 +45,7 @@ class HomeHeaderContainer extends StatelessWidget {
         bottom: false,
         child: Column(
           children: [
+            // ✅ Logo
             Container(
               padding: EdgeInsets.all(5.w),
               decoration: BoxDecoration(
@@ -66,44 +65,62 @@ class HomeHeaderContainer extends StatelessWidget {
 
             verticalSpacing(20),
 
-            // User Info Section
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(_getGreeting(), style: BorelTextStyles.greyRegular20),
-                verticalSpacing(4),
-                Text(userName ?? 'Player', style: BebasTextStyles.whiteBold20),
-                verticalSpacing(8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+            // ✅ User Info from LeaderBoardCubit
+            BlocBuilder<LeaderBoardCubit, LeaderBoardState>(
+              builder: (context, state) {
+                String displayName = "Player";
+
+                if (state is LeaderBoardSuccess) {
+                  final currentUserId =
+                      Supabase.instance.client.auth.currentUser?.id;
+                  final currentPlayer = state.leaderboard.firstWhere(
+                    (p) => p.playerId == currentUserId,
+                    orElse: () => state.leaderboard.first,
+                  );
+                  displayName = currentPlayer.playerName;
+                } else if (state is LeaderBoardFailure) {
+                  displayName = "Error loading user";
+                }
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.sports_soccer_rounded,
-                      color: const Color(0xFF4A90E2),
-                      size: 16.sp,
+                    Text(_getGreeting(), style: BorelTextStyles.greyRegular20),
+                    verticalSpacing(4),
+                    Text(displayName, style: BebasTextStyles.whiteBold20),
+                    verticalSpacing(8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.sports_soccer_rounded,
+                          color: const Color(0xFF4A90E2),
+                          size: 16.sp,
+                        ),
+                        horizontalSpacing(4),
+                        Text(
+                          'Ready to play?',
+                          style: FederantTextStyles.greyBold20.copyWith(
+                            color: const Color(0xFF4A90E2),
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
                     ),
-                    horizontalSpacing(4),
-                    Text(
-                      'Ready to play?',
-                      style: FederantTextStyles.greyBold20.copyWith(
-                        color: const Color(0xFF4A90E2),
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w500,
+                    verticalSpacing(10),
+
+                    // ✅ Add Match Button
+                    SizedBox(
+                      width: 200.w,
+                      child: CustomTextButton(
+                        buttonText: 'Add Match',
+                        onPressed: onCreateMatch,
                       ),
                     ),
                   ],
-                ),
-                verticalSpacing(10),
-
-                // Add Match Button
-                SizedBox(
-                  width: 200.w,
-                  child: CustomTextButton(
-                    buttonText: 'Add Match',
-                    onPressed: onCreateMatch,
-                  ),
-                ),
-              ],
+                );
+              },
             ),
           ],
         ),

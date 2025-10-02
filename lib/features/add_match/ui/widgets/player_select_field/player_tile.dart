@@ -9,7 +9,9 @@ class PlayerTile extends StatelessWidget {
   final String playerId;
   final bool isSelected;
   final int index;
-  final void Function(String) onSelect;
+
+  /// Updated: callback returns full player info (id, name, image)
+  final void Function(String id, String name, String imageUrl) onSelect;
 
   const PlayerTile({
     super.key,
@@ -44,7 +46,8 @@ class PlayerTile extends StatelessWidget {
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(16.r),
-        onTap: () => onSelect(playerId),
+        onTap: () =>
+            onSelect(playerId, playerName, playerImage),
         child: Row(
           children: [
             _buildAvatar(),
@@ -96,8 +99,11 @@ class PlayerTile extends StatelessWidget {
                   fit: BoxFit.cover,
                   width: 40.w,
                   height: 40.h,
-                  placeholder: (context, url) =>
-                      const CircularProgressIndicator(strokeWidth: 2),
+                  placeholder: (context, url) => const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
                   errorWidget: (context, url, error) =>
                       const Icon(Icons.person, color: Colors.white),
                 ),

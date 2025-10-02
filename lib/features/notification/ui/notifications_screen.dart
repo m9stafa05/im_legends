@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:im_legends/core/router/routes.dart';
+import 'package:im_legends/core/router/route_paths.dart';
 import '../logic/cubit/notifications_cubit.dart';
 import 'widgets/notification_app_bar.dart';
 import 'widgets/notification_card.dart';
