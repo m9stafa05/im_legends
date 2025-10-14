@@ -20,17 +20,9 @@ class ChampionStateItem extends StatelessWidget {
       children: [
         Container(
           padding: EdgeInsets.all(8.w),
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             shape: BoxShape.circle,
-            gradient: LinearGradient(
-              colors: [
-                Colors.black.withAlpha((0.3 * 255).toInt()),
-                AppColors.darkRedColor,
-                Colors.black.withAlpha((0.9 * 255).toInt()),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
+            color: AppColors.darkRedColor,
           ),
           child: Icon(icon, size: 24.sp, color: Colors.white),
         ),
