@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:im_legends/core/utils/functions/date_formate.dart';
 import '../../../../core/themes/app_colors.dart';
 import '../../../../core/utils/spacing.dart';
 import '../../data/models/notification_model.dart';
@@ -8,7 +9,6 @@ class NotificationCard extends StatelessWidget {
   final NotificationModel notification;
   final int index;
   final VoidCallback onDelete;
-  final VoidCallback onUndo;
   final VoidCallback onTap;
 
   const NotificationCard({
@@ -16,7 +16,6 @@ class NotificationCard extends StatelessWidget {
     required this.notification,
     required this.index,
     required this.onDelete,
-    required this.onUndo,
     required this.onTap,
   });
 
@@ -135,7 +134,7 @@ class NotificationCard extends StatelessWidget {
           ),
           verticalSpacing(8),
           Text(
-            _formatTime(notification.time),
+            "${formatSmart(notification.time)}",
             style: TextStyle(
               fontSize: 12.sp,
               color: Colors.grey[500],
@@ -174,23 +173,6 @@ class NotificationCard extends StatelessWidget {
         return Colors.purple;
       case NotificationType.system:
         return Colors.grey;
-    }
-  }
-
-  String _formatTime(DateTime time) {
-    final now = DateTime.now();
-    final difference = now.difference(time);
-
-    if (difference.inMinutes < 1) {
-      return 'Just now';
-    } else if (difference.inMinutes < 60) {
-      return '${difference.inMinutes}m ago';
-    } else if (difference.inHours < 24) {
-      return '${difference.inHours}h ago';
-    } else if (difference.inDays < 7) {
-      return '${difference.inDays}d ago';
-    } else {
-      return '${time.day}/${time.month}/${time.year}';
     }
   }
 }
