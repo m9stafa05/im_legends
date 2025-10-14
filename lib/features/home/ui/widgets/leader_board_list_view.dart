@@ -6,8 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'leader_board_card.dart';
 
 class LeadBoardListView extends StatelessWidget {
-  final bool shrinkWrap;
-  const LeadBoardListView({super.key, this.shrinkWrap = false});
+  const LeadBoardListView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,8 +21,8 @@ class LeadBoardListView extends StatelessWidget {
         } else if (state is LeaderBoardSuccess) {
           return ListView.builder(
             padding: EdgeInsets.zero,
-            shrinkWrap: shrinkWrap,
-            physics: shrinkWrap ? const NeverScrollableScrollPhysics() : null,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
             itemCount: state.leaderboard.length,
             itemBuilder: (context, index) {
               final player = state.leaderboard[index];
@@ -31,13 +30,8 @@ class LeadBoardListView extends StatelessWidget {
                   Supabase.instance.client.auth.currentUser?.id;
               player.matchesPlayed;
               return LeaderBoardCard(
-                playerName: player.playerName,
-                imageUrl: player.profileImage,
-                rank: index + 1,
-                points: player.points,
-                Match: player.matchesPlayed,
-                goals: player.goals,
                 isCurrentUser: currentUserId == player.playerId,
+                player: player,
               );
             },
           );

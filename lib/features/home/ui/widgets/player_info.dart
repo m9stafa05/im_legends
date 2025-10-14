@@ -19,8 +19,8 @@ class PlayerInfo extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          playerName,
-          style: BebasTextStyles.whiteBold20,
+          playerName.toUpperCase(),
+          style: TajawalTextStyles.whiteBold16,
           overflow: TextOverflow.ellipsis,
         ),
         verticalSpacing(2),
