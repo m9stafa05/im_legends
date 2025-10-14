@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../core/themes/app_colors.dart';
+import '../../../../core/themes/text_styles/bebas_text_styles.dart';
 import '../../../../core/utils/functions/get_rank_color.dart';
 
 class ProfileHeader extends StatelessWidget {
@@ -20,13 +20,9 @@ class ProfileHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 300.h, // Reduced height for compact layout
+      height: 300.h,
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [AppColors.lightDarkColor, Color.fromARGB(255, 18, 13, 14)],
-        ),
+      
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(20.r),
           bottomRight: Radius.circular(20.r),
@@ -43,8 +39,8 @@ class ProfileHeader extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            width: 80.w,
-            height: 80.h,
+            width: 150.w,
+            height: 150.h,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
@@ -57,8 +53,8 @@ class ProfileHeader extends StatelessWidget {
                       child: CachedNetworkImage(
                         imageUrl: imageUrl!,
                         fit: BoxFit.cover,
-                        width: 80.w,
-                        height: 80.h,
+                        width: 200.w,
+                        height: 200.h,
                         placeholder: (context, url) =>
                             const CircularProgressIndicator(strokeWidth: 2),
                         errorWidget: (context, url, error) =>
@@ -70,15 +66,7 @@ class ProfileHeader extends StatelessWidget {
           ),
           SizedBox(height: 10.h),
           // Username
-          Text(
-            name,
-            style: TextStyle(
-              fontSize: 24.sp,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-              letterSpacing: 1.2,
-            ),
-          ),
+          Text(name, style: BebasTextStyles.whiteBold24),
           SizedBox(height: 12.h),
           // Rank Badge
           Container(
@@ -105,14 +93,7 @@ class ProfileHeader extends StatelessWidget {
               children: [
                 Icon(Icons.emoji_events, size: 16.sp, color: Colors.white),
                 SizedBox(width: 8.w),
-                Text(
-                  'Rank: #$rank',
-                  style: TextStyle(
-                    fontSize: 16.sp, // Slightly larger for emphasis
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+                Text('#$rank', style: BebasTextStyles.whiteBold20),
               ],
             ),
           ),
