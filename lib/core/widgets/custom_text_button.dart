@@ -15,7 +15,8 @@ class CustomTextButton extends StatelessWidget {
     this.buttonHeight,
     this.verticalPadding,
     this.horizontalPadding,
-    this.isLoading = false, this.icon,
+    this.isLoading = false,
+    this.icon,
   });
   final String buttonText;
   final TextStyle? textStyle;
@@ -63,7 +64,10 @@ class CustomTextButton extends StatelessWidget {
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
               ),
             )
-          : Text(buttonText, style: FederantTextStyles.whiteBold20),
+          : Text(
+              buttonText,
+              style: textStyle ?? FederantTextStyles.whiteBold20,
+            ),
     );
   }
 }
