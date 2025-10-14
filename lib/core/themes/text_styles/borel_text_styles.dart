@@ -6,6 +6,12 @@ import 'text_style_factory.dart';
 
 class BorelTextStyles {
   static const _font = AppAssets.fontBorel;
+  static final whiteBold20 = TextStyleFactory.create(
+    font: _font,
+    size: 20,
+    weight: FontWeightHelper.bold,
+    color: Colors.white,
+  );
 
   static final greyRegular12 = TextStyleFactory.create(
     font: _font,
