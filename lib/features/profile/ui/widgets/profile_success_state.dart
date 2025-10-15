@@ -34,8 +34,6 @@ class profileSuccessState extends StatelessWidget {
             ),
           ],
         ),
-        verticalSpacing(16),
-
         // Stats Grid
         StatsGridView(
           stats: [
@@ -73,19 +71,84 @@ class profileSuccessState extends StatelessWidget {
         ),
         verticalSpacing(16),
 
-        // Logout Button
+        // Logout Button with Confirmation Dialog
         SizedBox(
           width: 200.w,
           child: CustomTextButton(
             buttonText: 'Logout',
-            onPressed: () {
-              context.read<ProfileCubit>().logout();
-            },
             backgroundColor: Colors.red,
+            onPressed: () {
+              _showLogoutDialog(context);
+            },
           ),
         ),
         verticalSpacing(32),
       ],
+    );
+  }
+
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // prevent accidental dismiss
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.grey.shade900,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.r),
+          ),
+          title: Row(
+            children: [
+              const Icon(Icons.warning_amber_rounded, color: Colors.redAccent),
+              SizedBox(width: 8.w),
+              Text(
+                'Confirm Logout',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          content: Text(
+            'Are you sure you want to log out?',
+            style: TextStyle(color: Colors.grey.shade300, fontSize: 14.sp),
+          ),
+          actionsPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+          actions: [
+            // Cancel
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(
+                'Cancel',
+                style: TextStyle(color: Colors.grey.shade400, fontSize: 14.sp),
+              ),
+            ),
+            // Confirm Logout
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+              ),
+              onPressed: () {
+                Navigator.pop(context); // close dialog
+                context.read<ProfileCubit>().logout(); // perform logout
+              },
+              child: Text(
+                'Logout',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

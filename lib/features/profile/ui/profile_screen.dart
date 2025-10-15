@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'widgets/profile_shimmer_loading.dart';
 import '../../../core/router/route_paths.dart';
 import '../../../core/themes/app_colors.dart';
 import '../../../core/utils/functions/refresh_page.dart';
@@ -27,7 +28,7 @@ class ProfileScreen extends StatelessWidget {
               child: BlocBuilder<ProfileCubit, ProfileState>(
                 builder: (context, state) {
                   if (state is ProfileLoading) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const ProfileShimmerLoading();
                   } else if (state is ProfileSuccess) {
                     final playerProfile = state.player.user;
                     final playerStats = state.player.stats;
