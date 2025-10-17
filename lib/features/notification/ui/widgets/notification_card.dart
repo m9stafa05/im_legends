@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:im_legends/core/utils/functions/date_formate.dart';
+import '../../../../core/utils/functions/date_formate.dart';
 import '../../../../core/themes/app_colors.dart';
 import '../../../../core/utils/spacing.dart';
 import '../../data/models/notification_model.dart';

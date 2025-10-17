@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:im_legends/core/router/route_paths.dart';
+import '../router/route_paths.dart';
 import 'animated_page.dart';
 import 'custom_bottom_navigation_bar.dart';
 

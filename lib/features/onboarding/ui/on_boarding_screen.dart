@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:im_legends/core/widgets/custom_text_button.dart';
-import 'package:im_legends/core/widgets/gradient_background.dart';
-import 'package:im_legends/features/onboarding/ui/widgets/on_boarding_icons.dart';
+import '../../../core/widgets/custom_text_button.dart';
+import '../../../core/widgets/gradient_background.dart';
+import 'widgets/on_boarding_icons.dart';
 import '../../../core/widgets/logo_top_bar.dart';
 import 'widgets/on_boarding_grid_cards.dart';
 import '../../../core/themes/app_texts_style.dart';

@@ -7,7 +7,7 @@ import '../../../../core/themes/app_colors.dart';
 import '../../../../core/themes/text_styles/bebas_text_styles.dart';
 import '../../../../core/widgets/custom_text_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:im_legends/core/utils/spacing.dart';
+import '../../../../core/utils/spacing.dart';
 import '../../logic/cubit/leader_board_cubit.dart';
 
 class HomeHeaderContainer extends StatelessWidget {

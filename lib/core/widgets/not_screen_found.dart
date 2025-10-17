@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:im_legends/core/router/route_paths.dart';
+import '../router/route_paths.dart';
 import '../themes/app_colors.dart';
 import '../themes/app_texts_style.dart';
 

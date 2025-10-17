@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:im_legends/core/themes/app_colors.dart';
+import '../../../core/themes/app_colors.dart';
 import '../../../core/utils/functions/refresh_page.dart';
-import 'package:im_legends/core/utils/spacing.dart';
+import '../../../core/utils/spacing.dart';
 import '../logic/cubit/leader_board_cubit.dart';
 import '../../../core/widgets/custom_app_bar.dart';
 import 'widgets/home_header_container.dart';

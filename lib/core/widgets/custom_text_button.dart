@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:im_legends/core/themes/app_colors.dart';
-import 'package:im_legends/core/themes/app_texts_style.dart';
+import '../themes/app_colors.dart';
+import '../themes/app_texts_style.dart';
 
 class CustomTextButton extends StatelessWidget {
   const CustomTextButton({
